@@ -1,0 +1,50 @@
+---
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const productSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: '花生片 Peanup',
+  description,
+  category: '彩色电子墨水屏',
+  brand: { '@type': 'Brand', name: 'Peanup' },
+};
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="/assets/peanup-lifestyle.webp" />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(productSchema)} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+    <button class="back-to-top" type="button" aria-label="返回页面顶部" title="返回顶部">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V5m0 0-6 6m6-6 6 6" /></svg>
+    </button>
+    <script>
+      import '../scripts/chrome';
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  @import '../styles/global.css';
+</style>

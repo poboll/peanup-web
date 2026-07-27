@@ -1,0 +1,139 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const algorithms = [
+  ['Floyd-Steinberg', '16', '细节与速度均衡，适合作为默认兼容基线。'],
+  ['Atkinson', '8', '有意丢弃部分误差，画面更清脆、对比更高。'],
+  ['Jarvis-Judice-Ninke', '48', '扩散范围更大，照片层次柔和，但计算量更高。'],
+  ['Stucki', '42', '兼顾平滑层次与边缘，适合高质量照片写屏。'],
+  ['Burkes', '32', '两行扩散，速度和细节处在中间位置。'],
+  ['Sierra 3 / 2 / Lite', '32 / 16 / 4', '从高质量到轻量实时的三个复杂度层级。'],
+];
+---
+
+<BaseLayout
+  title="开放文档｜花生片 Peanup"
+  description="花生片 Peanup 的开放技术文档：六色图像处理、抖动算法、BLE 传输、低功耗路径与硬件验证边界。"
+>
+  <header class="site-header docs-header" aria-label="文档导航">
+    <a class="brand" href="/" aria-label="返回花生片首页">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+      <span>花生片 <b>Peanup</b></span>
+    </a>
+    <nav>
+      <a href="#overview">概览</a>
+      <a href="#image">图像</a>
+      <a href="#dither">抖动</a>
+      <a href="#ble">蓝牙</a>
+      <a href="#boundary">边界</a>
+    </nav>
+    <a class="header-link" href="/">返回产品</a>
+  </header>
+
+  <main class="docs-shell">
+    <aside class="docs-aside" aria-label="文档目录">
+      <span>OPEN DOCUMENTATION</span>
+      <nav>
+        <a href="#overview"><i>01</i>范围与结论</a>
+        <a href="#experience"><i>02</i>产品能力</a>
+        <a href="#image"><i>03</i>六色图像链路</a>
+        <a href="#dither"><i>04</i>抖动算法</a>
+        <a href="#ble"><i>05</i>BLE 传输</a>
+        <a href="#power"><i>06</i>功耗策略</a>
+        <a href="#boundary"><i>07</i>验证边界</a>
+      </nav>
+      <p>根据旧版 App 静态分析整理<br />Revision 0.1 · 2026.07</p>
+    </aside>
+
+    <article class="docs-content">
+      <section id="overview" class="docs-hero">
+        <div class="docs-kicker"><span>PEANUP / ENGINEERING NOTES</span><b>REV. 0.1</b></div>
+        <h1>从一张照片，<br />到一块六色电子纸。</h1>
+        <p>这份文档整理花生片第一版的可复现能力、推荐实现路径与尚待硬件验证的部分。它来自旧版 App 的静态分析，不等同于已经完成的量产规格。</p>
+        <div class="docs-evidence">
+          <span><i>E</i><strong>Evidence</strong><small>二进制或资源直接证据</small></span>
+          <span><i>R</i><strong>Rebuild</strong><small>可按标准方法重建</small></span>
+          <span><i>H</i><strong>Hardware</strong><small>必须通过真机验证</small></span>
+        </div>
+      </section>
+
+      <section id="experience" class="docs-section">
+        <header><span>02 / EXPERIENCE</span><h2>它不是传图工具，<br />而是一台即时成像相机。</h2></header>
+        <div class="docs-prose">
+          <p>用户可以拍照、从相册导入，或生成时间进度、天气与书摘卡片。App 将内容裁切到目标屏幕比例，在本机完成六色预览和编码，再通过附近的蓝牙设备写入电子纸。</p>
+          <ul class="docs-feature-list">
+            <li><span>CAMERA</span>前后镜头、闪光灯、双重曝光与实时电子纸预览</li>
+            <li><span>CONTENT</span>年/月/季度/周进度、天气快照、微信读书书摘</li>
+            <li><span>GALLERY</span>本地相纸画廊、显影状态、失败任务与再次发送</li>
+            <li><span>ACTIVITY</span>App、锁屏和灵动岛中的连接与传输进度</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="image" class="docs-section">
+        <header><span>03 / IMAGE PIPELINE</span><h2>所有计算先在手机完成。</h2></header>
+        <ol class="docs-flow">
+          <li><span>01</span><strong>Crop / Rotate</strong><p>读取方向，按设备像素比例裁切和缩放。</p></li>
+          <li><span>02</span><strong>Tone / Gamut</strong><p>处理黑白点、对比度、色调与设备可表示色域。</p></li>
+          <li><span>03</span><strong>Quantize / Dither</strong><p>匹配六色调色板并执行内容适合的抖动算法。</p></li>
+          <li><span>04</span><strong>Pack / Transfer</strong><p>生成索引缓冲，两个4-bit像素打包成一个字节。</p></li>
+        </ol>
+        <div class="native-palette" aria-label="六色原生编码">
+          <span style="--code-color:#111"><i>0x0</i>BLACK</span>
+          <span style="--code-color:#f4f1e8"><i>0x1</i>WHITE</span>
+          <span style="--code-color:#e7b62f"><i>0x2</i>YELLOW</span>
+          <span style="--code-color:#d64737"><i>0x3</i>RED</span>
+          <span style="--code-color:#3f71b8"><i>0x5</i>BLUE</span>
+          <span style="--code-color:#6d9a63"><i>0x6</i>GREEN</span>
+        </div>
+        <pre><code>byte = (pixel0 &lt;&lt; 4) | pixel1
+payloadLength = width * height / 2</code></pre>
+      </section>
+
+      <section id="dither" class="docs-section">
+        <header><span>04 / DITHER ENGINE</span><h2>按内容选择算法，<br />而不是套一种滤镜。</h2></header>
+        <p class="docs-lead">旧版已确认存在误差扩散、Ordered、Spectra Mix、随机模式和直接量化。新版建议分为实时预览、均衡写屏与高质量照片三档。</p>
+        <div class="docs-algorithms">
+          {algorithms.map(([name, divisor, note]) => (
+            <article><span>{name}</span><b>DIV / {divisor}</b><p>{note}</p></article>
+          ))}
+        </div>
+        <div class="docs-note"><b>Ordered 4×4 / 8×8</b><p>使用 Bayer 阈值矩阵，适合实时预览和需要帧间稳定的内容。文字、细线与二维码应降低或关闭跨边误差扩散。</p></div>
+      </section>
+
+      <section id="ble" class="docs-section">
+        <header><span>05 / CORE BLUETOOTH</span><h2>连接、协商、发送、确认。</h2></header>
+        <div class="ble-sequence" aria-label="BLE 状态机">
+          <span>扫描服务</span><i></i><span>连接设备</span><i></i><span>发现特征</span><i></i><span>握手与能力</span><i></i><span>分块发送</span><i></i><span>刷新确认</span>
+        </div>
+        <div class="docs-columns">
+          <article><span>NORMAL</span><h3>Write with response</h3><p>默认可靠路径。每个数据块等待系统写入完成或设备确认，便于定位失败和恢复任务。</p></article>
+          <article><span>FAST</span><h3>Write without response</h3><p>只有设备协商支持后才启用，并使用 `peripheralIsReady` 做背压和节奏控制。</p></article>
+        </div>
+        <p class="docs-caption">FDF / FEF 两套服务已经发现，但控制与数据特征方向、ACK 字段、校验和 QuickLZ 格式仍需真实硬件抓包确认。</p>
+      </section>
+
+      <section id="power" class="docs-section">
+        <header><span>06 / POWER</span><h2>需要时连接，<br />其余时间保持安静。</h2></header>
+        <div class="power-states">
+          <span><i>IDLE</i>MCU 深睡眠<br />低频广播或按键唤醒</span>
+          <span><i>CONNECT</i>临时提高广播<br />协商连接参数</span>
+          <span><i>TRANSFER</i>高频 BLE<br />分块写入图像</span>
+          <span><i>REFRESH</i>降低无线吞吐<br />驱动屏幕刷新</span>
+          <span><i>RETURN</i>断开连接<br />回到低功耗状态</span>
+        </div>
+        <p class="docs-lead">电子纸静态保持通常不需要持续供电。真正待机消耗来自 MCU、BLE 广播、电源管理和附加硬件；具体电流不能使用芯片手册最佳值代替整机实测。</p>
+      </section>
+
+      <section id="boundary" class="docs-section docs-boundary">
+        <header><span>07 / VALIDATION</span><h2>已经知道什么，<br />还需要证明什么。</h2></header>
+        <div class="boundary-grid">
+          <article><span>可直接实现</span><p>相机与导入、固定比例裁切、本地图像流水线、标准抖动算法、六色码表、相册、BLE扫描连接骨架和传输状态机。</p></article>
+          <article><span>需要服务配置</span><p>天气轻网关和微信读书官方 Agent Gateway。照片、抖动结果和BLE负载不进入业务后台。</p></article>
+          <article><span>需要硬件验证</span><p>控制包语义、特征方向、ACK与校验、QuickLZ格式、刷新波形、真实吞吐、电池容量和整机功耗。</p></article>
+        </div>
+        <footer><span>V1 DECISION</span><strong>手机本地计算 + BLE 近场传输 + 墨水屏断电保持</strong></footer>
+      </section>
+    </article>
+  </main>
+</BaseLayout>
