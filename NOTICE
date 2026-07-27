@@ -9,3 +9,6 @@ marketing copy, and other brand assets are not licensed under the Apache
 License. All rights in those materials are reserved by their respective owner.
 No trademark rights are granted by this repository.
 
+The calibrated Spectra 6 preview palette and browser-side e-paper processing
+approach were informed by epdoptimize, licensed under Apache License 2.0:
+https://github.com/paperlesspaper/epdoptimize

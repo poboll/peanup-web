@@ -166,7 +166,7 @@ button { font: inherit; }
 .ink-device-screen { position: relative; width: 100%; height: 100%; overflow: hidden; border: 2px solid #1a1a18; background: #f4f1e8; isolation: isolate; cursor: crosshair; }
 .nature-canvas { position: absolute; inset: 0; }
 .nature-canvas canvas { display: block; width: 100% !important; height: 100% !important; touch-action: none; }
-.ink-screen-grain { position: absolute; z-index: 2; inset: 0; pointer-events: none; opacity: .22; mix-blend-mode: multiply; background-image: radial-gradient(rgba(18,18,18,.42) .45px, transparent .65px); background-size: 4px 4px; }
+.ink-screen-grain { position: absolute; z-index: 2; inset: 0; pointer-events: none; opacity: .34; mix-blend-mode: multiply; background-image: repeating-linear-gradient(0deg, rgba(33,38,35,.045) 0 1px, transparent 1px 4px), linear-gradient(93deg, transparent 0 18%, rgba(112,92,60,.035) 23%, transparent 31% 67%, rgba(48,74,94,.035) 74%, transparent 82%); }
 .ink-screen-caption { position: absolute; z-index: 3; left: 13px; right: 13px; bottom: 12px; display: flex; justify-content: space-between; padding-top: 8px; border-top: 1px solid rgba(20,20,20,.45); pointer-events: none; font: 8px/1 ui-monospace, monospace; }
 .ink-screen-caption b { font-weight: 500; }
 .ink-screen-caption i { font-style: normal; }
@@ -280,9 +280,9 @@ button { font: inherit; }
 .transfer-rail i:nth-child(2) { --packet: 1; }.transfer-rail i:nth-child(3) { --packet: 2; }.transfer-rail i:nth-child(4) { --packet: 3; }.transfer-rail i:nth-child(5) { --packet: 4; }.transfer-rail i:nth-child(6) { --packet: 5; }
 .pipeline-transfer > b { font: 9px/1 ui-monospace, monospace; }
 .pipeline-transfer > small { margin-top: 7px; color: var(--blue); font: 7px/1 ui-monospace, monospace; }
-.pipeline-device { padding: 12px 16% 27px; background-image: radial-gradient(#c2c2bc .55px, transparent .7px); background-size: 5px 5px; }
+.pipeline-device { padding: 12px 16% 27px; background-color: #ecece7; background-image: repeating-linear-gradient(0deg, rgba(35,35,31,.035) 0 1px, transparent 1px 5px); }
 .pipeline-device > div { position: relative; height: 100%; padding: 6px; border: 1px solid #aaa9a2; border-radius: 3px; background: #f8f8f4; box-shadow: 0 12px 24px rgba(20,20,20,.15), inset 0 0 0 2px #fff; overflow: hidden; }
-.pipeline-device > div::after { content: ""; position: absolute; inset: 6px; pointer-events: none; opacity: .26; background-image: radial-gradient(rgba(20,20,20,.5) .4px, transparent .65px); background-size: 3px 3px; mix-blend-mode: multiply; }
+.pipeline-device > div::after { content: ""; position: absolute; inset: 6px; pointer-events: none; opacity: .42; background-image: repeating-linear-gradient(0deg, rgba(20,24,22,.05) 0 1px, transparent 1px 3px), linear-gradient(95deg, transparent, rgba(114,91,56,.045) 32%, transparent 57%, rgba(44,72,95,.04)); mix-blend-mode: multiply; }
 .pipeline-device > div > i { position: absolute; z-index: 2; left: 6px; right: 6px; bottom: 6px; height: 0; background: rgba(244,241,232,.94); border-top: 1px solid rgba(71,121,188,.6); }
 .pipeline-visible .pipeline-device > div > i { animation: epaper-write 1.25s .25s var(--ease) both; }
 .pipeline-device > b { position: absolute; left: 0; right: 0; bottom: 8px; text-align: center; color: #777; font: 7px/1 ui-monospace, monospace; }

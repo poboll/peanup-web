@@ -79,7 +79,6 @@ if (mount && gallery) {
     let flowers: Flower[] = [];
     let swallows: Swallow[] = [];
     let branchFrame = 0;
-    let birdStartedAt = 0;
     let refreshStartedAt = -1000;
     let currentPhase: keyof typeof phaseNames = 'rain';
 
@@ -96,7 +95,6 @@ if (mount && gallery) {
       labels.forEach((label) => label.classList.toggle('active', label.dataset.inkLabel === phase));
       if (caption) caption.innerHTML = `<b>${phaseNames[phase][0]}</b><i>${phaseNames[phase][1]}</i>`;
       if (phase === 'branch') resetBranches();
-      if (phase === 'bird') birdStartedAt = p.millis();
       refreshStartedAt = p.millis();
     };
 
@@ -115,7 +113,6 @@ if (mount && gallery) {
     const buildBirds = () => {
       p.randomSeed(2304);
       swallows = Array.from({ length: 30 }, (_, index) => new Swallow(p, index, p.width, p.height));
-      birdStartedAt = p.millis();
     };
 
     const sizeCanvas = () => {
@@ -136,25 +133,25 @@ if (mount && gallery) {
       p.fill(232, 215, 111, 190); p.rect(0, p.height * .66, p.width * .64, p.height * .14);
       p.fill(34, 69, 131, 245);
       const cloudBank = [
-        [.16, .255, .2, .105], [.28, .225, .25, .145], [.42, .255, .23, .12],
-        [.55, .215, .29, .16], [.69, .25, .24, .125], [.82, .225, .21, .11],
+        [.26, .245, .18, .085], [.41, .225, .22, .115],
+        [.58, .235, .2, .1], [.74, .25, .17, .08],
       ];
       cloudBank.forEach(([x, y, width, height]) => p.ellipse(p.width * x, p.height * y, p.width * width, p.height * height));
       const colors = [[18,18,18], [244,241,232], [226,174,37], [210,67,53], [48,102,178], [92,139,80]];
       p.noStroke();
-      for (let line = 0; line < 48; line += 1) {
-        const x = p.map(line, 0, 47, p.width * .12, p.width * .88);
-        const stagger = (line % 9) * .025 + p.noise(line * .73) * .13;
-        for (let dropIndex = 0; dropIndex < 5; dropIndex += 1) {
-          const fall = clamp01(reveal * 1.55 - stagger - dropIndex * .075);
+      for (let line = 0; line < 22; line += 1) {
+        const x = p.map(line, 0, 21, p.width * .19, p.width * .81);
+        const stagger = (line % 7) * .045 + p.noise(line * .73) * .18;
+        for (let dropIndex = 0; dropIndex < 2; dropIndex += 1) {
+          const fall = clamp01(reveal * 1.38 - stagger - dropIndex * .19);
           if (fall <= 0 || fall >= 1) continue;
           const eased = fall * fall;
-          const cloudBottom = p.height * (.27 + p.noise(line * .31) * .055);
+          const cloudBottom = p.height * (.265 + p.noise(line * .31) * .035);
           const y = p.lerp(cloudBottom, p.height * 1.08, eased);
-          const size = 3.5 + ((line * 7 + dropIndex * 11) % 9);
+          const size = 2.2 + ((line * 5 + dropIndex * 7) % 4);
           const color = colors[(line + dropIndex * 2) % colors.length];
-          p.fill(color[0], color[1], color[2], 225 * p.sin(fall * p.PI));
-          p.ellipse(x + p.sin(line * 1.7) * 2, y, size * .72, size * 1.55);
+          p.fill(color[0], color[1], color[2], 185 * p.sin(fall * p.PI));
+          p.ellipse(x + p.sin(line * 1.7) * 1.5, y, size * .62, size * 1.75);
         }
       }
       p.noStroke();
@@ -276,7 +273,7 @@ if (mount && gallery) {
       const nx = bird.startX * (u - .01) * (u - .01) + 2 * (u - .01) * (eased + .01) * bird.cpX + (eased + .01) * (eased + .01) * bird.exitX;
       const ny = bird.startY * (u - .01) * (u - .01) + 2 * (u - .01) * (eased + .01) * bird.cpY + (eased + .01) * (eased + .01) * bird.exitY;
       const angle = p.atan2(ny - y, nx - x) + p.PI;
-      const flap = .2 + (p.sin(p.frameCount * .22 + bird.phase) + 1) * .4;
+      const flap = .2 + (p.sin(t * 24 + bird.phase) + 1) * .4;
       updateTail(bird.tailL, -1.3);
       updateTail(bird.tailR, 1.3);
       p.push();
@@ -323,7 +320,7 @@ if (mount && gallery) {
           for (let step = 0; step <= 42; step += 1) {
             const t = step / 42;
             const envelope = p.sin(t * p.PI);
-            const pulse = p.sin(t * p.TWO_PI * (1.35 + staff * .08) - p.frameCount * .085 - line * .42);
+            const pulse = p.sin(t * p.TWO_PI * (1.35 + staff * .08) - scrollPhase * 7 - line * .42);
             const pluck = p.sin(t * p.PI * 3 + scrollPhase * p.TWO_PI) * .65;
             p.vertex(p.lerp(p.width * .13, p.width * .87, t), baseY + (pulse + pluck) * amplitude * envelope);
           }
@@ -344,17 +341,17 @@ if (mount && gallery) {
         for (let step = 0; step <= 20; step += 1) {
           const t = step / 20;
           const spread = (t - .5) * (stringIndex - 8.5) * .7;
-          const vibration = p.sin(t * p.PI * 3 - p.frameCount * .1 + stringIndex) * 2.5 * p.sin(t * p.PI);
+          const vibration = p.sin(t * p.PI * 3 - scrollPhase * 8 + stringIndex) * 2.5 * p.sin(t * p.PI);
           p.vertex(x + spread + vibration, p.lerp(p.height * .86, p.height * .2, t));
         }
         p.endShape();
       }
-      const cycle = reducedMotion ? 2600 : 6000;
-      const elapsed = (p.millis() - birdStartedAt) % cycle;
-      for (const bird of swallows) {
-        const local = elapsed - bird.delay;
-        if (local < 0 || local > bird.duration) continue;
-        drawSwallow(bird, local / bird.duration);
+      for (let index = 0; index < swallows.length; index += 1) {
+        const bird = swallows[index];
+        const arrival = clamp01(scrollPhase * 1.48 - index / 29 * .48);
+        if (arrival <= 0) continue;
+        const restingPoint = .18 + index / 29 * .36;
+        drawSwallow(bird, arrival * restingPoint);
       }
     };
 
