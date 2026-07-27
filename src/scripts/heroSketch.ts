@@ -152,9 +152,9 @@ if (mount && gallery) {
 
     const applyEpaperMaterial = () => {
       if (!materialContext || !p.canvas) return;
-      const scale = window.innerWidth < 680 ? 2.8 : 2.35;
-      const width = Math.max(120, Math.round(p.width / scale));
-      const height = Math.max(160, Math.round(p.height / scale));
+      const scale = window.innerWidth < 680 ? 1.8 : 1.45;
+      const width = Math.max(180, Math.round(p.width / scale));
+      const height = Math.max(240, Math.round(p.height / scale));
       const resized = materialCanvas.width !== width || materialCanvas.height !== height;
       if (resized) {
         materialCanvas.width = width;
@@ -203,11 +203,12 @@ if (mount && gallery) {
       const target = p.drawingContext as CanvasRenderingContext2D;
       target.save();
       target.imageSmoothingEnabled = true;
-      target.globalAlpha = .1;
-      target.filter = 'blur(0.55px)';
+      target.clearRect(0, 0, p.width, p.height);
+      target.globalAlpha = .035;
+      target.filter = 'blur(0.35px)';
       target.drawImage(materialCanvas, 0, 0, p.width, p.height);
       target.filter = 'none';
-      target.globalAlpha = .9;
+      target.globalAlpha = .965;
       target.drawImage(materialCanvas, 0, 0, p.width, p.height);
       target.restore();
     };
