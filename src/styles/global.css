@@ -163,9 +163,9 @@ button { font: inherit; }
 .ink-product { width: min(100%, 620px); justify-self: center; }
 .ink-device-shell { position: relative; width: min(100%, 510px); aspect-ratio: 3 / 4; margin: 0 auto; padding: 8.5% 7% 14%; border: 1px solid #c8c8c1; border-radius: 8px; background: #f9f9f5; box-shadow: 0 34px 80px rgba(27, 30, 25, .18), inset 0 0 0 4px rgba(255,255,255,.8); }
 .ink-device-shell::before { content: ""; position: absolute; inset: 10px; border: 1px solid rgba(20,20,20,.08); border-radius: 5px; pointer-events: none; }
-.ink-device-screen { position: relative; width: 100%; height: 100%; overflow: hidden; border: 2px solid #1a1a18; background: #f4f1e8; isolation: isolate; cursor: crosshair; }
+.ink-device-screen { position: relative; width: 100%; height: 100%; overflow: hidden; border: 1px solid #3b3c38; background: #e6e4d9; box-shadow: inset 0 0 0 5px rgba(38,39,35,.055), inset 0 0 18px rgba(36,35,30,.08); isolation: isolate; cursor: crosshair; }
 .nature-canvas { position: absolute; inset: 0; }
-.nature-canvas canvas { display: block; width: 100% !important; height: 100% !important; touch-action: none; }
+.nature-canvas canvas { display: block; width: 100% !important; height: 100% !important; filter: saturate(.74) contrast(.92) brightness(.99); touch-action: none; }
 .ink-screen-grain { position: absolute; z-index: 2; inset: 0; pointer-events: none; opacity: .34; mix-blend-mode: multiply; background-image: repeating-linear-gradient(0deg, rgba(33,38,35,.045) 0 1px, transparent 1px 4px), linear-gradient(93deg, transparent 0 18%, rgba(112,92,60,.035) 23%, transparent 31% 67%, rgba(48,74,94,.035) 74%, transparent 82%); }
 .ink-screen-caption { position: absolute; z-index: 3; left: 13px; right: 13px; bottom: 12px; display: flex; justify-content: space-between; padding-top: 8px; border-top: 1px solid rgba(20,20,20,.45); pointer-events: none; font: 8px/1 ui-monospace, monospace; }
 .ink-screen-caption b { font-weight: 500; }

@@ -12,3 +12,7 @@ No trademark rights are granted by this repository.
 The calibrated Spectra 6 preview palette and browser-side e-paper processing
 approach were informed by epdoptimize, licensed under Apache License 2.0:
 https://github.com/paperlesspaper/epdoptimize
+
+Rain-drop silhouettes are loaded from the reference assets used by
+SKILL-rainCurtain-branch-swallow:
+https://github.com/xxoogreymon-prog/SKILL-rainCurtain-branch-swallow

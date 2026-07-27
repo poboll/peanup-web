@@ -75,6 +75,10 @@ if (mount && gallery) {
   } as const;
 
   new p5((p) => {
+    const rainDropUrls = Array.from({ length: 12 }, (_, index) =>
+      `https://cdn.jsdelivr.net/gh/xxoogreymon-prog/image-resources@main/icons/rain_drops/drop${index + 1}.png`
+    );
+    let rainDropImages: p5.Image[] = [];
     let branches: GrowingBranch[] = [];
     let flowers: Flower[] = [];
     let swallows: Swallow[] = [];
@@ -124,41 +128,68 @@ if (mount && gallery) {
       buildBirds();
     };
 
+    const drawPaperSurface = () => {
+      const context = p.drawingContext as CanvasRenderingContext2D;
+      context.save();
+      context.globalCompositeOperation = 'multiply';
+      p.randomSeed(9182);
+      p.strokeWeight(.35);
+      for (let index = 0; index < 72; index += 1) {
+        const y = p.random(p.height);
+        const length = p.random(p.width * .08, p.width * .34);
+        const x = p.random(-length * .3, p.width);
+        p.stroke(76, 70, 58, p.random(4, 11));
+        p.line(x, y, x + length, y + p.random(-.8, .8));
+      }
+      context.restore();
+    };
+
     const drawRain = (reveal: number) => {
-      p.background(232, 229, 216);
+      p.background(235, 231, 218);
       p.noStroke();
-      p.fill(216, 226, 220, 170); p.rect(0, p.height * .07, p.width, p.height * .18);
-      p.fill(205, 220, 235, 190); p.rect(0, p.height * .34, p.width, p.height * .13);
-      p.fill(238, 209, 204, 185); p.rect(p.width * .55, p.height * .47, p.width * .45, p.height * .13);
-      p.fill(232, 215, 111, 190); p.rect(0, p.height * .66, p.width * .64, p.height * .14);
-      p.fill(34, 69, 131, 245);
-      const cloudBank = [
-        [.26, .245, .18, .085], [.41, .225, .22, .115],
-        [.58, .235, .2, .1], [.74, .25, .17, .08],
-      ];
-      cloudBank.forEach(([x, y, width, height]) => p.ellipse(p.width * x, p.height * y, p.width * width, p.height * height));
-      const colors = [[18,18,18], [244,241,232], [226,174,37], [210,67,53], [48,102,178], [92,139,80]];
-      p.noStroke();
-      for (let line = 0; line < 22; line += 1) {
-        const x = p.map(line, 0, 21, p.width * .19, p.width * .81);
-        const stagger = (line % 7) * .045 + p.noise(line * .73) * .18;
-        for (let dropIndex = 0; dropIndex < 2; dropIndex += 1) {
-          const fall = clamp01(reveal * 1.38 - stagger - dropIndex * .19);
-          if (fall <= 0 || fall >= 1) continue;
-          const eased = fall * fall;
-          const cloudBottom = p.height * (.265 + p.noise(line * .31) * .035);
-          const y = p.lerp(cloudBottom, p.height * 1.08, eased);
-          const size = 2.2 + ((line * 5 + dropIndex * 7) % 4);
+      p.fill(207, 219, 224, 175); p.rect(0, p.height * .18, p.width, p.height * .38);
+      p.fill(90, 135, 82, 145);
+      p.beginShape(); p.vertex(0, p.height * .54); p.bezierVertex(p.width * .2, p.height * .38, p.width * .33, p.height * .49, p.width * .5, p.height * .41); p.bezierVertex(p.width * .67, p.height * .32, p.width * .8, p.height * .51, p.width, p.height * .39); p.vertex(p.width, p.height * .67); p.vertex(0, p.height * .67); p.endShape(p.CLOSE);
+      p.fill(48, 102, 178, 120);
+      p.beginShape(); p.vertex(0, p.height * .61); p.bezierVertex(p.width * .18, p.height * .5, p.width * .32, p.height * .64, p.width * .47, p.height * .53); p.bezierVertex(p.width * .66, p.height * .4, p.width * .78, p.height * .6, p.width, p.height * .5); p.vertex(p.width, p.height * .72); p.vertex(0, p.height * .72); p.endShape(p.CLOSE);
+      p.fill(226, 174, 37, 120); p.circle(p.width * .78, p.height * .22, p.width * .11);
+      p.fill(240, 237, 225, 215);
+      p.ellipse(p.width * .28, p.height * .18, p.width * .31, p.height * .08);
+      p.ellipse(p.width * .55, p.height * .16, p.width * .36, p.height * .1);
+      p.ellipse(p.width * .76, p.height * .19, p.width * .23, p.height * .07);
+      p.fill(225, 226, 213, 205); p.rect(0, p.height * .7, p.width, p.height * .3);
+      p.stroke(48, 102, 178, 36); p.strokeWeight(.6);
+      for (let line = 0; line < 7; line += 1) p.line(0, p.height * (.74 + line * .035), p.width, p.height * (.74 + line * .035));
+
+      const colors = [[31,34,38], [216,222,216], [193,187,30], [98,32,30], [35,63,142], [53,86,58]];
+      const curtainAlpha = 1 - clamp01((reveal - .66) / .28);
+      p.imageMode(p.CENTER);
+      for (let line = 0; line < 26; line += 1) {
+        const x = p.map(line, 0, 25, p.width * .1, p.width * .9);
+        const curtain = clamp01(reveal * 1.28 - (line % 6) * .025);
+        if (curtain <= 0 || curtainAlpha <= 0) continue;
+        const endY = p.lerp(p.height * .2, p.height * .76, 1 - Math.pow(1 - curtain, 2.2));
+        p.stroke(35, 63, 142, 34 * curtainAlpha); p.strokeWeight(.45);
+        p.line(x, p.height * .19, x, endY);
+        const count = 3 + (line % 4);
+        for (let dropIndex = 0; dropIndex < count; dropIndex += 1) {
+          const position = (dropIndex + .65) / count;
+          const y = p.lerp(p.height * .22, endY, position);
+          if (y > endY - 1) continue;
+          const image = rainDropImages[(line * 3 + dropIndex) % rainDropImages.length];
           const color = colors[(line + dropIndex * 2) % colors.length];
-          p.fill(color[0], color[1], color[2], 185 * p.sin(fall * p.PI));
-          p.ellipse(x + p.sin(line * 1.7) * 1.5, y, size * .62, size * 1.75);
+          const height = 8 + ((line * 5 + dropIndex * 7) % 12);
+          p.tint(color[0], color[1], color[2], 185 * curtainAlpha);
+          if (image?.width) p.image(image, x, y, height * image.width / image.height, height);
+          else {
+            p.noStroke(); p.fill(color[0], color[1], color[2], 150 * curtainAlpha);
+            p.beginShape(); p.vertex(x, y - height * .5); p.bezierVertex(x - height * .24, y - height * .1, x - height * .2, y + height * .45, x, y + height * .5); p.bezierVertex(x + height * .2, y + height * .45, x + height * .24, y - height * .1, x, y - height * .5); p.endShape(p.CLOSE);
+          }
         }
       }
-      p.noStroke();
-      p.fill(31, 47, 74, 175);
-      p.textFont('Georgia');
-      p.textSize(Math.max(7, p.width * .022));
-      p.text('the rain keeps a small piece of today', p.width * .35, p.height * .84, p.width * .58);
+      p.noTint(); p.imageMode(p.CORNER);
+      p.noStroke(); p.fill(31, 47, 74, 150); p.textFont('Georgia'); p.textSize(Math.max(7, p.width * .02));
+      p.text('after rain / the light remains', p.width * .54, p.height * .91, p.width * .38);
     };
 
     const growBranches = () => {
@@ -303,9 +334,9 @@ if (mount && gallery) {
       p.textFont('Georgia');
       p.textAlign(p.CENTER);
       p.textSize(Math.max(13, p.width * .055));
-      p.text('Control', p.width * .5, p.height * .13);
+      p.text('Beyond the strings', p.width * .5, p.height * .13);
       p.textSize(Math.max(5, p.width * .014));
-      p.text('listen to the quiet between notes', p.width * .5, p.height * .155);
+      p.text('the wind passes between notes / study 03', p.width * .5, p.height * .155);
       p.textAlign(p.LEFT);
       p.stroke(38, 38, 35, 170);
       p.strokeWeight(.75);
@@ -333,10 +364,10 @@ if (mount && gallery) {
         }
       }
       p.noFill();
-      p.stroke(210, 67, 53, 92);
-      p.strokeWeight(.6);
-      for (let stringIndex = 0; stringIndex < 18; stringIndex += 1) {
-        const x = p.map(stringIndex, 0, 17, p.width * .18, p.width * .82);
+      p.stroke(98, 32, 30, 54);
+      p.strokeWeight(.45);
+      for (let stringIndex = 0; stringIndex < 12; stringIndex += 1) {
+        const x = p.map(stringIndex, 0, 11, p.width * .2, p.width * .8);
         p.beginShape();
         for (let step = 0; step <= 20; step += 1) {
           const t = step / 20;
@@ -377,6 +408,10 @@ if (mount && gallery) {
       document.addEventListener('visibilitychange', () => document.hidden ? p.noLoop() : p.loop());
     };
 
+    p.preload = () => {
+      rainDropImages = rainDropUrls.map((url) => p.loadImage(url, undefined, () => undefined));
+    };
+
     p.draw = () => {
       p.background(244, 241, 232);
       const scroll = progress();
@@ -386,6 +421,7 @@ if (mount && gallery) {
       if (currentPhase === 'rain') drawRain(rainReveal);
       else if (currentPhase === 'branch') drawBranches();
       else drawBirds(birdScroll);
+      drawPaperSurface();
       drawRefresh();
     };
   }, mount);
