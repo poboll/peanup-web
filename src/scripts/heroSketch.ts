@@ -85,6 +85,9 @@ if (mount && gallery) {
     let branchFrame = 0;
     let refreshStartedAt = -1000;
     let currentPhase: keyof typeof phaseNames = 'rain';
+    const materialCanvas = document.createElement('canvas');
+    const materialContext = materialCanvas.getContext('2d', { willReadFrequently: true });
+    const spectraPalette = [[31,34,38], [216,222,216], [35,63,142], [53,86,58], [98,32,30], [193,187,30]] as const;
 
     const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
     const progress = () => {
@@ -100,6 +103,9 @@ if (mount && gallery) {
       if (caption) caption.innerHTML = `<b>${phaseNames[phase][0]}</b><i>${phaseNames[phase][1]}</i>`;
       if (phase === 'branch') resetBranches();
       refreshStartedAt = p.millis();
+      gallery.classList.remove('is-refreshing');
+      void gallery.offsetWidth;
+      gallery.classList.add('is-refreshing');
     };
 
     const resetBranches = () => {
@@ -142,6 +148,68 @@ if (mount && gallery) {
         p.line(x, y, x + length, y + p.random(-.8, .8));
       }
       context.restore();
+    };
+
+    const applyEpaperMaterial = () => {
+      if (!materialContext || !p.canvas) return;
+      const scale = window.innerWidth < 680 ? 2.8 : 2.35;
+      const width = Math.max(120, Math.round(p.width / scale));
+      const height = Math.max(160, Math.round(p.height / scale));
+      const resized = materialCanvas.width !== width || materialCanvas.height !== height;
+      if (resized) {
+        materialCanvas.width = width;
+        materialCanvas.height = height;
+      }
+      if (!resized && window.innerWidth >= 680 && p.frameCount % 2 === 1) {
+        const target = p.drawingContext as CanvasRenderingContext2D;
+        target.save();
+        target.imageSmoothingEnabled = true;
+        target.drawImage(materialCanvas, 0, 0, p.width, p.height);
+        target.restore();
+        return;
+      }
+      materialContext.imageSmoothingEnabled = true;
+      materialContext.drawImage(p.canvas, 0, 0, width, height);
+      const image = materialContext.getImageData(0, 0, width, height);
+      const work = new Float32Array(image.data);
+      const nearestInk = (r: number, g: number, b: number) => {
+        let result: readonly [number, number, number] = spectraPalette[0];
+        let distance = Number.POSITIVE_INFINITY;
+        for (const ink of spectraPalette) {
+          const dr = r - ink[0]; const dg = g - ink[1]; const db = b - ink[2];
+          const next = dr * dr * .27 + dg * dg * .66 + db * db * .07;
+          if (next < distance) { distance = next; result = ink; }
+        }
+        return result;
+      };
+      for (let y = 0; y < height; y += 1) {
+        const reverse = y % 2 === 1;
+        for (let step = 0; step < width; step += 1) {
+          const x = reverse ? width - step - 1 : step;
+          const index = (y * width + x) * 4;
+          const ink = nearestInk(work[index], work[index + 1], work[index + 2]);
+          const error = [work[index] - ink[0], work[index + 1] - ink[1], work[index + 2] - ink[2]];
+          image.data[index] = ink[0]; image.data[index + 1] = ink[1]; image.data[index + 2] = ink[2]; image.data[index + 3] = 255;
+          const spread = (dx: number, dy: number, weight: number) => {
+            const nx = x + (reverse ? -dx : dx); const ny = y + dy;
+            if (nx < 0 || nx >= width || ny >= height) return;
+            const target = (ny * width + nx) * 4;
+            for (let channel = 0; channel < 3; channel += 1) work[target + channel] += error[channel] * weight;
+          };
+          spread(1, 0, 7 / 16); spread(-1, 1, 3 / 16); spread(0, 1, 5 / 16); spread(1, 1, 1 / 16);
+        }
+      }
+      materialContext.putImageData(image, 0, 0);
+      const target = p.drawingContext as CanvasRenderingContext2D;
+      target.save();
+      target.imageSmoothingEnabled = true;
+      target.globalAlpha = .1;
+      target.filter = 'blur(0.55px)';
+      target.drawImage(materialCanvas, 0, 0, p.width, p.height);
+      target.filter = 'none';
+      target.globalAlpha = .9;
+      target.drawImage(materialCanvas, 0, 0, p.width, p.height);
+      target.restore();
     };
 
     const drawRain = (reveal: number) => {
@@ -422,6 +490,7 @@ if (mount && gallery) {
       else if (currentPhase === 'branch') drawBranches();
       else drawBirds(birdScroll);
       drawPaperSurface();
+      applyEpaperMaterial();
       drawRefresh();
     };
   }, mount);
