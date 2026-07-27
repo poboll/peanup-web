@@ -89,7 +89,7 @@ const modes = [
           <h2>世界继续流动，<br />喜欢的这一帧留下来。</h2>
           <p>随手拍下眼前的风景，发送到花生片。刷新结束后，画面安静地定格在电子纸上。</p>
           <ol aria-label="屏幕内容进度">
-            <li data-ink-label="rain"><i></i><span>01</span><strong>六色雨帘</strong><small>48 条 · 随滚动放卷</small></li>
+            <li data-ink-label="rain"><i></i><span>01</span><strong>六色雨帘</strong><small>一次落下 · 随后定格</small></li>
             <li data-ink-label="branch"><i></i><span>02</span><strong>五条花枝</strong><small>生长 · 分叉 · 开花</small></li>
             <li data-ink-label="bird"><i></i><span>03</span><strong>三十只飞燕</strong><small>弧线 · 扑翼 · 叉尾</small></li>
             <li class="ink-more"><i></i><span>…</span><strong>还有更多</strong><small>照片 · 日历 · 天气 · 灵感</small></li>
@@ -179,19 +179,48 @@ const modes = [
       </div>
     </section>
 
+    <section class="apple-ecosystem section-pad" aria-labelledby="apple-title">
+      <div class="section-index"><span>04</span><span>为 Apple 生态而生</span></div>
+      <div class="apple-head">
+        <div>
+          <span>PEANUP FOR APPLE</span>
+          <h2 id="apple-title">拍下、自动处理、<br />让画面自己出现。</h2>
+        </div>
+        <p>花生片把 iPhone 的相机、快捷指令与低功耗蓝牙连成一条很短的路径。常用画面不必反复打开 App，也能在合适的时间更新。</p>
+      </div>
+      <div class="apple-stage">
+        <div class="shortcut-phone" aria-label="iPhone 快捷指令自动更新花生片示意">
+          <div class="dynamic-island"><i></i><span>正在发送到花生片</span><b>68%</b></div>
+          <div class="shortcut-screen">
+            <span>SHORTCUT / AUTOMATION</span>
+            <h3>把刚拍的照片<br />发送到花生片</h3>
+            <div class="shortcut-flow">
+              <i>相机</i><b></b><i>六色处理</i><b></b><i>蓝牙发送</i>
+            </div>
+          </div>
+        </div>
+        <div class="apple-features">
+          <article><span>01 / SHORTCUTS</span><h3>快捷指令</h3><p>用 Siri、桌面组件或自动化触发传图，把固定流程变成一句话或一次轻点。</p></article>
+          <article><span>02 / LIVE ACTIVITY</span><h3>灵动岛与锁屏</h3><p>发送时查看连接、传输和刷屏进度，不必一直停留在 App 里。</p></article>
+          <article><span>03 / LOCAL FIRST</span><h3>本地六色处理</h3><p>照片在 iPhone 或 iPad 上完成裁切与抖动，原图不必为了转换上传云端。</p></article>
+          <article><span>04 / CORE BLUETOOTH</span><h3>近场自动连接</h3><p>靠近花生片后发现设备并继续待发送任务，完成后回到低功耗状态。</p></article>
+        </div>
+      </div>
+    </section>
+
     <section id="technology" class="technology" aria-labelledby="technology-title">
       <div class="tech-inner">
-        <div class="section-index"><span>04</span><span>一张图，怎样变成电子纸</span></div>
+        <div class="section-index"><span>05</span><span>一张图，怎样变成电子纸</span></div>
         <div class="tech-head">
           <h2 id="technology-title">计算留在手机，<br />画面留在纸上。</h2>
           <p>照片在手机本地完成裁切、调色和六色处理，再通过蓝牙近场发送。刷新之后，电子纸无需持续发光也能保持画面。</p>
         </div>
 
-        <ol class="image-pipeline" aria-label="图片到电子墨水屏的处理流程">
-          <li><span>01 / INPUT</span><div class="pipeline-visual source-grid" aria-hidden="true"><i></i></div><h3>整理画面</h3><p>校正方向，按设备比例裁切，再缩放到屏幕像素规格。</p></li>
-          <li><span>02 / COLOR</span><div class="pipeline-visual dither-grid" aria-hidden="true"></div><h3>六色成像</h3><p>压缩明暗层次，匹配黑、白、黄、红、蓝、绿，并选择合适的抖动方式。</p></li>
-          <li><span>03 / BLE</span><div class="pipeline-visual packet-line" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><h3>分块传输</h3><p>连接设备、读取能力、协商分块大小，按确认节奏发送像素数据。</p></li>
-          <li><span>04 / DISPLAY</span><div class="pipeline-visual epaper-flash" aria-hidden="true"><i></i></div><h3>刷新并确认</h3><p>等待设备最终确认和刷新结果，异常时保留任务，方便再次发送。</p></li>
+        <ol class="image-pipeline" aria-label="图片到电子墨水屏的处理流程" data-epaper-pipeline>
+          <li><span>01 / INPUT</span><div class="pipeline-visual pipeline-source"><img src="/assets/peanup-lifestyle.webp" alt="待转换的生活照片" loading="lazy" /></div><h3>整理画面</h3><p>校正方向，按设备比例裁切，再缩放到屏幕像素规格。</p></li>
+          <li><span>02 / SPECTRA 6</span><div class="pipeline-visual pipeline-canvas"><canvas data-epaper-preview aria-label="六色电子纸抖动预览"></canvas><i>FLOYD–STEINBERG</i></div><h3>六色成像</h3><p>用校准后的 Spectra 6 色板重建层次，让屏幕预览接近真实纸面。</p></li>
+          <li><span>03 / CORE BLUETOOTH</span><div class="pipeline-visual pipeline-transfer" aria-hidden="true"><div class="transfer-rail"><i></i><i></i><i></i><i></i><i></i><i></i></div><b>IMG_027.P6</b><small>PACKET 068 / 100</small></div><h3>分块传输</h3><p>像素数据沿低功耗蓝牙稳定发送，进度同步显示在锁屏与灵动岛。</p></li>
+          <li><span>04 / E-PAPER</span><div class="pipeline-visual pipeline-device"><div><canvas data-epaper-output aria-label="花生片电子纸最终画面"></canvas><i></i></div><b>PEANUP</b></div><h3>刷屏并保持</h3><p>画面自下向上完成一次刷新；断开连接后，电子纸继续保留这一帧。</p></li>
         </ol>
 
         <section class="dither-studio" aria-labelledby="dither-title">
@@ -235,7 +264,7 @@ const modes = [
     </section>
 
     <section id="design" class="details section-pad">
-      <div class="section-index light"><span>05</span><span>让科技留一点温度</span></div>
+      <div class="section-index light"><span>06</span><span>让科技留一点温度</span></div>
       <div class="details-head">
         <h2>看起来像相纸，<br />用起来更自由。</h2>
         <p>白色框体把电子纸变成一件可以触摸、摆放和搭配的日常物件。我们仍在认真打磨它的每一道边缘。</p>
@@ -276,5 +305,6 @@ const modes = [
   <script>
     import '../scripts/site';
     import '../scripts/heroSketch';
+    import '../scripts/epaperPipeline';
   </script>
 </BaseLayout>

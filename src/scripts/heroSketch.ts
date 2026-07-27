@@ -1,9 +1,5 @@
 import p5 from 'p5';
 
-type RopePoint = { x: number; y: number; px: number; py: number; pinned: boolean };
-type RainDrop = { point: number; size: number; attached: boolean; colorIndex: number };
-type RainRope = { anchorX: number; anchorY: number; points: RopePoint[]; drops: RainDrop[] };
-type LooseDrop = { x: number; y: number; vx: number; vy: number; size: number; alpha: number };
 type Flower = { branch: GrowingBranch; index: number; born: number; size: number };
 type TailPoint = { x: number; y: number; px: number; py: number };
 
@@ -79,8 +75,6 @@ if (mount && gallery) {
   } as const;
 
   new p5((p) => {
-    let ropes: RainRope[] = [];
-    let looseDrops: LooseDrop[] = [];
     let branches: GrowingBranch[] = [];
     let flowers: Flower[] = [];
     let swallows: Swallow[] = [];
@@ -88,11 +82,6 @@ if (mount && gallery) {
     let birdStartedAt = 0;
     let refreshStartedAt = -1000;
     let currentPhase: keyof typeof phaseNames = 'rain';
-    let pointerX = -1000;
-    let pointerY = -1000;
-    let previousPointerX = -1000;
-    let previousPointerY = -1000;
-    let activePointer = false;
 
     const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
     const progress = () => {
@@ -109,31 +98,6 @@ if (mount && gallery) {
       if (phase === 'branch') resetBranches();
       if (phase === 'bird') birdStartedAt = p.millis();
       refreshStartedAt = p.millis();
-    };
-
-    const buildRain = () => {
-      ropes = [];
-      looseDrops = [];
-      p.randomSeed(4237);
-      const lineCount = 48;
-      const pointCount = 24;
-      for (let line = 0; line < lineCount; line += 1) {
-        const x = p.map(line, 0, lineCount - 1, p.width * .22, p.width * .78);
-        const anchorY = p.height * .3;
-        const points: RopePoint[] = [];
-        for (let i = 0; i < pointCount; i += 1) {
-          const y = p.map(i, 0, pointCount - 1, anchorY, p.height * .91);
-          points.push({ x, y, px: x, py: y, pinned: i === 0 });
-        }
-        const dropCount = p.floor(p.random(7, 15));
-        const drops = Array.from({ length: dropCount }, (_, index) => ({
-          point: Math.min(pointCount - 1, 2 + p.floor(index * (pointCount - 3) / Math.max(1, dropCount - 1) + p.random(-1, 1))),
-          size: p.random(3.4, 10.5),
-          attached: true,
-          colorIndex: (line + index * 2) % 6,
-        }));
-        ropes.push({ anchorX: x, anchorY, points, drops });
-      }
     };
 
     const resetBranches = () => {
@@ -159,59 +123,8 @@ if (mount && gallery) {
       if (!p.canvas) p.createCanvas(rect.width, rect.height);
       else p.resizeCanvas(rect.width, rect.height);
       p.pixelDensity(Math.min(window.devicePixelRatio || 1, 1.5));
-      buildRain();
       resetBranches();
       buildBirds();
-    };
-
-    const simulateRain = () => {
-      const pointerSpeed = Math.hypot(pointerX - previousPointerX, pointerY - previousPointerY);
-      for (const rope of ropes) {
-        for (let i = 1; i < rope.points.length; i += 1) {
-          const point = rope.points[i];
-          const vx = (point.x - point.px) * .995;
-          const vy = (point.y - point.py) * .995;
-          point.px = point.x;
-          point.py = point.y;
-          point.x += vx;
-          point.y += vy + .08;
-          const distance = Math.hypot(point.x - pointerX, point.y - pointerY);
-          if (activePointer && distance < 58 && distance > .1) {
-            const force = (58 - distance) / 58;
-            point.x += (point.x - pointerX) / distance * force * 1.45;
-            point.y += (point.y - pointerY) / distance * force * .5;
-          }
-        }
-        for (let iteration = 0; iteration < 6; iteration += 1) {
-          const pin = rope.points[0];
-          pin.x = rope.anchorX;
-          pin.y = rope.anchorY;
-          for (let i = 0; i < rope.points.length - 1; i += 1) {
-            const a = rope.points[i];
-            const b = rope.points[i + 1];
-            const dx = b.x - a.x;
-            const dy = b.y - a.y;
-            const distance = Math.max(.001, Math.hypot(dx, dy));
-            const target = (p.height * .61) / (rope.points.length - 1);
-            const correction = (distance - target) / distance * .5;
-            if (!a.pinned) { a.x += dx * correction; a.y += dy * correction; }
-            b.x -= dx * correction;
-            b.y -= dy * correction;
-          }
-        }
-        if (activePointer && pointerSpeed > 3) {
-          for (const drop of rope.drops) {
-            if (!drop.attached) continue;
-            const point = rope.points[drop.point];
-            if (p.dist(pointerX, pointerY, point.x, point.y) < 62 && p.random() < .18) {
-              drop.attached = false;
-              looseDrops.push({ x: point.x, y: point.y, vx: (point.x - point.px) * .65 + p.random(-.8, .8), vy: p.random(1, 2.8), size: drop.size, alpha: 210 });
-            }
-          }
-        }
-      }
-      previousPointerX = pointerX;
-      previousPointerY = pointerY;
     };
 
     const drawRain = (reveal: number) => {
@@ -222,31 +135,26 @@ if (mount && gallery) {
       p.fill(238, 209, 204, 185); p.rect(p.width * .55, p.height * .47, p.width * .45, p.height * .13);
       p.fill(232, 215, 111, 190); p.rect(0, p.height * .66, p.width * .64, p.height * .14);
       p.fill(34, 69, 131, 245);
-      p.ellipse(p.width * .39, p.height * .26, p.width * .28, p.height * .12);
-      p.ellipse(p.width * .52, p.height * .23, p.width * .32, p.height * .16);
-      p.ellipse(p.width * .65, p.height * .27, p.width * .25, p.height * .11);
-      simulateRain();
-      const revealY = p.lerp(p.height * .3, p.height * .94, 1 - Math.pow(1 - reveal, 2.2));
-      const context = p.drawingContext as CanvasRenderingContext2D;
-      context.save();
-      context.beginPath();
-      context.rect(0, p.height * .285, p.width, Math.max(0, revealY - p.height * .285));
-      context.clip();
-      p.noFill();
-      p.strokeWeight(.55);
-      for (const rope of ropes) {
-        p.stroke(58, 75, 92, 90);
-        p.beginShape();
-        rope.points.forEach((point) => p.curveVertex(point.x, point.y));
-        p.endShape();
-        p.noStroke();
-        for (const drop of rope.drops) {
-          if (!drop.attached) continue;
-          const point = rope.points[drop.point];
-          const palette = [[18,18,18], [244,241,232], [226,174,37], [210,67,53], [48,102,178], [92,139,80]];
-          const color = palette[drop.colorIndex];
-          p.fill(color[0], color[1], color[2], 225);
-          p.ellipse(point.x, point.y, drop.size * .72, drop.size * 1.45);
+      const cloudBank = [
+        [.16, .255, .2, .105], [.28, .225, .25, .145], [.42, .255, .23, .12],
+        [.55, .215, .29, .16], [.69, .25, .24, .125], [.82, .225, .21, .11],
+      ];
+      cloudBank.forEach(([x, y, width, height]) => p.ellipse(p.width * x, p.height * y, p.width * width, p.height * height));
+      const colors = [[18,18,18], [244,241,232], [226,174,37], [210,67,53], [48,102,178], [92,139,80]];
+      p.noStroke();
+      for (let line = 0; line < 48; line += 1) {
+        const x = p.map(line, 0, 47, p.width * .12, p.width * .88);
+        const stagger = (line % 9) * .025 + p.noise(line * .73) * .13;
+        for (let dropIndex = 0; dropIndex < 5; dropIndex += 1) {
+          const fall = clamp01(reveal * 1.55 - stagger - dropIndex * .075);
+          if (fall <= 0 || fall >= 1) continue;
+          const eased = fall * fall;
+          const cloudBottom = p.height * (.27 + p.noise(line * .31) * .055);
+          const y = p.lerp(cloudBottom, p.height * 1.08, eased);
+          const size = 3.5 + ((line * 7 + dropIndex * 11) % 9);
+          const color = colors[(line + dropIndex * 2) % colors.length];
+          p.fill(color[0], color[1], color[2], 225 * p.sin(fall * p.PI));
+          p.ellipse(x + p.sin(line * 1.7) * 2, y, size * .72, size * 1.55);
         }
       }
       p.noStroke();
@@ -254,25 +162,6 @@ if (mount && gallery) {
       p.textFont('Georgia');
       p.textSize(Math.max(7, p.width * .022));
       p.text('the rain keeps a small piece of today', p.width * .35, p.height * .84, p.width * .58);
-      for (let i = looseDrops.length - 1; i >= 0; i -= 1) {
-        const drop = looseDrops[i];
-        drop.vy += .22;
-        drop.vx *= .992;
-        drop.x += drop.vx;
-        drop.y += drop.vy;
-        drop.alpha -= 1.5;
-        p.fill(48, 102, 178, drop.alpha);
-        p.ellipse(drop.x, drop.y, drop.size * .8, drop.size * 1.5);
-        if (drop.y > p.height + 12 || drop.alpha <= 0) looseDrops.splice(i, 1);
-      }
-      context.restore();
-      if (reveal > .02 && reveal < .98) {
-        p.noStroke();
-        p.fill(48, 102, 178, 25);
-        p.rect(p.width * .17, revealY - 5, p.width * .66, 10);
-        p.fill(48, 102, 178, 145);
-        p.rect(p.width * .17, revealY, p.width * .66, 1);
-      }
     };
 
     const growBranches = () => {
@@ -487,15 +376,6 @@ if (mount && gallery) {
       sizeCanvas();
       p.frameRate(window.innerWidth < 680 ? 30 : 42);
       labels[0]?.classList.add('active');
-      const updatePointer = (event: PointerEvent) => {
-        const rect = mount.getBoundingClientRect();
-        pointerX = event.clientX - rect.left;
-        pointerY = event.clientY - rect.top;
-        activePointer = true;
-      };
-      mount.addEventListener('pointermove', updatePointer, { passive: true });
-      mount.addEventListener('pointerdown', updatePointer, { passive: true });
-      mount.addEventListener('pointerleave', () => { activePointer = false; pointerX = -1000; pointerY = -1000; });
       window.addEventListener('resize', sizeCanvas, { passive: true });
       document.addEventListener('visibilitychange', () => document.hidden ? p.noLoop() : p.loop());
     };
