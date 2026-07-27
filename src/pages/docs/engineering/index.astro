@@ -1,0 +1,206 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ThemeToggle from '../../../components/ThemeToggle.astro';
+import '../../../styles/docs.css';
+
+const toc = [
+  ['scope', '范围与证据'],
+  ['architecture', '架构'],
+  ['panel', '面板 Profile'],
+  ['pipeline', '图像链路'],
+  ['dithering', '抖动系统'],
+  ['ble', 'BLE 状态机'],
+  ['power', '功耗模型'],
+  ['boundaries', '验证边界'],
+];
+
+const algorithms = [
+  ['Floyd–Steinberg', '16', '四邻域扩散，在细节、速度与兼容性之间取得平衡。'],
+  ['Atkinson', '8', '只扩散部分误差，结果更清脆、对比更高。'],
+  ['Jarvis–Judice–Ninke', '48', '三行大范围扩散，适合柔和的照片层次。'],
+  ['Stucki', '42', '同样使用宽核，并比 JJN 更强调边缘保持。'],
+  ['Burkes', '32', '两行扩散，在细节、内存与计算量之间折中。'],
+  ['Sierra 3 / 2 / Lite', '32 / 16 / 4', '从最终高质量输出到响应式预览的三个复杂度层级。'],
+];
+---
+
+<BaseLayout
+  title="Peanup 工程文档｜本地图像处理与 BLE"
+  description="Peanup 工程文档：3.68 英寸 E6 六色墨水屏、528 × 792 面板 Profile、图像链路、抖动算法、BLE 传输状态机、本地优先架构与硬件验证边界。"
+  locale="zh-cn"
+  htmlLang="zh-CN"
+  ogLocale="zh_CN"
+  canonicalPath="/docs/engineering/"
+  alternates={[
+    { lang: 'zh-CN', href: '/docs/engineering/' },
+    { lang: 'en', href: '/en/docs/engineering/' },
+  ]}
+  xDefaultPath="/docs/engineering/"
+  schemaType="TechArticle"
+  backTopLabel="返回顶部"
+>
+  <header class="docs-topbar">
+    <a class="brand" href="/" aria-label="返回 Peanup 中文首页">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+      <span>花生片 <b>Peanup</b></span>
+    </a>
+    <nav class="docs-primary-nav" aria-label="文档导航">
+      <a href="/docs/">产品文档</a>
+      <a aria-current="page" href="/docs/engineering/">工程文档</a>
+      <a lang="en" href="/en/docs/engineering/" hreflang="en">English</a>
+    </nav>
+    <ThemeToggle locale="zh-cn" />
+    <details class="docs-mobile-nav">
+      <summary>目录</summary>
+      <nav aria-label="移动端文档导航">
+        <a href="/docs/">产品文档</a>
+        <a aria-current="page" href="/docs/engineering/">工程文档</a>
+        <a lang="en" href="/en/docs/engineering/" hreflang="en">English</a>
+      </nav>
+    </details>
+  </header>
+
+  <main class="docs-layout">
+    <aside class="docs-toc" aria-label="本页目录">
+      <p>ENGINEERING NOTES</p>
+      <nav>
+        {toc.map(([id, label], index) => <a href={`#${id}`}><i>{String(index + 1).padStart(2, '0')}</i>{label}</a>)}
+      </nav>
+      <small>证据驱动的工作文档<br />Revision 0.2 · 2026.07</small>
+    </aside>
+
+    <article class="docs-article docs-article--engineering">
+      <section class="docs-hero" id="scope">
+        <div class="docs-eyebrow"><span>PEANUP / ENGINEERING</span><b>REV. 0.2</b></div>
+        <h1>从手机上的一帧，<br />到屏幕里的真实颜料。</h1>
+        <p class="docs-deck">这份文档明确区分旧版应用已经证明的事实、可以按标准路径重建的能力，以及仍需 Peanup 真机闭环验证的部分。它是工程依据，不是众筹宣传承诺。</p>
+        <div class="docs-evidence" aria-label="证据等级">
+          <span><i>E</i><strong>Evidence</strong><small>二进制、资源或已恢复常量中的直接证据</small></span>
+          <span><i>R</i><strong>Rebuild</strong><small>可用标准平台技术重新实现</small></span>
+          <span><i>H</i><strong>Hardware</strong><small>需要控制器手册、抓包或实机测量</small></span>
+        </div>
+      </section>
+
+      <section class="docs-section" id="architecture">
+        <header><span>02 / ARCHITECTURE</span><h2>本地先完成，<br />更新时才连接。</h2></header>
+        <div class="docs-split">
+          <p class="docs-lead">V1 将拍摄、排版、六色转换和作品库留在手机。完成的一帧经近场蓝牙发送，断开后由电子纸继续保持。</p>
+          <div class="docs-copy">
+            <p><b>E：</b>旧版应用链接 AVFoundation、PhotosUI、CoreImage、CoreBluetooth、ActivityKit，并使用本地文件存储；核心链路不依赖云端照片处理。</p>
+            <p><b>R：</b>图像渲染器与传输层必须分离。设备 profile 统一管理屏幕尺寸、颜色码、打包方式、GATT 标识和控制器能力，UI 只消费稳定的进度状态。</p>
+          </div>
+        </div>
+        <ol class="docs-steps">
+          <li><span>01</span><strong>输入</strong><p>相机、相册、文字或信息卡片画布。</p></li>
+          <li><span>02</span><strong>渲染</strong><p>在本地裁切、调色、量化与抖动。</p></li>
+          <li><span>03</span><strong>传输</strong><p>协商 profile，分块节流并持久化待发送任务。</p></li>
+          <li><span>04</span><strong>刷新</strong><p>等待设备结果后，才能将这一帧标为完成。</p></li>
+        </ol>
+      </section>
+
+      <section class="docs-section" id="panel">
+        <header><span>03 / PANEL PROFILE</span><h2>先锁定几何，<br />再接入控制器。</h2></header>
+        <p class="docs-lead docs-lead--offset">厂家 Tentative Specification V0.2 将 <code>SE0368NW34-CNG-A0</code> 定义为 3.68 英寸 AM EPD：528 × 792 pixels，有效区 51.84 × 77.76 mm，面板模组 56.24 × 86.54 × 0.87 mm。</p>
+        <dl class="docs-panel-profile" aria-label="厂家面板工程参数">
+          <div><dt>MATRIX</dt><dd>528 × 792</dd><small>竖向像素矩阵</small></div>
+          <div><dt>ACTIVE AREA</dt><dd>51.84 × 77.76 mm</dd><small>有效显示区</small></div>
+          <div><dt>MODULE</dt><dd>56.24 × 86.54 × 0.87 mm</dd><small>不含 Peanup 外壳</small></div>
+          <div><dt>WHITE</dt><dd>30% min. / 35% typ.</dd><small>白色反射率</small></div>
+          <div><dt>CONTRAST</dt><dd>8:1 min. / 10:1 typ.</dd><small>表面反射对比</small></div>
+          <div><dt>TEMPERATURE</dt><dd>0–50°C</dd><small>面板工作范围</small></div>
+        </dl>
+        <div class="docs-grid docs-grid--three docs-panel-engineering">
+          <article><span>BUS</span><h3>24-pin / SPI</h3><p>面板提供 24-pin FPC、只写 3-wire 或 4-wire SPI。<code>BUSY</code> 为低时不得中断控制器操作；命令序列仍以最终控制器资料为准。</p></article>
+          <article><span>PANEL POWER</span><h3>3.0 V typical</h3><p>VDD 范围 2.8–3.6 V；表中典型面板功耗 60 mW，Sleep 50 μA（保留 RAM），Deep sleep 1 μA（不保留 RAM）。这些不是 Peanup 整机功耗。</p></article>
+          <article><span>PROVISIONAL LIMITS</span><h3>仍需真机闭环</h3><p>刷新时间与面板重量仍为 TBD；规格条件标注 indoor only、最高 2000 lux。户外、刷新速度和整机续航必须另行验证。</p></article>
+        </div>
+        <div class="docs-callout docs-callout--warning">
+          <span>SPEC CONSISTENCY</span>
+          <p>规格表同时写有 <code>94 μm</code> pixel pitch 和 <code>DPI 259</code>，但 51.84 mm / 528 pixels 与 77.76 mm / 792 pixels 均约为 98.18 μm，即约 258.7 PPI。工程实现与产品页统一以像素矩阵和有效区的计算结果为准。</p>
+        </div>
+      </section>
+
+      <section class="docs-section" id="pipeline">
+        <header><span>04 / IMAGE PIPELINE</span><h2>一张构图，<br />六种物理色码。</h2></header>
+        <p class="docs-lead docs-lead--offset">渲染目标固定为 528 × 792 pixels。全链路保持原始比例，并按选定的硬件 profile 裁切与渲染，禁止为了铺满而拉伸图片。</p>
+        <div class="docs-pipeline">
+          <article><span>01 / GEOMETRY</span><h3>方向与裁切</h3><p>规范 EXIF 方向，按有效面板 profile 裁切，并用高质量滤镜缩放。</p></article>
+          <article><span>02 / TONE</span><h3>整理画面</h3><p>在分配色板前处理黑白点、局部对比度与饱和度。</p></article>
+          <article><span>03 / COLOR</span><h3>量化与抖动</h3><p>以感知色差匹配校准颜料，再扩散未被表示的误差。</p></article>
+          <article><span>04 / WIRE</span><h3>索引与打包</h3><p>根据协商后的控制器 profile 打包色彩索引；真实帧长度由量产面板像素矩阵决定。</p></article>
+        </div>
+        <div class="docs-code-palette" aria-label="旧版恢复出的六色色码">
+          <span><i>0x0</i><b>黑</b></span><span><i>0x1</i><b>白</b></span><span><i>0x2</i><b>黄</b></span><span><i>0x3</i><b>红</b></span><span><i>0x5</i><b>蓝</b></span><span><i>0x6</i><b>绿</b></span>
+        </div>
+        <pre><code>panelWidth = 528
+panelHeight = 792
+pixelCount = panelWidth * panelHeight  // 418,176 pixels
+// 线上帧长度仍由最终色序、位深与控制器封包决定</code></pre>
+        <p class="docs-caption"><b>几何边界：</b>网站 Canvas 可以使用独立逻辑坐标，但写屏前必须渲染为 528 × 792。<b>H：</b>最终控制器 profile 仍需给出色序、位深、刷新波形与封包格式。</p>
+      </section>
+
+      <section class="docs-section" id="dithering">
+        <header><span>05 / DITHER ENGINE</span><h2>不是一层滤镜，<br />而是一套渲染系统。</h2></header>
+        <p class="docs-lead docs-lead--offset">实时预览和最终写屏的目标不同。输入应保持在线性或明确定义的色彩空间；误差扩散采用蛇形扫描、限制误差幅度，并让文字与照片使用不同策略。</p>
+        <div class="docs-algorithms">
+          {algorithms.map(([name, divisor, note]) => <article><span>{name}</span><b>DIV / {divisor}</b><p>{note}</p></article>)}
+        </div>
+        <div class="docs-grid docs-grid--three docs-modes">
+          <article><span>REALTIME</span><h3>Ordered 4 × 4 / 8 × 8</h3><p>Bayer 阈值在帧与帧之间稳定，适合需要快速反馈的相机预览。</p></article>
+          <article><span>BALANCED</span><h3>Floyd–Steinberg / Stucki</h3><p>误差扩散能保留局部细节，并把最终写屏计算量控制在合理范围。</p></article>
+          <article><span>PHOTO</span><h3>感知量化 / Spectra Mix</h3><p>面向色板的色调映射可以保护照片结构，但旧版特殊混色行为尚未完整恢复。</p></article>
+        </div>
+        <p class="docs-note"><b>内容感知规则</b><span>文字、二维码式几何和单像素细线应关闭或约束跨边缘扩散。照片参数必须通过固定参考图集验证，不能只对色块调优。</span></p>
+      </section>
+
+      <section class="docs-section" id="ble">
+        <header><span>06 / CORE BLUETOOTH</span><h2>发现、协商、<br />节流、确认。</h2></header>
+        <div class="docs-gatt">
+          <article><span>FDF PROFILE</span><code>FDF0 service</code><p>已恢复特征：<code>FDF1</code> 与 <code>FDF2</code>。</p></article>
+          <article><span>FEF PROFILE</span><code>FEF0 service</code><p>已恢复特征：<code>FEF1</code> 与 <code>FEF2</code>。</p></article>
+        </div>
+        <ol class="docs-state" aria-label="BLE 传输状态机">
+          <li><i>01</i><span>扫描目标服务</span></li>
+          <li><i>02</i><span>连接外设</span></li>
+          <li><i>03</i><span>发现服务与特征</span></li>
+          <li><i>04</i><span>握手并协商 profile 能力</span></li>
+          <li><i>05</i><span>按索引分块发送并节流</span></li>
+          <li><i>06</i><span>等待最终 ACK 与刷新结果</span></li>
+          <li><i>07</i><span>持久化结果并断开</span></li>
+        </ol>
+        <div class="docs-grid docs-grid--two">
+          <article><span>NORMAL PATH</span><h3>Write with response</h3><p>默认使用可靠的 CoreBluetooth 路径。收到系统写入回调或协议层确认后再推进下一块。</p></article>
+          <article><span>FAST PATH</span><h3>Write without response</h3><p>只在能力协商通过后启用，并使用 <code>maximumWriteValueLength</code> 与 <code>peripheralIsReady(toSendWriteWithoutResponse:)</code> 处理背压。</p></article>
+        </div>
+        <p class="docs-caption">已恢复的响应解析器接受首字节 <code>01 / 02 / 03 / 05 / 06</code>，但其完整业务语义尚未和出站命令逐一绑定。发现 UUID 不能证明读写方向、鉴权能力或数据包安全性。</p>
+      </section>
+
+      <section class="docs-section" id="power">
+        <header><span>07 / POWER MODEL</span><h2>屏幕负责保持，<br />系统负责尽快休眠。</h2></header>
+        <ol class="docs-power">
+          <li><span>IDLE</span><p>MCU 休眠，并采用边界明确的设备发现策略。</p></li>
+          <li><span>CONNECT</span><p>临时广播，并协商适合传输的连接间隔。</p></li>
+          <li><span>TRANSFER</span><p>提高 BLE 活动，以外设缓冲区为边界分块节流。</p></li>
+          <li><span>REFRESH</span><p>控制器驱动屏幕波形时，停止无意义的无线吞吐。</p></li>
+          <li><span>RETURN</span><p>记录完成状态、断开并返回最低有效功耗状态。</p></li>
+        </ol>
+        <p class="docs-lead docs-lead--offset"><b>H：</b>电子纸断电保持并不能直接得到整机待机电流。必须在不同温度与刷新频率下测量 MCU、BLE 广播、PMIC、充电、NFC 和漏电共同构成的整机功耗。</p>
+      </section>
+
+      <section class="docs-section" id="boundaries">
+        <header><span>08 / VALIDATION BOUNDARIES</span><h2>从证据开始，<br />用测量结束。</h2></header>
+        <div class="docs-boundaries">
+          <article><span>E / 已确认的旧版证据</span><p>本地照片仓库与缩略图、六色模式、色码与半字节打包、FDF/FEF 服务族、普通与快速写入、索引分块、最终确认与刷新等待、QuickLZ 相关对齐检查。</p></article>
+          <article><span>R / 现在可以重建</span><p>拍摄与导入、按设备 profile 裁切、本地预览、标准 Ordered 与误差扩散算法、待发送任务持久化、CoreBluetooth 扫描连接骨架、背压、进度 UI 与模拟传输故障注入。</p></article>
+          <article><span>H / 必须依赖真机</span><p>特征 properties 与方向、出站控制字节、包头与大小端、ACK 语义、校验或 CRC、QuickLZ 版本与封装、控制器色序、刷新波形、真实吞吐、温度影响、电池容量和整机功耗。</p></article>
+        </div>
+        <div class="docs-decision"><span>V1 ARCHITECTURE DECISION</span><strong>手机本地渲染 + BLE 近场传输 + 电子纸断电保持</strong><p>只有无人值守或远程更新被验证为核心需求后，才增加常驻网络能力。</p></div>
+      </section>
+
+      <div class="docs-footer">
+        <div><span>PEANUP / ENGINEERING</span><p>基于静态分析和标准平台行为整理的工作文档。</p></div>
+        <a lang="en" href="/en/docs/engineering/" hreflang="en">Read in English <span aria-hidden="true">→</span></a>
+      </div>
+    </article>
+  </main>
+</BaseLayout>

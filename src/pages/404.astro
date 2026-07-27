@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import '../styles/not-found.css';
+
+const palette = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#668468'];
+---
+
+<BaseLayout
+  title="页面未找到｜花生片 Peanup"
+  description="这张 Peanup 页面暂时没有写入。返回首页，继续了解 3.68 英寸 E6 六色墨水屏。"
+  locale="zh-cn"
+  htmlLang="zh-CN"
+  ogLocale="zh_CN"
+  canonicalPath="/404"
+  schemaType="none"
+  robots="noindex,nofollow,noimageindex,max-image-preview:none"
+  backTopLabel="返回顶部"
+>
+  <header class="site-header not-found-header" aria-label="Peanup 404 导航">
+    <a class="brand" href="/" aria-label="返回 Peanup 首页">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+      <span>花生片 <b>Peanup</b></span>
+    </a>
+    <span class="not-found-header-code">404 / FRAME NOT FOUND</span>
+    <div class="not-found-header-actions">
+      <ThemeToggle locale="zh-cn" />
+      <a class="header-link not-found-home-link" href="/">返回首页</a>
+    </div>
+  </header>
+
+  <main class="not-found-page">
+    <section class="not-found-copy" aria-labelledby="not-found-title">
+      <div class="not-found-index"><span>404</span><span>PAGE NOT FOUND</span></div>
+      <h1 id="not-found-title">这一页，<br />暂时没有写入。</h1>
+      <p>链接可能已经移动，或者这一帧还没有准备好。回到首页，继续看看花生片如何把喜欢的画面留在纸上。</p>
+      <div class="not-found-actions">
+        <a class="not-found-primary" href="/">
+          <span>返回首页</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5" /></svg>
+        </a>
+        <a class="not-found-secondary" href="/#product">查看产品</a>
+      </div>
+      <div class="not-found-palette" aria-label="E6 六色电子纸色板">
+        <span>E6 SIX-COLOR</span>
+        <div aria-hidden="true">{palette.map((color) => <i style={`--swatch:${color}`}></i>)}</div>
+      </div>
+    </section>
+
+    <figure class="not-found-visual protected-media">
+      <span class="not-found-ghost-code" aria-hidden="true">404</span>
+      <div class="not-found-device">
+        <picture>
+          <source srcset="/assets/peanup-product.avif" type="image/avif" />
+          <img
+            src="/assets/peanup-product.webp"
+            alt="白色即时相纸造型的花生片六色电子纸设备"
+            width="740"
+            height="1120"
+            fetchpriority="high"
+            decoding="async"
+            draggable="false"
+          />
+        </picture>
+        <span class="not-found-scan" aria-hidden="true"></span>
+      </div>
+      <figcaption><span>FRAME / 404</span><b>3.68” E6 / ≈258.7 PPI</b></figcaption>
+    </figure>
+  </main>
+</BaseLayout>

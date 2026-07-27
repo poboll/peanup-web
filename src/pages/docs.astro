@@ -1,139 +1,223 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import '../styles/docs.css';
 
-const algorithms = [
-  ['Floyd-Steinberg', '16', '细节与速度均衡，适合作为默认兼容基线。'],
-  ['Atkinson', '8', '有意丢弃部分误差，画面更清脆、对比更高。'],
-  ['Jarvis-Judice-Ninke', '48', '扩散范围更大，照片层次柔和，但计算量更高。'],
-  ['Stucki', '42', '兼顾平滑层次与边缘，适合高质量照片写屏。'],
-  ['Burkes', '32', '两行扩散，速度和细节处在中间位置。'],
-  ['Sierra 3 / 2 / Lite', '32 / 16 / 4', '从高质量到轻量实时的三个复杂度层级。'],
+const toc = [
+  ['overview', '概览'],
+  ['display', '屏幕与形态'],
+  ['transfer', '更新画面'],
+  ['platforms', '平台与生态'],
+  ['power', '续航与摆放'],
+  ['privacy', '隐私'],
+  ['nfc', 'CUID NFC'],
+  ['specifications', '规格'],
+  ['faq', '常见问题'],
+];
+
+const specifications = [
+  ['显示屏', '3.68 英寸 E6 六色墨水屏'],
+  ['像素密度', '约 258.7 PPI（按有效区计算）'],
+  ['面板分辨率', '528 × 792 pixels'],
+  ['有效显示区', '51.84 × 77.76 mm'],
+  ['面板模组尺寸', '56.24 × 86.54 × 0.87 mm（不含 Peanup 整机外壳）'],
+  ['显示方式', '反射式、双稳态、宽视角'],
+  ['白色反射率', '最低 30%，典型 35%（面板数据）'],
+  ['对比度', '最低 8:1，典型 10:1（面板数据）'],
+  ['面板工作温度', '0–50°C'],
+  ['色彩系统', '六色电子纸颜料'],
+  ['传输', 'Bluetooth Low Energy'],
+  ['外观', '即时相纸式形态，无外露接口'],
+  ['厚度', '3 mm 众筹目标'],
+  ['重量', '28 g 众筹目标'],
+  ['续航', '1 个月以上众筹目标，取决于刷新频率'],
+  ['充电', 'Qi 无线充电'],
+  ['摆放', '内置磁环，兼容磁吸与 MagSafe 磁吸配件'],
+  ['Apple', 'iOS App、iPad 与 Apple 快捷指令'],
+  ['其他设备传图', '微信小程序'],
+  ['NFC', '支持 CUID，需门禁系统兼容并获得授权'],
+];
+
+const faqs = [
+  ['屏幕需要一直亮着吗？', '不需要背光。刷新完成后，电子纸会继续保持画面。蓝牙也会回到待机状态。'],
+  ['已经确认的屏幕规格是什么？', '厂家规格为 3.68 英寸 E6 六色墨水屏，分辨率是 528 × 792 pixels。有效显示区为 51.84 × 77.76 mm，像素密度约 258.7 PPI。网页预览只模拟视觉效果。'],
+  ['照片必须上传到云端吗？', '不用。裁切和六色转换都在 iPhone 或 iPad 完成。蓝牙只发送处理好的画面，核心功能不需要 Peanup 云账号。'],
+  ['可以自动更新吗？', '可以使用 Apple 快捷指令准备自动化流程。实际更新时间仍受 iOS 和内容服务的规则影响。'],
+  ['有 Android App 吗？', '首发版本不提供独立 Android App。Android 设备可以通过微信小程序传图。'],
+  ['磁环经过 MagSafe 认证吗？', '没有这样的认证声明。内置磁环可以搭配兼容的 MagSafe 磁吸配件。'],
+  ['CUID NFC 可以替代门禁卡吗？', '门禁系统支持 CUID 时，Peanup 才可能用作门禁卡。录入前需要管理方授权，也要遵守当地规则。'],
+  ['最终尺寸和续航已经锁定了吗？', '3.68 英寸 E6 面板和 528 × 792 pixels 是厂家规格。3 mm、28 g 和一个月以上续航仍是众筹目标。续航取决于刷新频率。'],
 ];
 ---
 
 <BaseLayout
-  title="开放文档｜花生片 Peanup"
-  description="花生片 Peanup 的开放技术文档：六色图像处理、抖动算法、BLE 传输、低功耗路径与硬件验证边界。"
+  title="Peanup 产品指南｜3.68 英寸 E6 六色墨水屏"
+  description="Peanup 产品文档：3.68 英寸 E6 六色墨水屏、528 × 792 pixels、蓝牙传图、Apple 快捷指令、微信小程序、Qi 无线充电、磁吸摆放、隐私与 CUID NFC。"
+  locale="zh-cn"
+  htmlLang="zh-CN"
+  ogLocale="zh_CN"
+  canonicalPath="/docs/"
+  alternates={[
+    { lang: 'zh-CN', href: '/docs/' },
+    { lang: 'en', href: '/en/docs/' },
+  ]}
+  xDefaultPath="/docs/"
+  schemaType="TechArticle"
+  backTopLabel="返回顶部"
 >
-  <header class="site-header docs-header" aria-label="文档导航">
-    <a class="brand" href="/" aria-label="返回花生片首页">
+  <header class="docs-topbar">
+    <a class="brand" href="/" aria-label="返回 Peanup 中文首页">
       <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
       <span>花生片 <b>Peanup</b></span>
     </a>
-    <nav>
-      <a href="#overview">概览</a>
-      <a href="#image">图像</a>
-      <a href="#dither">抖动</a>
-      <a href="#ble">蓝牙</a>
-      <a href="#boundary">边界</a>
+    <nav class="docs-primary-nav" aria-label="文档导航">
+      <a aria-current="page" href="/docs/">产品指南</a>
+      <a href="/docs/engineering/">工程文档</a>
+      <a lang="en" href="/en/docs/" hreflang="en">English</a>
+      <a href="/">产品页</a>
     </nav>
-    <a class="header-link" href="/">返回产品</a>
+    <ThemeToggle locale="zh-cn" />
+    <details class="docs-mobile-nav">
+      <summary>目录</summary>
+      <nav aria-label="移动端文档导航">
+        <a aria-current="page" href="/docs/">产品指南</a>
+        <a href="/docs/engineering/">工程文档</a>
+        <a lang="en" href="/en/docs/" hreflang="en">English</a>
+        <a href="/">产品页</a>
+      </nav>
+    </details>
   </header>
 
-  <main class="docs-shell">
-    <aside class="docs-aside" aria-label="文档目录">
-      <span>OPEN DOCUMENTATION</span>
+  <main class="docs-layout">
+    <aside class="docs-toc" aria-label="本页目录">
+      <p>PRODUCT GUIDE</p>
       <nav>
-        <a href="#overview"><i>01</i>范围与结论</a>
-        <a href="#experience"><i>02</i>产品能力</a>
-        <a href="#image"><i>03</i>六色图像链路</a>
-        <a href="#dither"><i>04</i>抖动算法</a>
-        <a href="#ble"><i>05</i>BLE 传输</a>
-        <a href="#power"><i>06</i>功耗策略</a>
-        <a href="#boundary"><i>07</i>验证边界</a>
+        {toc.map(([id, label], index) => <a href={`#${id}`}><i>{String(index + 1).padStart(2, '0')}</i>{label}</a>)}
       </nav>
-      <p>根据旧版 App 静态分析整理<br />Revision 0.1 · 2026.07</p>
+      <small>众筹预览版<br />更新于 2026.07</small>
     </aside>
 
-    <article class="docs-content">
-      <section id="overview" class="docs-hero">
-        <div class="docs-kicker"><span>PEANUP / ENGINEERING NOTES</span><b>REV. 0.1</b></div>
-        <h1>从一张照片，<br />到一块六色电子纸。</h1>
-        <p>这份文档整理花生片第一版的可复现能力、推荐实现路径与尚待硬件验证的部分。它来自旧版 App 的静态分析，不等同于已经完成的量产规格。</p>
-        <div class="docs-evidence">
-          <span><i>E</i><strong>Evidence</strong><small>二进制或资源直接证据</small></span>
-          <span><i>R</i><strong>Rebuild</strong><small>可按标准方法重建</small></span>
-          <span><i>H</i><strong>Hardware</strong><small>必须通过真机验证</small></span>
+    <article class="docs-article">
+      <section class="docs-hero" id="overview">
+        <div class="docs-eyebrow"><span>PEANUP / PRODUCT GUIDE</span><b>01</b></div>
+        <h1>一张会更新的纸，<br />留住想看见的画面。</h1>
+        <p class="docs-deck">Peanup 是一块竖向六色电子纸，用来展示照片和日常信息。用手机更新一次，画面就会安静地留在上面。</p>
+        <div class="docs-fact-strip" aria-label="产品概览">
+          <span><b>3.68”</b><small>E6 六色墨水屏</small></span>
+          <span><b>≈258.7 PPI</b><small>按有效区计算</small></span>
+          <span><b>BLE</b><small>近场传图</small></span>
+          <span><b>QI</b><small>无线充电</small></span>
+        </div>
+        <p class="docs-status"><i></i> 众筹预览 · 最终量产细节仍可能调整</p>
+      </section>
+
+      <section class="docs-section" id="display">
+        <header><span>02 / DISPLAY & FORM</span><h2>看见的是颜料，<br />不是发出的光。</h2></header>
+        <div class="docs-split">
+          <p class="docs-lead">厂家面板规格为 3.68 英寸 E6 六色墨水屏。分辨率是 528 × 792 pixels，按有效区计算约 258.7 PPI。</p>
+          <div class="docs-copy">
+            <p>六种物理电子纸颜色让照片呈现独特的纸面颗粒。反射式面板依靠环境光观看，并在更新结束后继续保持画面。</p>
+            <p>白色机身像一张即时相纸。可以拿起、摆放，也可以随身携带。3 mm、28 g 与无外露接口是当前众筹目标。</p>
+          </div>
+        </div>
+        <dl class="docs-panel-profile" aria-label="厂家面板参数">
+          <div><dt>RESOLUTION</dt><dd>528 × 792</dd><small>竖向像素矩阵</small></div>
+          <div><dt>ACTIVE AREA</dt><dd>51.84 × 77.76 mm</dd><small>有效显示区</small></div>
+          <div><dt>MODULE</dt><dd>0.87 mm</dd><small>面板模组厚度</small></div>
+          <div><dt>REFLECTIVITY</dt><dd>35% typ.</dd><small>白色反射率</small></div>
+          <div><dt>CONTRAST</dt><dd>10:1 typ.</dd><small>面板对比度</small></div>
+          <div><dt>OPERATING</dt><dd>0–50°C</dd><small>面板工作范围</small></div>
+        </dl>
+        <div class="docs-palette" aria-label="六色电子纸色板">
+          <span><i></i><b>黑</b><small>01</small></span>
+          <span><i></i><b>纸白</b><small>02</small></span>
+          <span><i></i><b>红</b><small>03</small></span>
+          <span><i></i><b>黄</b><small>04</small></span>
+          <span><i></i><b>蓝</b><small>05</small></span>
+          <span><i></i><b>绿</b><small>06</small></span>
         </div>
       </section>
 
-      <section id="experience" class="docs-section">
-        <header><span>02 / EXPERIENCE</span><h2>它不是传图工具，<br />而是一台即时成像相机。</h2></header>
-        <div class="docs-prose">
-          <p>用户可以拍照、从相册导入，或生成时间进度、天气与书摘卡片。App 将内容裁切到目标屏幕比例，在本机完成六色预览和编码，再通过附近的蓝牙设备写入电子纸。</p>
-          <ul class="docs-feature-list">
-            <li><span>CAMERA</span>前后镜头、闪光灯、双重曝光与实时电子纸预览</li>
-            <li><span>CONTENT</span>年/月/季度/周进度、天气快照、微信读书书摘</li>
-            <li><span>GALLERY</span>本地相纸画廊、显影状态、失败任务与再次发送</li>
-            <li><span>ACTIVITY</span>App、锁屏和灵动岛中的连接与传输进度</li>
-          </ul>
-        </div>
-      </section>
-
-      <section id="image" class="docs-section">
-        <header><span>03 / IMAGE PIPELINE</span><h2>所有计算先在手机完成。</h2></header>
-        <ol class="docs-flow">
-          <li><span>01</span><strong>Crop / Rotate</strong><p>读取方向，按设备像素比例裁切和缩放。</p></li>
-          <li><span>02</span><strong>Tone / Gamut</strong><p>处理黑白点、对比度、色调与设备可表示色域。</p></li>
-          <li><span>03</span><strong>Quantize / Dither</strong><p>匹配六色调色板并执行内容适合的抖动算法。</p></li>
-          <li><span>04</span><strong>Pack / Transfer</strong><p>生成索引缓冲，两个4-bit像素打包成一个字节。</p></li>
+      <section class="docs-section" id="transfer">
+        <header><span>03 / UPDATE FLOW</span><h2>选好一帧，<br />只发送完成的结果。</h2></header>
+        <ol class="docs-steps">
+          <li><span>01</span><strong>选择</strong><p>拍摄、导入照片、写一行文字，或选择一张信息卡片。</p></li>
+          <li><span>02</span><strong>整理</strong><p>按屏幕比例裁切，并在手机上预览六色效果。</p></li>
+          <li><span>03</span><strong>传输</strong><p>通过 Bluetooth Low Energy 将准备好的一帧发送给附近的 Peanup。</p></li>
+          <li><span>04</span><strong>保持</strong><p>电子纸完成刷新并保持画面，无线连接回到空闲。</p></li>
         </ol>
-        <div class="native-palette" aria-label="六色原生编码">
-          <span style="--code-color:#111"><i>0x0</i>BLACK</span>
-          <span style="--code-color:#f4f1e8"><i>0x1</i>WHITE</span>
-          <span style="--code-color:#e7b62f"><i>0x2</i>YELLOW</span>
-          <span style="--code-color:#d64737"><i>0x3</i>RED</span>
-          <span style="--code-color:#3f71b8"><i>0x5</i>BLUE</span>
-          <span style="--code-color:#6d9a63"><i>0x6</i>GREEN</span>
-        </div>
-        <pre><code>byte = (pixel0 &lt;&lt; 4) | pixel1
-payloadLength = width * height / 2</code></pre>
+        <p class="docs-note"><b>连接方式</b><span>蓝牙只在发送画面时连接。更新完成后，Peanup 会回到待机状态。</span></p>
       </section>
 
-      <section id="dither" class="docs-section">
-        <header><span>04 / DITHER ENGINE</span><h2>按内容选择算法，<br />而不是套一种滤镜。</h2></header>
-        <p class="docs-lead">旧版已确认存在误差扩散、Ordered、Spectra Mix、随机模式和直接量化。新版建议分为实时预览、均衡写屏与高质量照片三档。</p>
-        <div class="docs-algorithms">
-          {algorithms.map(([name, divisor, note]) => (
-            <article><span>{name}</span><b>DIV / {divisor}</b><p>{note}</p></article>
+      <section class="docs-section" id="platforms">
+        <header><span>04 / PLATFORMS</span><h2>从 iPhone 开始，<br />更多设备也能传图。</h2></header>
+        <div class="docs-grid docs-grid--three">
+          <article><span>IOS & IPADOS</span><h3>拍、看、传，一次完成</h3><p>在 Peanup App 里拍照、预览六色效果，再发送到设备。作品也可以保存在手机上。</p></article>
+          <article><span>APPLE SHORTCUTS</span><h3>把重复交给自动化</h3><p>通过 Siri、小组件和个人自动化，以更少步骤准备熟悉的画面。</p></article>
+          <article><span>WECHAT MINI PROGRAM</span><h3>Android 也能传图</h3><p>通过微信小程序选择图片并发送。首发版本不提供独立 Android App。</p></article>
+        </div>
+        <div class="docs-callout">
+          <span>更多内容</span>
+          <p>快捷指令可以定时更新日历、天气或书摘。后续内容来源取决于平台权限和服务支持。</p>
+        </div>
+      </section>
+
+      <section class="docs-section" id="power">
+        <header><span>05 / POWER & PLACEMENT</span><h2>画面一直在，<br />电量只为变化而用。</h2></header>
+        <div class="docs-grid docs-grid--three">
+          <article><span>BATTERY</span><h3>1 个月以上</h3><p>这是众筹目标，不是固定续航承诺。实际续航主要取决于刷新频率和使用环境。</p></article>
+          <article><span>QI</span><h3>放上即可补充电量</h3><p>Qi 无线充电支持无外露接口的机身，让日常充电保持简单。</p></article>
+          <article><span>MAGNETIC RING</span><h3>冰箱、桌面与手机配件</h3><p>内置磁环支持磁吸摆放和兼容 MagSafe 磁吸配件，但不代表 Apple 认证。</p></article>
+        </div>
+      </section>
+
+      <section class="docs-section" id="privacy">
+        <header><span>06 / PRIVACY</span><h2>你的照片，<br />可以只留在自己的设备。</h2></header>
+        <div class="docs-split">
+          <p class="docs-lead">照片先在手机上处理，再通过蓝牙发送。裁切和六色转换都在本地完成。</p>
+          <div class="docs-copy">
+            <p>使用拍摄、导入、预览、画廊和近场传图，不需要 Peanup 云账号。照片和设备绑定都保留在本地。</p>
+            <p>天气和书摘等卡片会向对应服务获取内容。照片不会因此上传到云端转换。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="nfc">
+        <header><span>07 / CUID NFC</span><h2>条件合适时，<br />也可以用作门禁卡。</h2></header>
+        <div class="docs-policy">
+          <strong>有条件兼容</strong>
+          <p>门禁系统支持 CUID 时，Peanup 才可能登记为门禁卡。录入前需要管理方授权，也要遵守当地规则。不兼容的系统无法使用。</p>
+        </div>
+      </section>
+
+      <section class="docs-section" id="specifications">
+        <header><span>08 / SPECIFICATIONS</span><h2>当前产品规格。</h2></header>
+        <div class="docs-table-wrap" tabindex="0" aria-label="可横向滚动的产品规格">
+          <table class="docs-table">
+            <tbody>
+              {specifications.map(([name, value]) => <tr><th scope="row">{name}</th><td>{value}</td></tr>)}
+            </tbody>
+          </table>
+        </div>
+        <p class="docs-caption">面板数据来自厂家 Tentative Specification V0.2。3 mm、28 g 与一个月以上续航是 Peanup 的众筹目标，量产前仍可能调整。续航取决于刷新频率。清洁时请使用柔软干布，并避免按压、潮气和凝露。</p>
+      </section>
+
+      <section class="docs-section docs-faq" id="faq">
+        <header><span>09 / FAQ</span><h2>常见问题。</h2></header>
+        <div class="docs-accordion">
+          {faqs.map(([question, answer], index) => (
+            <details>
+              <summary><i>{String(index + 1).padStart(2, '0')}</i><span>{question}</span></summary>
+              <p>{answer}</p>
+            </details>
           ))}
         </div>
-        <div class="docs-note"><b>Ordered 4×4 / 8×8</b><p>使用 Bayer 阈值矩阵，适合实时预览和需要帧间稳定的内容。文字、细线与二维码应降低或关闭跨边误差扩散。</p></div>
       </section>
 
-      <section id="ble" class="docs-section">
-        <header><span>05 / CORE BLUETOOTH</span><h2>连接、协商、发送、确认。</h2></header>
-        <div class="ble-sequence" aria-label="BLE 状态机">
-          <span>扫描服务</span><i></i><span>连接设备</span><i></i><span>发现特征</span><i></i><span>握手与能力</span><i></i><span>分块发送</span><i></i><span>刷新确认</span>
-        </div>
-        <div class="docs-columns">
-          <article><span>NORMAL</span><h3>Write with response</h3><p>默认可靠路径。每个数据块等待系统写入完成或设备确认，便于定位失败和恢复任务。</p></article>
-          <article><span>FAST</span><h3>Write without response</h3><p>只有设备协商支持后才启用，并使用 `peripheralIsReady` 做背压和节奏控制。</p></article>
-        </div>
-        <p class="docs-caption">FDF / FEF 两套服务已经发现，但控制与数据特征方向、ACK 字段、校验和 QuickLZ 格式仍需真实硬件抓包确认。</p>
-      </section>
-
-      <section id="power" class="docs-section">
-        <header><span>06 / POWER</span><h2>需要时连接，<br />其余时间保持安静。</h2></header>
-        <div class="power-states">
-          <span><i>IDLE</i>MCU 深睡眠<br />低频广播或按键唤醒</span>
-          <span><i>CONNECT</i>临时提高广播<br />协商连接参数</span>
-          <span><i>TRANSFER</i>高频 BLE<br />分块写入图像</span>
-          <span><i>REFRESH</i>降低无线吞吐<br />驱动屏幕刷新</span>
-          <span><i>RETURN</i>断开连接<br />回到低功耗状态</span>
-        </div>
-        <p class="docs-lead">电子纸静态保持通常不需要持续供电。真正待机消耗来自 MCU、BLE 广播、电源管理和附加硬件；具体电流不能使用芯片手册最佳值代替整机实测。</p>
-      </section>
-
-      <section id="boundary" class="docs-section docs-boundary">
-        <header><span>07 / VALIDATION</span><h2>已经知道什么，<br />还需要证明什么。</h2></header>
-        <div class="boundary-grid">
-          <article><span>可直接实现</span><p>相机与导入、固定比例裁切、本地图像流水线、标准抖动算法、六色码表、相册、BLE扫描连接骨架和传输状态机。</p></article>
-          <article><span>需要服务配置</span><p>天气轻网关和微信读书官方 Agent Gateway。照片、抖动结果和BLE负载不进入业务后台。</p></article>
-          <article><span>需要硬件验证</span><p>控制包语义、特征方向、ACK与校验、QuickLZ格式、刷新波形、真实吞吐、电池容量和整机功耗。</p></article>
-        </div>
-        <footer><span>V1 DECISION</span><strong>手机本地计算 + BLE 近场传输 + 墨水屏断电保持</strong></footer>
-      </section>
+      <div class="docs-footer">
+        <div><span>PEANUP / PRODUCT GUIDE</span><p>产品问题请联系 <a href="mailto:i@caiths.com">i@caiths.com</a></p></div>
+        <a href="/docs/engineering/">阅读工程文档 <span aria-hidden="true">→</span></a>
+      </div>
     </article>
   </main>
 </BaseLayout>

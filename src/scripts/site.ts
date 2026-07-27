@@ -31,7 +31,7 @@ scrollCue?.addEventListener('click', (event) => {
   event.preventDefault();
   const start = window.scrollY;
   const destination = target.getBoundingClientRect().top + start;
-  const duration = reduceMotion.matches ? 900 : 1800;
+  const duration = reduceMotion.matches ? 1 : 1450;
   const startedAt = performance.now();
   document.documentElement.classList.add('slow-scroll-active');
   const easeInOutCubic = (progress: number) => progress < .5
@@ -49,4 +49,32 @@ scrollCue?.addEventListener('click', (event) => {
   };
 
   requestAnimationFrame(step);
+});
+
+document.querySelectorAll<HTMLImageElement>('img').forEach((image) => { image.draggable = false; });
+
+const isProtectedMediaTarget = (target: EventTarget | null) => target instanceof Element
+  && Boolean(target.closest('img, picture, .protected-media'));
+
+document.addEventListener('dragstart', (event) => {
+  if (isProtectedMediaTarget(event.target)) event.preventDefault();
+}, { capture: true });
+
+document.addEventListener('contextmenu', (event) => {
+  if (isProtectedMediaTarget(event.target)) event.preventDefault();
+}, { capture: true });
+
+const languageMenu = document.querySelector<HTMLDetailsElement>('.language-menu');
+document.querySelectorAll<HTMLAnchorElement>('[data-locale-choice]').forEach((link) => {
+  link.addEventListener('click', () => {
+    const locale = link.dataset.localeChoice;
+    if (!locale) return;
+    try {
+      localStorage.setItem('peanup.locale', locale);
+    } catch {}
+  });
+});
+
+document.addEventListener('pointerdown', (event) => {
+  if (languageMenu?.open && !languageMenu.contains(event.target as Node)) languageMenu.open = false;
 });

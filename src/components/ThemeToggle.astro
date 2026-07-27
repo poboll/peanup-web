@@ -1,0 +1,32 @@
+---
+import type { Locale } from '../i18n/product';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'zh-cn' } = Astro.props;
+const labels = {
+  'zh-cn': { dark: '切换到深色模式', light: '切换到浅色模式' },
+  'zh-tw': { dark: '切換到深色模式', light: '切換到淺色模式' },
+  en: { dark: 'Switch to dark mode', light: 'Switch to light mode' },
+  ja: { dark: 'ダークモードに切り替える', light: 'ライトモードに切り替える' },
+  de: { dark: 'Zum dunklen Modus wechseln', light: 'Zum hellen Modus wechseln' },
+  fr: { dark: 'Passer au mode sombre', light: 'Passer au mode clair' },
+} satisfies Record<Locale, { dark: string; light: string }>;
+
+const label = labels[locale];
+---
+
+<button
+  class="theme-toggle"
+  type="button"
+  data-theme-toggle
+  data-label-dark={label.dark}
+  data-label-light={label.light}
+  aria-label={label.dark}
+  aria-pressed="false"
+  title={label.dark}
+>
+  <span class="theme-toggle-disc" aria-hidden="true"></span>
+</button>

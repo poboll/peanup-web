@@ -1,6 +1,5 @@
 const pipeline = document.querySelector<HTMLElement>('[data-epaper-pipeline]');
 const preview = pipeline?.querySelector<HTMLCanvasElement>('[data-epaper-preview]');
-const output = pipeline?.querySelector<HTMLCanvasElement>('[data-epaper-output]');
 const source = pipeline?.querySelector<HTMLImageElement>('.pipeline-source img');
 
 const palette = [
@@ -26,14 +25,13 @@ const nearest = (r: number, g: number, b: number) => {
 };
 
 const render = () => {
-  if (!preview || !output || !source || !source.complete || !source.naturalWidth) return;
-  const width = 180;
-  const height = 230;
-  preview.width = output.width = width;
-  preview.height = output.height = height;
+  if (!preview || !source || !source.complete || !source.naturalWidth) return;
+  const width = 720;
+  const height = 540;
+  preview.width = width;
+  preview.height = height;
   const context = preview.getContext('2d', { willReadFrequently: true });
-  const outputContext = output.getContext('2d');
-  if (!context || !outputContext) return;
+  if (!context) return;
 
   const sourceRatio = source.naturalWidth / source.naturalHeight;
   const targetRatio = width / height;
@@ -44,6 +42,29 @@ const render = () => {
   context.drawImage(source, cropX, cropY, cropWidth, cropHeight, 0, 0, width, height);
 
   const image = context.getImageData(0, 0, width, height);
+  const histogram = new Uint32Array(256);
+  for (let index = 0; index < image.data.length; index += 4) {
+    const luminance = Math.round(image.data[index] * .2126 + image.data[index + 1] * .7152 + image.data[index + 2] * .0722);
+    histogram[luminance] += 1;
+  }
+  const pixels = width * height;
+  const percentile = (target: number) => {
+    let total = 0;
+    for (let value = 0; value < histogram.length; value += 1) {
+      total += histogram[value];
+      if (total >= pixels * target) return value;
+    }
+    return 255;
+  };
+  const blackPoint = Math.min(48, percentile(.02));
+  const whitePoint = Math.max(205, percentile(.98));
+  const range = Math.max(1, whitePoint - blackPoint);
+  for (let index = 0; index < image.data.length; index += 4) {
+    for (let channel = 0; channel < 3; channel += 1) {
+      const normalized = Math.max(0, Math.min(1, (image.data[index + channel] - blackPoint) / range));
+      image.data[index + channel] = 12 + Math.pow(normalized, 1.08) * 226;
+    }
+  }
   const data = new Float32Array(image.data);
   for (let y = 0; y < height; y += 1) {
     const reverse = y % 2 === 1;
@@ -64,11 +85,9 @@ const render = () => {
     }
   }
   context.putImageData(image, 0, 0);
-  outputContext.imageSmoothingEnabled = false;
-  outputContext.drawImage(preview, 0, 0);
 };
 
-if (source && preview && output && pipeline) {
+if (source && preview && pipeline) {
   source.addEventListener('load', render, { once: true });
   render();
   const observer = new IntersectionObserver(([entry]) => {
@@ -78,3 +97,5 @@ if (source && preview && output && pipeline) {
   }, { threshold: .35 });
   observer.observe(pipeline);
 }
+
+export {};

@@ -1,0 +1,223 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ThemeToggle from '../../../components/ThemeToggle.astro';
+import '../../../styles/docs.css';
+
+const toc = [
+  ['overview', 'Overview'],
+  ['display', 'Display & form'],
+  ['transfer', 'Updating Peanup'],
+  ['platforms', 'Platforms'],
+  ['power', 'Power & placement'],
+  ['privacy', 'Privacy'],
+  ['nfc', 'CUID NFC'],
+  ['specifications', 'Specifications'],
+  ['faq', 'FAQ'],
+];
+
+const specifications = [
+  ['Display', '3.68-inch E6 six-color electronic paper'],
+  ['Pixel density', 'Approximately 258.7 PPI (calculated from active area)'],
+  ['Panel resolution', '528 × 792 pixels'],
+  ['Active area', '51.84 × 77.76 mm'],
+  ['Panel module', '56.24 × 86.54 × 0.87 mm (excluding the Peanup enclosure)'],
+  ['Display mode', 'Reflective, bistable and wide-viewing-angle'],
+  ['White reflectivity', '30% minimum, 35% typical (panel data)'],
+  ['Contrast ratio', '8:1 minimum, 10:1 typical (panel data)'],
+  ['Panel operating range', '0–50°C'],
+  ['Color system', 'Six-color electronic paper'],
+  ['Transfer', 'Bluetooth Low Energy'],
+  ['Body', 'Instant-film-inspired form with no exposed connector'],
+  ['Thickness', '3 mm crowdfunding target'],
+  ['Weight', '28 g crowdfunding target'],
+  ['Battery life', 'One month or more target; depends on refresh frequency'],
+  ['Charging', 'Qi wireless charging'],
+  ['Placement', 'Integrated magnetic ring; compatible with magnetic and MagSafe accessories'],
+  ['Apple', 'iOS app, iPad support and Apple Shortcuts'],
+  ['Other devices', 'WeChat Mini Program transfer'],
+  ['NFC', 'CUID-compatible NFC, subject to system support and authorization'],
+];
+
+const faqs = [
+  ['Does the screen stay on all the time?', 'No backlight is needed. E-paper keeps the image after each refresh. Bluetooth then returns to standby.'],
+  ['What is the confirmed display specification?', 'The manufacturer specifies a 3.68-inch E6 six-color panel at 528 × 792 pixels. Its 51.84 × 77.76 mm active area works out to about 258.7 PPI. The website preview only simulates the look.'],
+  ['Do my photos need to be uploaded?', 'No. Cropping and six-color conversion happen on iPhone or iPad. Bluetooth sends only the finished frame, and core features do not need a Peanup cloud account.'],
+  ['Can it update automatically?', 'Apple Shortcuts can prepare automated updates. Actual timing still depends on iOS and the rules of each content service.'],
+  ['Is there an Android app?', 'A native Android app is not planned for the first release. Android devices can send images through the WeChat Mini Program.'],
+  ['Is the magnetic ring MagSafe certified?', 'Peanup does not claim that certification. Its magnetic ring works with compatible MagSafe accessories.'],
+  ['Can CUID NFC replace my access card?', 'Only where the access system supports CUID. Enrollment needs the operator’s approval and must follow local rules.'],
+  ['Are the final dimensions guaranteed?', 'The 3.68-inch E6 panel and 528 × 792 pixel matrix come from the manufacturer specification. The 3 mm profile, 28 g weight and one-month-plus battery life are Kickstarter targets. Battery life depends on refresh frequency.'],
+];
+---
+
+<BaseLayout
+  title="Peanup Product Guide | 3.68-inch E6 six-color e-paper"
+  description="Product documentation for Peanup: 3.68-inch E6 six-color e-paper at 528 × 792 pixels, Bluetooth transfer, Apple Shortcuts, WeChat Mini Program, Qi charging, magnetic placement, privacy and CUID NFC."
+  locale="en"
+  htmlLang="en"
+  ogLocale="en_US"
+  canonicalPath="/en/docs/"
+  alternates={[
+    { lang: 'zh-CN', href: '/docs/' },
+    { lang: 'en', href: '/en/docs/' },
+  ]}
+  xDefaultPath="/docs/"
+  schemaType="TechArticle"
+  backTopLabel="Back to top"
+>
+  <header class="docs-topbar">
+    <a class="brand" href="/en/" aria-label="Peanup home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+      <span>Peanup</span>
+    </a>
+    <nav class="docs-primary-nav" aria-label="Documentation">
+      <a aria-current="page" href="/en/docs/">Product guide</a>
+      <a href="/en/docs/engineering/">Engineering notes</a>
+      <a lang="zh-CN" href="/docs/" hreflang="zh-CN">中文</a>
+      <a href="/en/">Product</a>
+    </nav>
+    <ThemeToggle locale="en" />
+    <details class="docs-mobile-nav">
+      <summary>Menu</summary>
+      <nav aria-label="Mobile documentation">
+        <a aria-current="page" href="/en/docs/">Product guide</a>
+        <a href="/en/docs/engineering/">Engineering notes</a>
+        <a lang="zh-CN" href="/docs/" hreflang="zh-CN">中文</a>
+        <a href="/en/">Product</a>
+      </nav>
+    </details>
+  </header>
+
+  <main class="docs-layout">
+    <aside class="docs-toc" aria-label="On this page">
+      <p>PRODUCT GUIDE</p>
+      <nav>
+        {toc.map(([id, label], index) => <a href={`#${id}`}><i>{String(index + 1).padStart(2, '0')}</i>{label}</a>)}
+      </nav>
+      <small>Preview edition<br />Updated July 2026</small>
+    </aside>
+
+    <article class="docs-article">
+      <section class="docs-hero" id="overview">
+        <div class="docs-eyebrow"><span>PEANUP / PRODUCT GUIDE</span><b>01</b></div>
+        <h1>A changing piece of paper<br />for the moments you keep.</h1>
+        <p class="docs-deck">Peanup is a portrait six-color e-paper display for photos and everyday information. Update it from your phone, and the image stays quietly in view.</p>
+        <div class="docs-fact-strip" aria-label="Product summary">
+          <span><b>3.68”</b><small>E6 SIX-COLOR E-PAPER</small></span>
+          <span><b>≈258.7 PPI</b><small>FROM ACTIVE AREA</small></span>
+          <span><b>BLE</b><small>NEARBY TRANSFER</small></span>
+          <span><b>QI</b><small>WIRELESS CHARGING</small></span>
+        </div>
+        <p class="docs-status"><i></i> Crowdfunding preview · final production details may evolve</p>
+      </section>
+
+      <section class="docs-section" id="display">
+        <header><span>02 / DISPLAY & FORM</span><h2>Physical pigment,<br />not emitted light.</h2></header>
+        <div class="docs-split">
+          <p class="docs-lead">The manufacturer specifies a 3.68-inch E6 six-color panel. It has 528 × 792 pixels and works out to about 258.7 PPI across its active area.</p>
+          <div class="docs-copy">
+            <p>Six physical e-paper colors reproduce photographs with a distinct printed character. The reflective panel uses ambient light and keeps the frame after the update ends.</p>
+            <p>The white body feels like a small instant print, not a miniature tablet. Pick it up, place it or carry it with you. A 3 mm profile, 28 g weight and no exposed connector are Kickstarter targets.</p>
+          </div>
+        </div>
+        <dl class="docs-panel-profile" aria-label="Manufacturer panel data">
+          <div><dt>RESOLUTION</dt><dd>528 × 792</dd><small>Portrait pixel matrix</small></div>
+          <div><dt>ACTIVE AREA</dt><dd>51.84 × 77.76 mm</dd><small>Visible image area</small></div>
+          <div><dt>MODULE</dt><dd>0.87 mm</dd><small>Panel module depth</small></div>
+          <div><dt>REFLECTIVITY</dt><dd>35% typ.</dd><small>White reflectivity</small></div>
+          <div><dt>CONTRAST</dt><dd>10:1 typ.</dd><small>Panel contrast</small></div>
+          <div><dt>OPERATING</dt><dd>0–50°C</dd><small>Panel range</small></div>
+        </dl>
+        <div class="docs-palette" aria-label="Six-color e-paper palette">
+          <span><i></i><b>Black</b><small>01</small></span>
+          <span><i></i><b>Paper</b><small>02</small></span>
+          <span><i></i><b>Red</b><small>03</small></span>
+          <span><i></i><b>Yellow</b><small>04</small></span>
+          <span><i></i><b>Blue</b><small>05</small></span>
+          <span><i></i><b>Green</b><small>06</small></span>
+        </div>
+      </section>
+
+      <section class="docs-section" id="transfer">
+        <header><span>03 / UPDATE FLOW</span><h2>Choose a frame.<br />Send only the result.</h2></header>
+        <ol class="docs-steps">
+          <li><span>01</span><strong>Choose</strong><p>Capture a photo, import one, write a line or select an information card.</p></li>
+          <li><span>02</span><strong>Compose</strong><p>Crop to the display shape and preview the six-color result on your phone.</p></li>
+          <li><span>03</span><strong>Transfer</strong><p>Send the prepared frame to a nearby Peanup over Bluetooth Low Energy.</p></li>
+          <li><span>04</span><strong>Keep</strong><p>The panel refreshes and holds the image while the connection returns to idle.</p></li>
+        </ol>
+        <p class="docs-note"><b>Connection model</b><span>Bluetooth connects only while a frame is being sent. Once the update finishes, Peanup returns to standby.</span></p>
+      </section>
+
+      <section class="docs-section" id="platforms">
+        <header><span>04 / PLATFORMS</span><h2>Built for iPhone.<br />Open to more ways to send.</h2></header>
+        <div class="docs-grid docs-grid--three">
+          <article><span>IOS & IPADOS</span><h3>Capture, preview, send</h3><p>Take a photo, check the six-color preview and send it in the Peanup app. Saved frames stay on your phone.</p></article>
+          <article><span>APPLE SHORTCUTS</span><h3>Repeat without repeating yourself</h3><p>Use Siri, widgets and personal automations to prepare familiar frames with fewer steps.</p></article>
+          <article><span>WECHAT MINI PROGRAM</span><h3>Send from Android</h3><p>Choose and send an image through the WeChat Mini Program. A native Android app is not planned for the first release.</p></article>
+        </div>
+        <div class="docs-callout">
+          <span>MORE CONTENT</span>
+          <p>Shortcuts can schedule calendars, weather and reading notes. Future content sources will depend on platform permissions and service support.</p>
+        </div>
+      </section>
+
+      <section class="docs-section" id="power">
+        <header><span>05 / POWER & PLACEMENT</span><h2>The image stays.<br />Power is spent on change.</h2></header>
+        <div class="docs-grid docs-grid--three">
+          <article><span>BATTERY</span><h3>One month or more</h3><p>This is the crowdfunding target, not a fixed runtime promise. Actual battery life depends most of all on refresh frequency and operating conditions.</p></article>
+          <article><span>QI</span><h3>Place it to charge</h3><p>Qi wireless charging supports the no-exposed-connector body and keeps everyday charging uncomplicated.</p></article>
+          <article><span>MAGNETIC RING</span><h3>Fridge, desk, phone accessory</h3><p>The integrated ring supports magnetic placement and compatible MagSafe accessories. It does not imply Apple certification.</p></article>
+        </div>
+      </section>
+
+      <section class="docs-section" id="privacy">
+        <header><span>06 / PRIVACY</span><h2>Your photograph can stay<br />on your devices.</h2></header>
+        <div class="docs-split">
+          <p class="docs-lead">Photos are prepared on your phone, then sent over Bluetooth. Cropping and six-color conversion stay local.</p>
+          <div class="docs-copy">
+            <p>Core capture, import, preview, gallery and nearby transfer do not require a Peanup cloud account. Photos and device binding stay local.</p>
+            <p>Weather and reading cards may contact their source services for content. Your photos are not uploaded for cloud conversion.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="nfc">
+        <header><span>07 / CUID NFC</span><h2>Access card,<br />where supported.</h2></header>
+        <div class="docs-policy">
+          <strong>Conditional compatibility</strong>
+          <p>Peanup may work as an access card where the reader supports CUID. Enrollment needs the system owner’s approval and must follow local rules. Unsupported systems will not work.</p>
+        </div>
+      </section>
+
+      <section class="docs-section" id="specifications">
+        <header><span>08 / SPECIFICATIONS</span><h2>The working product<br />specification.</h2></header>
+        <div class="docs-table-wrap" tabindex="0" aria-label="Scrollable product specifications">
+          <table class="docs-table">
+            <tbody>
+              {specifications.map(([name, value]) => <tr><th scope="row">{name}</th><td>{value}</td></tr>)}
+            </tbody>
+          </table>
+        </div>
+        <p class="docs-caption">Panel data follows the manufacturer’s Tentative Specification V0.2. The 3 mm profile, 28 g weight and one-month-plus battery life are Kickstarter targets and may change before production. Battery life depends on refresh frequency. Clean with a soft dry cloth and avoid pressure, moisture and condensation.</p>
+      </section>
+
+      <section class="docs-section docs-faq" id="faq">
+        <header><span>09 / FAQ</span><h2>Before you ask.</h2></header>
+        <div class="docs-accordion">
+          {faqs.map(([question, answer], index) => (
+            <details>
+              <summary><i>{String(index + 1).padStart(2, '0')}</i><span>{question}</span></summary>
+              <p>{answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <div class="docs-footer">
+        <div><span>PEANUP / PRODUCT GUIDE</span><p>Questions about the product? <a href="mailto:i@caiths.com">i@caiths.com</a></p></div>
+        <a href="/en/docs/engineering/">Read the engineering notes <span aria-hidden="true">→</span></a>
+      </div>
+    </article>
+  </main>
+</BaseLayout>

@@ -1,4 +1,4 @@
-import p5 from 'p5';
+import MiniP5, { type MiniImage } from './miniP5';
 
 type Flower = { branch: GrowingBranch; index: number; born: number; size: number };
 type TailPoint = { x: number; y: number; px: number; py: number };
@@ -36,11 +36,11 @@ class Swallow {
   tailL: TailPoint[] = [];
   tailR: TailPoint[] = [];
 
-  constructor(p: p5, index: number, width: number, height: number) {
+  constructor(p: MiniP5, index: number, width: number, height: number) {
     this.startX = width + p.random(35, 150);
-    this.startY = p.random(height * .08, height * .88);
+    this.startY = p.random(height * .18, height * .88);
     this.exitX = p.random(-180, -45);
-    this.exitY = p.random(height * .08, height * .88);
+    this.exitY = p.random(height * .18, height * .88);
     const mx = (this.startX + this.exitX) / 2;
     const my = (this.startY + this.exitY) / 2;
     const dx = this.exitX - this.startX;
@@ -69,25 +69,46 @@ if (mount && gallery) {
   const caption = gallery.querySelector<HTMLElement>('.ink-screen-caption');
   const labels = Array.from(gallery.querySelectorAll<HTMLElement>('[data-ink-label]'));
   const phaseNames = {
-    rain: ['RAIN CURTAIN', '01 / 03'],
-    branch: ['BLOOMING BRANCH', '02 / 03'],
-    bird: ['SWALLOW FLIGHT', '03 / 03'],
+    rain: ['RAIN CURTAIN', '01 / 04'],
+    branch: ['BLOOMING BRANCH', '02 / 04'],
+    bird: ['SWALLOW FLIGHT', '03 / 04'],
+    experience: ['YOUR IMAGE', 'READY'],
   } as const;
+  type Phase = keyof typeof phaseNames;
+  const sceneCopy = (phase: Phase) => {
+    const label = labels.find((item) => item.dataset.inkLabel === phase);
+    const number = label?.querySelector<HTMLElement>(':scope > span')?.textContent?.trim();
+    return {
+      heading: label?.getAttribute('data-canvas-heading') || '',
+      title: label?.getAttribute('data-canvas-title') || phaseNames[phase][0],
+      subtitle: label?.getAttribute('data-canvas-subtitle') || '',
+      meta: label?.getAttribute('data-canvas-meta') || '',
+      date: label?.getAttribute('data-canvas-date') || '',
+      weather: label?.getAttribute('data-canvas-weather') || '',
+      quote: label?.getAttribute('data-canvas-quote') || '',
+      index: number ? `${number} / 04` : phaseNames[phase][1],
+    };
+  };
 
-  new p5((p) => {
+  new MiniP5((p) => {
     const rainDropUrls = Array.from({ length: 12 }, (_, index) =>
-      `https://cdn.jsdelivr.net/gh/xxoogreymon-prog/image-resources@main/icons/rain_drops/drop${index + 1}.png`
+      `/assets/rain/drop${index + 1}.png`
     );
-    let rainDropImages: p5.Image[] = [];
+    let rainDropImages: MiniImage[] = [];
     let branches: GrowingBranch[] = [];
     let flowers: Flower[] = [];
     let swallows: Swallow[] = [];
     let branchFrame = 0;
     let refreshStartedAt = -1000;
+    let refreshActive = false;
     let currentPhase: keyof typeof phaseNames = 'rain';
+    const transitionCanvas = document.createElement('canvas');
+    const transitionContext = transitionCanvas.getContext('2d');
+    let hasTransitionFrame = false;
     const materialCanvas = document.createElement('canvas');
     const materialContext = materialCanvas.getContext('2d', { willReadFrequently: true });
-    const spectraPalette = [[31,34,38], [216,222,216], [35,63,142], [53,86,58], [98,32,30], [193,187,30]] as const;
+    const spectraPalette = [[31,34,38], [226,230,225], [35,63,142], [53,86,58], [98,32,30], [193,187,30]] as const;
+    const refreshDuration = 880;
 
     const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
     const progress = () => {
@@ -97,12 +118,30 @@ if (mount && gallery) {
 
     const setPhase = (phase: keyof typeof phaseNames) => {
       if (phase === currentPhase) return;
+      const previousPhase = currentPhase;
+      if (transitionContext && p.canvas && p.width > 0 && p.height > 0) {
+        transitionCanvas.width = Math.round(p.width);
+        transitionCanvas.height = Math.round(p.height);
+        if (previousPhase !== 'experience') {
+          transitionContext.drawImage(p.canvas, 0, 0, transitionCanvas.width, transitionCanvas.height);
+          hasTransitionFrame = true;
+        } else {
+          // Keep the full live studio, including its controls, as the departing old frame.
+          hasTransitionFrame = false;
+        }
+      }
+      gallery.style.setProperty('--ink-write-top', '100%');
+      gallery.style.setProperty('--ink-write-opacity', '0');
+      gallery.classList.toggle('is-leaving-experience', previousPhase === 'experience' && phase !== 'experience');
+      gallery.classList.remove('is-live-ready');
       currentPhase = phase;
       gallery.dataset.phase = phase;
       labels.forEach((label) => label.classList.toggle('active', label.dataset.inkLabel === phase));
-      if (caption) caption.innerHTML = `<b>${phaseNames[phase][0]}</b><i>${phaseNames[phase][1]}</i>`;
+      const copy = sceneCopy(phase);
+      if (caption) caption.innerHTML = `<b>${copy.title}</b><i>${copy.index}</i>`;
       if (phase === 'branch') resetBranches();
       refreshStartedAt = p.millis();
+      refreshActive = true;
       gallery.classList.remove('is-refreshing');
       void gallery.offsetWidth;
       gallery.classList.add('is-refreshing');
@@ -114,9 +153,9 @@ if (mount && gallery) {
       branchFrame = 0;
       p.randomSeed(8128);
       for (let i = 0; i < 5; i += 1) {
-        const x = p.width * .5 + p.random(-5, 5);
-        const angle = -p.HALF_PI + p.map(i, 0, 4, -.42, .42) + p.random(-.05, .05);
-        branches.push(new GrowingBranch(x, p.height * .79, angle, 1, p.floor(p.random(44, 58)), i * 17));
+        const x = p.width * .5 + p.random(-4, 4);
+        const angle = -p.HALF_PI + p.map(i, 0, 4, -.3, .3) + p.random(-.04, .04);
+        branches.push(new GrowingBranch(x, p.height * .73, angle, 1, p.floor(p.random(27, 35)), i * 17));
       }
     };
 
@@ -127,9 +166,14 @@ if (mount && gallery) {
 
     const sizeCanvas = () => {
       const rect = mount.getBoundingClientRect();
-      if (!p.canvas) p.createCanvas(rect.width, rect.height);
-      else p.resizeCanvas(rect.width, rect.height);
-      p.pixelDensity(Math.min(window.devicePixelRatio || 1, 1.5));
+      const density = Math.min(window.devicePixelRatio || 1, 2);
+      if (!p.canvas) {
+        p.pixelDensity(density);
+        p.createCanvas(rect.width, rect.height);
+      } else {
+        p.pixelDensity(density);
+        p.resizeCanvas(rect.width, rect.height);
+      }
       resetBranches();
       buildBirds();
     };
@@ -152,9 +196,10 @@ if (mount && gallery) {
 
     const applyEpaperMaterial = () => {
       if (!materialContext || !p.canvas) return;
-      const scale = window.innerWidth < 680 ? 1.8 : 1.45;
-      const width = Math.max(180, Math.round(p.width / scale));
-      const height = Math.max(240, Math.round(p.height / scale));
+      const width = window.innerWidth < 680
+        ? Math.max(360, Math.round(p.width * 1.15))
+        : Math.min(600, Math.max(480, Math.round(p.width * 1.25)));
+      const height = Math.round(width * p.height / Math.max(1, p.width));
       const resized = materialCanvas.width !== width || materialCanvas.height !== height;
       if (resized) {
         materialCanvas.width = width;
@@ -164,6 +209,7 @@ if (mount && gallery) {
         const target = p.drawingContext as CanvasRenderingContext2D;
         target.save();
         target.imageSmoothingEnabled = true;
+        target.clearRect(0, 0, p.width, p.height);
         target.drawImage(materialCanvas, 0, 0, p.width, p.height);
         target.restore();
         return;
@@ -173,6 +219,9 @@ if (mount && gallery) {
       const image = materialContext.getImageData(0, 0, width, height);
       const work = new Float32Array(image.data);
       const nearestInk = (r: number, g: number, b: number) => {
+        const lightness = r * .2126 + g * .7152 + b * .0722;
+        const chroma = Math.max(r, g, b) - Math.min(r, g, b);
+        if (lightness > 205 && chroma < 34) return spectraPalette[1];
         let result: readonly [number, number, number] = spectraPalette[0];
         let distance = Number.POSITIVE_INFINITY;
         for (const ink of spectraPalette) {
@@ -214,63 +263,104 @@ if (mount && gallery) {
     };
 
     const drawRain = (reveal: number) => {
-      p.background(235, 231, 218);
+      const copy = sceneCopy('rain');
+      p.background(226, 230, 225);
+      const colors = [[31,34,38], [226,230,225], [193,187,30], [98,32,30], [35,63,142], [53,86,58]];
+      const clouds = [
+        [.105, .266, .17, .068, -.018],
+        [.263, .251, .184, .076, .011],
+        [.421, .271, .168, .067, -.012],
+        [.579, .246, .19, .079, .009],
+        [.737, .267, .172, .069, -.014],
+        [.895, .253, .168, .073, .013],
+      ];
+      p.fill(31, 34, 38);
+      p.textAlign(p.CENTER, p.TOP);
+      p.textFont('Songti SC');
+      p.textSize(Math.max(window.innerWidth < 680 ? 21 : 24, p.width * .065));
+      p.text(copy.heading || copy.title, p.width * .08, p.height * .07, p.width * .84, p.height * .115);
+      p.textFont('Georgia');
+      p.textSize(Math.max(7, p.width * .017));
+      p.text(copy.meta, p.width * .1, p.height * .15, p.width * .8, p.height * .035);
       p.noStroke();
-      p.fill(207, 219, 224, 175); p.rect(0, p.height * .18, p.width, p.height * .38);
-      p.fill(90, 135, 82, 145);
-      p.beginShape(); p.vertex(0, p.height * .54); p.bezierVertex(p.width * .2, p.height * .38, p.width * .33, p.height * .49, p.width * .5, p.height * .41); p.bezierVertex(p.width * .67, p.height * .32, p.width * .8, p.height * .51, p.width, p.height * .39); p.vertex(p.width, p.height * .67); p.vertex(0, p.height * .67); p.endShape(p.CLOSE);
-      p.fill(48, 102, 178, 120);
-      p.beginShape(); p.vertex(0, p.height * .61); p.bezierVertex(p.width * .18, p.height * .5, p.width * .32, p.height * .64, p.width * .47, p.height * .53); p.bezierVertex(p.width * .66, p.height * .4, p.width * .78, p.height * .6, p.width, p.height * .5); p.vertex(p.width, p.height * .72); p.vertex(0, p.height * .72); p.endShape(p.CLOSE);
-      p.fill(226, 174, 37, 120); p.circle(p.width * .78, p.height * .22, p.width * .11);
-      p.fill(240, 237, 225, 215);
-      p.ellipse(p.width * .28, p.height * .18, p.width * .31, p.height * .08);
-      p.ellipse(p.width * .55, p.height * .16, p.width * .36, p.height * .1);
-      p.ellipse(p.width * .76, p.height * .19, p.width * .23, p.height * .07);
-      p.fill(225, 226, 213, 205); p.rect(0, p.height * .7, p.width, p.height * .3);
-      p.stroke(48, 102, 178, 36); p.strokeWeight(.6);
-      for (let line = 0; line < 7; line += 1) p.line(0, p.height * (.74 + line * .035), p.width, p.height * (.74 + line * .035));
-
-      const colors = [[31,34,38], [216,222,216], [193,187,30], [98,32,30], [35,63,142], [53,86,58]];
-      const curtainAlpha = 1 - clamp01((reveal - .66) / .28);
+      clouds.forEach(([x, y, cloudWidth, cloudHeight, tilt], index) => {
+        const color = colors[index];
+        const width = p.width * cloudWidth;
+        const height = p.height * cloudHeight;
+        p.push();
+        p.translate(p.width * x, p.height * y);
+        p.rotate(tilt);
+        p.fill(color[0], color[1], color[2], 255);
+        if (index === 1) {
+          p.stroke(31, 34, 38, 220);
+          p.strokeWeight(Math.max(.85, p.width * .0018));
+        } else {
+          p.stroke(226, 230, 225, 205);
+          p.strokeWeight(Math.max(.65, p.width * .00135));
+        }
+        p.beginShape();
+        p.vertex(-width * .52, height * .12);
+        p.bezierVertex(-width * .57, -height * .06, -width * .47, -height * .31, -width * .34, -height * .27);
+        p.bezierVertex(-width * .31, -height * (.49 + index % 2 * .06), -width * .17, -height * .61, -width * .065, -height * .45);
+        p.bezierVertex(width * .025, -height * (.65 - index % 3 * .035), width * .21, -height * .65, width * .285, -height * .38);
+        p.bezierVertex(width * .41, -height * (.42 + index % 2 * .035), width * .52, -height * .18, width * .49, height * .01);
+        p.bezierVertex(width * .6, height * .08, width * .55, height * .29, width * .39, height * .31);
+        p.bezierVertex(width * .19, height * .39, -width * .12, height * .38, -width * .31, height * .32);
+        p.bezierVertex(-width * .44, height * .33, -width * .55, height * .26, -width * .52, height * .12);
+        p.endShape(p.CLOSE);
+        p.pop();
+      });
+      p.noStroke();
+      const rainProgress = clamp01((reveal - .2) / .8);
       p.imageMode(p.CENTER);
-      for (let line = 0; line < 26; line += 1) {
-        const x = p.map(line, 0, 25, p.width * .1, p.width * .9);
-        const curtain = clamp01(reveal * 1.28 - (line % 6) * .025);
-        if (curtain <= 0 || curtainAlpha <= 0) continue;
-        const endY = p.lerp(p.height * .2, p.height * .76, 1 - Math.pow(1 - curtain, 2.2));
-        p.stroke(35, 63, 142, 34 * curtainAlpha); p.strokeWeight(.45);
-        p.line(x, p.height * .19, x, endY);
-        const count = 3 + (line % 4);
-        for (let dropIndex = 0; dropIndex < count; dropIndex += 1) {
-          const position = (dropIndex + .65) / count;
-          const y = p.lerp(p.height * .22, endY, position);
-          if (y > endY - 1) continue;
-          const image = rainDropImages[(line * 3 + dropIndex) % rainDropImages.length];
-          const color = colors[(line + dropIndex * 2) % colors.length];
-          const height = 8 + ((line * 5 + dropIndex * 7) % 12);
-          p.tint(color[0], color[1], color[2], 185 * curtainAlpha);
-          if (image?.width) p.image(image, x, y, height * image.width / image.height, height);
-          else {
-            p.noStroke(); p.fill(color[0], color[1], color[2], 150 * curtainAlpha);
-            p.beginShape(); p.vertex(x, y - height * .5); p.bezierVertex(x - height * .24, y - height * .1, x - height * .2, y + height * .45, x, y + height * .5); p.bezierVertex(x + height * .2, y + height * .45, x + height * .24, y - height * .1, x, y - height * .5); p.endShape(p.CLOSE);
+      for (let dropIndex = 0; dropIndex < 48; dropIndex += 1) {
+        const column = dropIndex % 24;
+        const row = Math.floor(dropIndex / 24);
+        const delay = ((column * 7) % 19) / 38 + row * .18;
+        const fall = clamp01(rainProgress * 1.58 - delay);
+        if (fall <= 0 || fall >= 1) continue;
+        const eased = fall * fall * (3 - 2 * fall);
+        const baseX = p.map(column, 0, 23, p.width * .075, p.width * .925);
+        const windEnvelope = p.sin(fall * p.PI);
+        const prevailingWind = p.sin(rainProgress * p.PI * 2.1) * p.width * .018;
+        const localFlutter = p.sin(rainProgress * p.PI * (3.2 + row * .45) + column * 1.37) * p.width * (.004 + (column % 4) * .0015);
+        const scrollGust = p.sin(rainProgress * p.PI * 2.4 + column * .21) * p.width * .009;
+        const x = baseX + (prevailingWind + localFlutter + scrollGust) * windEnvelope;
+        const y = p.lerp(p.height * (.305 + row * .018), p.height * (1.02 + row * .04), eased);
+        const image = rainDropImages[(dropIndex * 5 + row * 3) % rainDropImages.length];
+        const colorIndex = (column + row * 3) % colors.length;
+        const color = colors[colorIndex];
+        const height = 11 + ((dropIndex * 13) % 23);
+        const width = image?.width ? height * image.width / image.height : height * .32;
+        const alpha = 255 * Math.sin(fall * Math.PI);
+        if (image?.width) {
+          if (colorIndex === 1) {
+            p.tint(31, 34, 38, alpha * .7);
+            p.image(image, x, y, width + 2.2, height + 2.2);
           }
+          p.tint(color[0], color[1], color[2], alpha);
+          p.image(image, x, y, width, height);
+        } else {
+          p.stroke(colorIndex === 1 ? 31 : color[0], colorIndex === 1 ? 34 : color[1], colorIndex === 1 ? 38 : color[2], alpha);
+          p.strokeWeight(colorIndex === 1 ? 1 : 0);
+          p.fill(color[0], color[1], color[2], alpha);
+          p.beginShape(); p.vertex(x, y - height * .5); p.bezierVertex(x - width * .7, y - height * .1, x - width * .55, y + height * .45, x, y + height * .5); p.bezierVertex(x + width * .55, y + height * .45, x + width * .7, y - height * .1, x, y - height * .5); p.endShape(p.CLOSE);
         }
       }
       p.noTint(); p.imageMode(p.CORNER);
-      p.noStroke(); p.fill(31, 47, 74, 150); p.textFont('Georgia'); p.textSize(Math.max(7, p.width * .02));
-      p.text('after rain / the light remains', p.width * .54, p.height * .91, p.width * .38);
+      p.noStroke();
     };
 
     const growBranches = () => {
       branchFrame += 1;
       for (const branch of [...branches]) {
         if (branch.grown >= branch.target) {
-          if (!branch.split && branch.level < 4) {
+          if (!branch.split && branch.level < 3) {
             branch.split = true;
             const tip = branch.points[branch.points.length - 1];
             const spread = .48 * Math.pow(.8, branch.level - 1);
             for (const side of [-1, 1]) {
-              const child = new GrowingBranch(tip.x, tip.y, branch.angle + side * spread, branch.level + 1, Math.max(7, Math.floor(branch.target * .55)), branch.seed + side * 11);
+              const child = new GrowingBranch(tip.x, tip.y, branch.angle + side * spread, branch.level + 1, Math.max(6, Math.floor(branch.target * .46)), branch.seed + side * 11);
               branch.children.push(child);
               branches.push(child);
             }
@@ -288,53 +378,70 @@ if (mount && gallery) {
     };
 
     const branchOffset = (point: { y: number }, seed: number) => {
-      const height = clamp01((p.height * .79 - point.y) / p.height);
+      const height = clamp01((p.height * .73 - point.y) / p.height);
       return reducedMotion ? 0 : p.sin(p.frameCount * .025 + seed + point.y / 90) * 3.2 * height;
     };
 
     const drawBranches = () => {
-      p.background(193, 225, 218);
+      const copy = sceneCopy('branch');
+      p.background(226, 230, 225);
       p.noStroke();
-      p.fill(31, 42, 40, 180);
+      p.fill(31, 34, 38);
       p.textFont('Georgia');
-      p.textSize(Math.max(6, p.width * .018));
-      const fragments = ['MEMORY / GROWTH', 'THE BRANCH KNOWS LIGHT', 'A SMALL UPWARD THING', 'PEANUP STUDY 02'];
-      fragments.forEach((text, index) => p.text(text, 10 + (index % 2) * p.width * .52, 24 + index * 31, p.width * .42));
+      p.textAlign(p.LEFT);
+      p.textSize(Math.max(13, p.width * .034));
+      p.text(copy.date || '07 / 27  SUN', p.width * .075, p.height * .105);
+      p.textAlign(p.RIGHT);
+      p.text(copy.weather || 'SHENZHEN  28°  RAIN', p.width * .925, p.height * .105);
+      p.stroke(35, 63, 142); p.strokeWeight(2);
+      p.line(p.width * .075, p.height * .145, p.width * .925, p.height * .145);
+      const rawQuote = copy.quote || '生活的纹理，藏在每一个普通日子里。';
+      const framedQuote = /^[“"「『«]/.test(rawQuote) ? rawQuote : `“${rawQuote}”`;
+      const longQuote = Array.from(framedQuote).length > 30;
+      p.noStroke(); p.fill(31, 34, 38);
+      p.textFont('Georgia'); p.textAlign(p.LEFT);
+      p.textSize(Math.max(9, p.width * .021));
+      p.text(copy.meta || 'READING NOTE  /  TODAY', p.width * .075, p.height * .205);
+      p.fill(98, 32, 30);
+      p.textFont('Songti SC'); p.textAlign(p.LEFT);
+      p.textSize(longQuote ? Math.max(18, p.width * .052) : Math.max(25, p.width * .07));
+      p.text(framedQuote, p.width * .075, p.height * .255, p.width * .84, p.height * .19);
+      p.fill(31, 34, 38);
+      p.textAlign(p.LEFT);
       if (!reducedMotion || branchFrame < 180) {
-        growBranches();
         growBranches();
         growBranches();
       }
       for (const branch of branches) {
         if (branch.points.length < 2) continue;
         p.noFill();
-        p.stroke(45, 41, 36, 215);
-        p.strokeWeight(Math.max(1.05, 2.45 - branch.level * .3));
+        p.stroke(31, 34, 38, 255);
+        p.strokeWeight(Math.max(1.45, 3.65 - branch.level * .48));
         p.beginShape();
         branch.points.forEach((point) => p.vertex(point.x + branchOffset(point, branch.seed), point.y));
         p.endShape();
       }
-      const colors = [[210, 67, 53], [226, 174, 37], [92, 139, 80]];
+      const colors = [[98, 32, 30], [193, 187, 30], [53, 86, 58]];
       for (const flower of flowers) {
         const point = flower.branch.points[flower.index];
         if (!point) continue;
         const bloom = clamp01((branchFrame - flower.born) / 45);
         const color = colors[(flower.index + flower.branch.level) % colors.length];
         p.noStroke();
-        p.fill(color[0], color[1], color[2], 205 * bloom);
-        p.circle(point.x + branchOffset(point, flower.branch.seed), point.y, p.lerp(1, flower.size, 1 - Math.pow(1 - bloom, 3)));
+        p.fill(color[0], color[1], color[2], 255 * bloom);
+        p.circle(point.x + branchOffset(point, flower.branch.seed), point.y, p.lerp(2, flower.size * 1.35, 1 - Math.pow(1 - bloom, 3)));
       }
       p.noStroke();
-      p.fill(245, 239, 202);
+      p.fill(35, 63, 142);
       p.beginShape();
-      p.vertex(p.width * .43, p.height * .74);
-      p.bezierVertex(p.width * .42, p.height * .82, p.width * .34, p.height * .9, p.width * .36, p.height * .98);
-      p.vertex(p.width * .64, p.height * .98);
-      p.bezierVertex(p.width * .66, p.height * .9, p.width * .58, p.height * .82, p.width * .57, p.height * .74);
+      p.vertex(p.width * .43, p.height * .71);
+      p.bezierVertex(p.width * .43, p.height * .79, p.width * .39, p.height * .86, p.width * .4, p.height * .93);
+      p.vertex(p.width * .6, p.height * .93);
+      p.bezierVertex(p.width * .61, p.height * .86, p.width * .57, p.height * .79, p.width * .57, p.height * .71);
       p.endShape(p.CLOSE);
-      p.stroke(45, 41, 36, 150);
-      p.strokeWeight(1.1);
-      p.line(p.width * .43, p.height * .74, p.width * .57, p.height * .74);
+      p.stroke(31, 34, 38, 245);
+      p.strokeWeight(1.5);
+      p.line(p.width * .43, p.height * .71, p.width * .57, p.height * .71);
     };
 
     const updateTail = (tail: TailPoint[], rootX: number) => {
@@ -397,20 +504,24 @@ if (mount && gallery) {
     };
 
     const drawBirds = (scrollPhase: number) => {
-      p.background(239, 233, 218);
-      p.fill(20, 20, 18, 230);
+      const copy = sceneCopy('bird');
+      p.background(226, 230, 225);
+      p.fill(31, 34, 38, 255);
       p.noStroke();
+      p.textFont('Songti SC');
+      p.textAlign(p.CENTER, p.TOP);
+      p.textSize(Math.max(23, p.width * .068));
+      p.text(copy.title || 'Beyond the strings', p.width * .5, p.height * .04);
       p.textFont('Georgia');
-      p.textAlign(p.CENTER);
-      p.textSize(Math.max(13, p.width * .055));
-      p.text('Beyond the strings', p.width * .5, p.height * .13);
-      p.textSize(Math.max(5, p.width * .014));
-      p.text('the wind passes between notes / study 03', p.width * .5, p.height * .155);
+      p.textSize(Math.max(8, p.width * .019));
+      p.text(copy.subtitle || 'the wind passes between notes / study 03', p.width * .5, p.height * .155);
       p.textAlign(p.LEFT);
-      p.stroke(38, 38, 35, 170);
-      p.strokeWeight(.75);
+      const staffColors = [[31,34,38], [35,63,142], [98,32,30], [53,86,58], [31,34,38]];
+      p.strokeWeight(1);
       const staffTop = p.height * .28;
       for (let staff = 0; staff < 5; staff += 1) {
+        const staffColor = staffColors[staff];
+        p.stroke(staffColor[0], staffColor[1], staffColor[2], 220);
         const top = staffTop + staff * p.height * .115;
         for (let line = 0; line < 5; line += 1) {
           const baseY = top + line * 5;
@@ -429,13 +540,15 @@ if (mount && gallery) {
         for (let note = 0; note < 8; note += 1) {
           const x = p.width * (.17 + note * .09);
           const y = top + ((note * 7 + staff * 3) % 20);
-          p.noStroke(); p.fill(30, 30, 28, 220); p.ellipse(x, y, 4, 3); p.stroke(30, 30, 28, 220); p.line(x + 2, y, x + 2, y - 10);
+          p.noStroke(); p.fill(31, 34, 38, 255); p.ellipse(x, y, 5, 4); p.stroke(31, 34, 38, 255); p.line(x + 2, y, x + 2, y - 11);
         }
       }
       p.noFill();
-      p.stroke(98, 32, 30, 54);
-      p.strokeWeight(.45);
+      const stringColors = [[35,63,142], [98,32,30], [53,86,58], [31,34,38]];
+      p.strokeWeight(.75);
       for (let stringIndex = 0; stringIndex < 12; stringIndex += 1) {
+        const stringColor = stringColors[stringIndex % stringColors.length];
+        p.stroke(stringColor[0], stringColor[1], stringColor[2], 165);
         const x = p.map(stringIndex, 0, 11, p.width * .2, p.width * .8);
         p.beginShape();
         for (let step = 0; step <= 20; step += 1) {
@@ -455,14 +568,52 @@ if (mount && gallery) {
       }
     };
 
-    const drawRefresh = () => {
-      const elapsed = p.millis() - refreshStartedAt;
-      if (elapsed < 0 || elapsed > 720) return;
-      const t = 1 - Math.pow(1 - clamp01(elapsed / 720), 3);
-      const scanY = p.lerp(p.height, 0, t);
+    const drawExperience = () => {
+      const copy = sceneCopy('experience');
+      p.background(226, 230, 225);
+      const blocks = [[35,63,142], [98,32,30], [193,187,30], [53,86,58]];
       p.noStroke();
-      p.fill(244, 241, 232, 242);
-      p.rect(0, 0, p.width, scanY);
+      blocks.forEach((color, index) => {
+        p.fill(color[0], color[1], color[2]);
+        p.rect(p.width * (.13 + index * .19), p.height * .22, p.width * .13, p.height * .012);
+      });
+      p.fill(31, 34, 38);
+      p.textAlign(p.CENTER);
+      p.textFont('Georgia');
+      p.textSize(Math.max(24, p.width * .085));
+      p.text(copy.title || 'Your turn.', p.width * .5, p.height * .47);
+      p.textSize(Math.max(7, p.width * .019));
+      p.text(copy.subtitle || 'DROP A PHOTO  /  WRITE A LINE', p.width * .5, p.height * .53);
+      p.noFill(); p.stroke(31, 34, 38); p.strokeWeight(1);
+      p.rect(p.width * .25, p.height * .62, p.width * .5, p.height * .085);
+      p.noStroke(); p.fill(31, 34, 38); p.textSize(Math.max(8, p.width * .021));
+      p.text(copy.meta || 'PREVIEW ON PEANUP', p.width * .5, p.height * .675);
+      p.textAlign(p.LEFT);
+    };
+
+    const drawRefresh = () => {
+      if (!refreshActive) return;
+      const elapsed = p.millis() - refreshStartedAt;
+      if (elapsed < 0) return;
+      if (elapsed > refreshDuration) {
+        gallery.style.setProperty('--ink-write-top', '0%');
+        gallery.style.setProperty('--ink-write-opacity', '0');
+        gallery.classList.remove('is-refreshing', 'is-leaving-experience');
+        gallery.classList.toggle('is-live-ready', currentPhase === 'experience');
+        refreshActive = false;
+        return;
+      }
+      const t = 1 - Math.pow(1 - clamp01(elapsed / refreshDuration), 3);
+      const scanY = p.lerp(p.height, 0, t);
+      gallery.style.setProperty('--ink-write-top', `${(1 - t) * 100}%`);
+      gallery.style.setProperty('--ink-write-opacity', `${Math.sin(t * Math.PI) * .7}`);
+      const context = p.drawingContext as CanvasRenderingContext2D;
+      if (hasTransitionFrame && transitionCanvas.width > 0 && scanY > 0) {
+        context.save();
+        context.drawImage(transitionCanvas, 0, 0, transitionCanvas.width, transitionCanvas.height * scanY / p.height, 0, 0, p.width, scanY);
+        context.restore();
+      }
+      p.noStroke();
       p.fill(20, 20, 18, 28);
       p.rect(0, scanY, p.width, 10);
       p.fill(48, 102, 178, 120);
@@ -475,6 +626,19 @@ if (mount && gallery) {
       labels[0]?.classList.add('active');
       window.addEventListener('resize', sizeCanvas, { passive: true });
       document.addEventListener('visibilitychange', () => document.hidden ? p.noLoop() : p.loop());
+      const phaseOrder: Array<keyof typeof phaseNames> = ['rain', 'branch', 'bird', 'experience'];
+      labels.forEach((label) => {
+        const activate = () => {
+          const phase = label.dataset.inkLabel as keyof typeof phaseNames;
+          const index = phaseOrder.indexOf(phase);
+          if (index < 0) return;
+          const top = window.scrollY + gallery.getBoundingClientRect().top;
+          const distance = Math.max(1, gallery.offsetHeight - window.innerHeight);
+          window.scrollTo({ top: top + distance * ((index + .5) / phaseOrder.length), behavior: reducedMotion ? 'auto' : 'smooth' });
+        };
+        label.addEventListener('click', (event) => { if (!(event.target as HTMLElement).closest('a, button')) activate(); });
+        label.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); activate(); } });
+      });
     };
 
     p.preload = () => {
@@ -482,14 +646,14 @@ if (mount && gallery) {
     };
 
     p.draw = () => {
-      p.background(244, 241, 232);
       const scroll = progress();
-      setPhase(scroll < .335 ? 'rain' : scroll < .67 ? 'branch' : 'bird');
-      const rainReveal = clamp01(scroll / .28);
-      const birdScroll = clamp01((scroll - .67) / .3);
+      setPhase(scroll < .25 ? 'rain' : scroll < .5 ? 'branch' : scroll < .75 ? 'bird' : 'experience');
+      const rainReveal = clamp01(scroll / .22);
+      const birdScroll = clamp01((scroll - .5) / .23);
       if (currentPhase === 'rain') drawRain(rainReveal);
       else if (currentPhase === 'branch') drawBranches();
-      else drawBirds(birdScroll);
+      else if (currentPhase === 'bird') drawBirds(birdScroll);
+      else drawExperience();
       drawPaperSurface();
       applyEpaperMaterial();
       drawRefresh();

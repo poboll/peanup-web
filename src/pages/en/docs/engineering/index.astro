@@ -1,0 +1,206 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import ThemeToggle from '../../../../components/ThemeToggle.astro';
+import '../../../../styles/docs.css';
+
+const toc = [
+  ['scope', 'Scope & evidence'],
+  ['architecture', 'Architecture'],
+  ['panel', 'Panel profile'],
+  ['pipeline', 'Image pipeline'],
+  ['dithering', 'Dithering'],
+  ['ble', 'BLE state machine'],
+  ['power', 'Power model'],
+  ['boundaries', 'Validation boundaries'],
+];
+
+const algorithms = [
+  ['Floyd–Steinberg', '16', 'Balanced four-neighbor diffusion and a practical compatibility baseline.'],
+  ['Atkinson', '8', 'Diffuses only part of the error for a crisper, higher-contrast result.'],
+  ['Jarvis–Judice–Ninke', '48', 'A wider three-row kernel for smooth photographic tone transitions.'],
+  ['Stucki', '42', 'Wide diffusion with slightly stronger edge retention than JJN.'],
+  ['Burkes', '32', 'A two-row kernel that balances detail, memory and processing cost.'],
+  ['Sierra 3 / 2 / Lite', '32 / 16 / 4', 'Three quality and cost levels for final output through responsive preview.'],
+];
+---
+
+<BaseLayout
+  title="Peanup Engineering Notes | Local rendering and BLE"
+  description="Engineering notes for Peanup covering its 3.68-inch E6 six-color 528 × 792 panel profile, image pipeline, dithering families, BLE state machine, local-first architecture and hardware validation boundaries."
+  locale="en"
+  htmlLang="en"
+  ogLocale="en_US"
+  canonicalPath="/en/docs/engineering/"
+  alternates={[
+    { lang: 'zh-CN', href: '/docs/engineering/' },
+    { lang: 'en', href: '/en/docs/engineering/' },
+  ]}
+  xDefaultPath="/docs/engineering/"
+  schemaType="TechArticle"
+  backTopLabel="Back to top"
+>
+  <header class="docs-topbar">
+    <a class="brand" href="/en/" aria-label="Peanup home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+      <span>Peanup</span>
+    </a>
+    <nav class="docs-primary-nav" aria-label="Documentation">
+      <a href="/en/docs/">Product guide</a>
+      <a aria-current="page" href="/en/docs/engineering/">Engineering notes</a>
+      <a lang="zh-CN" href="/docs/engineering/" hreflang="zh-CN">简体中文</a>
+    </nav>
+    <ThemeToggle locale="en" />
+    <details class="docs-mobile-nav">
+      <summary>Menu</summary>
+      <nav aria-label="Mobile documentation">
+        <a href="/en/docs/">Product guide</a>
+        <a aria-current="page" href="/en/docs/engineering/">Engineering notes</a>
+        <a lang="zh-CN" href="/docs/engineering/" hreflang="zh-CN">简体中文</a>
+      </nav>
+    </details>
+  </header>
+
+  <main class="docs-layout">
+    <aside class="docs-toc" aria-label="On this page">
+      <p>ENGINEERING NOTES</p>
+      <nav>
+        {toc.map(([id, label], index) => <a href={`#${id}`}><i>{String(index + 1).padStart(2, '0')}</i>{label}</a>)}
+      </nav>
+      <small>Evidence-led working notes<br />Revision 0.2 · July 2026</small>
+    </aside>
+
+    <article class="docs-article docs-article--engineering">
+      <section class="docs-hero" id="scope">
+        <div class="docs-eyebrow"><span>PEANUP / ENGINEERING</span><b>REV. 0.2</b></div>
+        <h1>From a local frame<br />to physical pigment.</h1>
+        <p class="docs-deck">These notes separate what the legacy application proves, what can be rebuilt with standard techniques and what still requires a Peanup hardware loop. They are implementation guidance, not campaign promises.</p>
+        <div class="docs-evidence" aria-label="Evidence levels">
+          <span><i>E</i><strong>Evidence</strong><small>Observed in the binary, resources or recovered constants</small></span>
+          <span><i>R</i><strong>Rebuild</strong><small>Reproducible with documented platform techniques</small></span>
+          <span><i>H</i><strong>Hardware</strong><small>Requires controller documentation, capture or measurement</small></span>
+        </div>
+      </section>
+
+      <section class="docs-section" id="architecture">
+        <header><span>02 / ARCHITECTURE</span><h2>Local first.<br />BLE only when updating.</h2></header>
+        <div class="docs-split">
+          <p class="docs-lead">The V1 path keeps capture, composition, six-color conversion and the gallery on the phone. A prepared frame is transferred nearby; the e-paper holds it after disconnect.</p>
+          <div class="docs-copy">
+            <p><b>E:</b> The recovered application links AVFoundation, PhotosUI, CoreImage, CoreBluetooth, ActivityKit and local file storage. Its core workflow does not require a photo-processing backend.</p>
+            <p><b>R:</b> Isolate the image renderer from transport. A device profile owns panel size, color codes, packing, GATT identifiers and controller capabilities; the UI consumes stable progress states rather than protocol bytes.</p>
+          </div>
+        </div>
+        <ol class="docs-steps">
+          <li><span>01</span><strong>Input</strong><p>Camera, library, text or information-card bitmap.</p></li>
+          <li><span>02</span><strong>Render</strong><p>Crop, tone-map, quantize and dither locally.</p></li>
+          <li><span>03</span><strong>Transfer</strong><p>Negotiate a profile, pace blocks and persist pending work.</p></li>
+          <li><span>04</span><strong>Refresh</strong><p>Wait for the device result before marking the frame complete.</p></li>
+        </ol>
+      </section>
+
+      <section class="docs-section" id="panel">
+        <header><span>03 / PANEL PROFILE</span><h2>Lock geometry first.<br />Then integrate the controller.</h2></header>
+        <p class="docs-lead docs-lead--offset">The manufacturer's Tentative Specification V0.2 defines <code>SE0368NW34-CNG-A0</code> as a 3.68-inch AM EPD: 528 × 792 pixels, a 51.84 × 77.76 mm active area and a 56.24 × 86.54 × 0.87 mm panel module.</p>
+        <dl class="docs-panel-profile" aria-label="Manufacturer panel engineering data">
+          <div><dt>MATRIX</dt><dd>528 × 792</dd><small>Portrait pixel matrix</small></div>
+          <div><dt>ACTIVE AREA</dt><dd>51.84 × 77.76 mm</dd><small>Visible image area</small></div>
+          <div><dt>MODULE</dt><dd>56.24 × 86.54 × 0.87 mm</dd><small>Excludes Peanup enclosure</small></div>
+          <div><dt>WHITE</dt><dd>30% min. / 35% typ.</dd><small>White reflectivity</small></div>
+          <div><dt>CONTRAST</dt><dd>8:1 min. / 10:1 typ.</dd><small>Surface reflectance ratio</small></div>
+          <div><dt>TEMPERATURE</dt><dd>0–50°C</dd><small>Panel operating range</small></div>
+        </dl>
+        <div class="docs-grid docs-grid--three docs-panel-engineering">
+          <article><span>BUS</span><h3>24-pin / SPI</h3><p>The panel exposes a 24-pin FPC and write-only 3-wire or 4-wire SPI. Controller operations must not be interrupted while <code>BUSY</code> is low; final command sequences follow the production controller documentation.</p></article>
+          <article><span>PANEL POWER</span><h3>3.0 V typical</h3><p>VDD is 2.8–3.6 V. The table lists 60 mW typical panel power, 50 μA Sleep with RAM retained and 1 μA Deep sleep without RAM retention. These are not Peanup whole-device figures.</p></article>
+          <article><span>PROVISIONAL LIMITS</span><h3>Hardware loop required</h3><p>Refresh time and panel weight remain TBD. The stated condition is indoor only, up to 2000 lux. Outdoor behavior, refresh speed and whole-device battery life require separate validation.</p></article>
+        </div>
+        <div class="docs-callout docs-callout--warning">
+          <span>SPEC CONSISTENCY</span>
+          <p>The table lists both a <code>94 μm</code> pixel pitch and <code>DPI 259</code>, while 51.84 mm / 528 pixels and 77.76 mm / 792 pixels both yield about 98.18 μm, or 258.7 PPI. Engineering and product pages use the result calculated from the pixel matrix and active area.</p>
+        </div>
+      </section>
+
+      <section class="docs-section" id="pipeline">
+        <header><span>04 / IMAGE PIPELINE</span><h2>One composition,<br />six physical codes.</h2></header>
+        <p class="docs-lead docs-lead--offset">The render target is 528 × 792 pixels. Preserve source aspect ratio and render against the selected hardware profile; never stretch an image to fit.</p>
+        <div class="docs-pipeline">
+          <article><span>01 / GEOMETRY</span><h3>Orient & crop</h3><p>Normalize EXIF orientation, crop to the active panel profile and resize with a high-quality filter.</p></article>
+          <article><span>02 / TONE</span><h3>Map the image</h3><p>Control black and paper points, local contrast and saturation before palette assignment.</p></article>
+          <article><span>03 / COLOR</span><h3>Quantize & dither</h3><p>Choose the nearest calibrated pigment under a perceptual distance, then distribute residual error.</p></article>
+          <article><span>04 / WIRE</span><h3>Index & pack</h3><p>Pack color indexes according to the negotiated controller profile. Exact frame length follows the production panel matrix.</p></article>
+        </div>
+        <div class="docs-code-palette" aria-label="Recovered legacy six-color code map">
+          <span><i>0x0</i><b>Black</b></span><span><i>0x1</i><b>White</b></span><span><i>0x2</i><b>Yellow</b></span><span><i>0x3</i><b>Red</b></span><span><i>0x5</i><b>Blue</b></span><span><i>0x6</i><b>Green</b></span>
+        </div>
+        <pre><code>panelWidth = 528
+panelHeight = 792
+pixelCount = panelWidth * panelHeight  // 418,176 pixels
+// Wire length still depends on final palette depth and controller framing.</code></pre>
+        <p class="docs-caption"><b>Geometry boundary:</b> The website Canvas may use independent logical coordinates, but final output must render at 528 × 792. <b>H:</b> The production controller profile must still define palette order, bit depth, waveform and packet framing.</p>
+      </section>
+
+      <section class="docs-section" id="dithering">
+        <header><span>05 / DITHER ENGINE</span><h2>A rendering system,<br />not a single filter.</h2></header>
+        <p class="docs-lead docs-lead--offset">A stable preview and a high-quality final write have different needs. Keep the source in linear or well-defined color space, use serpentine scanning for diffusion, clamp propagated error and treat text separately from photographs.</p>
+        <div class="docs-algorithms">
+          {algorithms.map(([name, divisor, note]) => <article><span>{name}</span><b>DIV / {divisor}</b><p>{note}</p></article>)}
+        </div>
+        <div class="docs-grid docs-grid--three docs-modes">
+          <article><span>REALTIME</span><h3>Ordered 4 × 4 / 8 × 8</h3><p>Bayer thresholds are deterministic across frames, making them suitable for a responsive camera preview.</p></article>
+          <article><span>BALANCED</span><h3>Floyd–Steinberg / Stucki</h3><p>Error diffusion preserves local detail while keeping computation practical for the final frame.</p></article>
+          <article><span>PHOTO</span><h3>Perceptual / Spectra Mix</h3><p>Palette-aware tone mapping can preserve photographic structure, but legacy special mixing behavior is not yet fully recovered.</p></article>
+        </div>
+        <p class="docs-note"><b>Content-aware rule</b><span>Disable or constrain cross-edge diffusion for typography, QR-like geometry and one-pixel lines. Validate photographs against a fixed reference set rather than tuning on color patches alone.</span></p>
+      </section>
+
+      <section class="docs-section" id="ble">
+        <header><span>06 / CORE BLUETOOTH</span><h2>Discover, negotiate,<br />pace, confirm.</h2></header>
+        <div class="docs-gatt">
+          <article><span>FDF PROFILE</span><code>FDF0 service</code><p>Recovered characteristics: <code>FDF1</code> and <code>FDF2</code>.</p></article>
+          <article><span>FEF PROFILE</span><code>FEF0 service</code><p>Recovered characteristics: <code>FEF1</code> and <code>FEF2</code>.</p></article>
+        </div>
+        <ol class="docs-state" aria-label="BLE transfer state machine">
+          <li><i>01</i><span>Scan target service</span></li>
+          <li><i>02</i><span>Connect peripheral</span></li>
+          <li><i>03</i><span>Discover service & characteristics</span></li>
+          <li><i>04</i><span>Handshake & profile capability</span></li>
+          <li><i>05</i><span>Send indexed blocks with pacing</span></li>
+          <li><i>06</i><span>Wait for final ACK & refresh result</span></li>
+          <li><i>07</i><span>Persist outcome & disconnect</span></li>
+        </ol>
+        <div class="docs-grid docs-grid--two">
+          <article><span>NORMAL PATH</span><h3>Write with response</h3><p>Prefer the reliable CoreBluetooth path. Advance only after the system write callback or a protocol-level acknowledgement.</p></article>
+          <article><span>FAST PATH</span><h3>Write without response</h3><p>Enable only after capability negotiation. Respect <code>maximumWriteValueLength</code> and <code>peripheralIsReady(toSendWriteWithoutResponse:)</code> for backpressure.</p></article>
+        </div>
+        <p class="docs-caption">The recovered response parser accepts leading values <code>01 / 02 / 03 / 05 / 06</code>, but their complete business meaning is not yet bound to outbound commands. UUID discovery is not proof of direction, authentication or packet safety.</p>
+      </section>
+
+      <section class="docs-section" id="power">
+        <header><span>07 / POWER MODEL</span><h2>The panel holds.<br />The system returns to sleep.</h2></header>
+        <ol class="docs-power">
+          <li><span>IDLE</span><p>MCU sleep with a deliberately bounded discovery strategy.</p></li>
+          <li><span>CONNECT</span><p>Temporarily advertise and negotiate a useful connection interval.</p></li>
+          <li><span>TRANSFER</span><p>Raise BLE activity while pacing blocks against the peripheral buffer.</p></li>
+          <li><span>REFRESH</span><p>Stop unnecessary radio work while the controller drives the panel waveform.</p></li>
+          <li><span>RETURN</span><p>Record completion, disconnect and restore the lowest valid power state.</p></li>
+        </ol>
+        <p class="docs-lead docs-lead--offset"><b>H:</b> Static e-paper retention does not establish whole-device standby current. Measure the assembled product, including MCU, BLE advertising, PMIC, charger, NFC and leakage, at multiple temperatures and refresh frequencies.</p>
+      </section>
+
+      <section class="docs-section" id="boundaries">
+        <header><span>08 / VALIDATION BOUNDARIES</span><h2>Build from evidence.<br />Measure the rest.</h2></header>
+        <div class="docs-boundaries">
+          <article><span>E / CONFIRMED LEGACY EVIDENCE</span><p>Local photo repository and thumbnails; six-color mode; recovered palette codes and nibble packing; FDF/FEF service families; normal and fast writes; indexed blocks; final acknowledgement and refresh waiting; QuickLZ-related alignment checks.</p></article>
+          <article><span>R / REBUILDABLE NOW</span><p>Capture and import, 3:5 crop, local preview, standard ordered and error-diffusion algorithms, persistent pending jobs, CoreBluetooth scan/connect skeleton, backpressure, progress UI and fault injection with a simulated transport.</p></article>
+          <article><span>H / REQUIRES THE DEVICE</span><p>Characteristic properties and directions, outbound control bytes, packet headers and endianness, ACK semantics, checksum or CRC, QuickLZ version and framing, controller color order, refresh waveform, real throughput, thermal behavior, battery capacity and whole-device power.</p></article>
+        </div>
+        <div class="docs-decision"><span>V1 ARCHITECTURE DECISION</span><strong>On-device rendering + nearby BLE transfer + e-paper retention</strong><p>Add always-on networking only if unattended or remote updates become a validated core need.</p></div>
+      </section>
+
+      <div class="docs-footer">
+        <div><span>PEANUP / ENGINEERING</span><p>Working notes derived from static analysis and standard platform behavior.</p></div>
+        <a lang="zh-CN" href="/docs/engineering/" hreflang="zh-CN">阅读简体中文版 <span aria-hidden="true">→</span></a>
+      </div>
+    </article>
+  </main>
+</BaseLayout>

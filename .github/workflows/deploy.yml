@@ -37,18 +37,31 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     environment: production
-    if: ${{ vars.PRODUCTION_DEPLOY == 'enabled' }}
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: peanup-dist
           path: dist
+      - name: Validate deployment configuration
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          set -euo pipefail
+          for variable in DEPLOY_SSH_KEY DEPLOY_HOST DEPLOY_USER; do
+            if [ -z "${!variable:-}" ]; then
+              echo "::error::$variable is not configured in the production environment"
+              exit 1
+            fi
+          done
       - name: Configure SSH
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT || '22' }}
         run: |
+          set -euo pipefail
           install -m 700 -d ~/.ssh
           printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/peanup_deploy
           chmod 600 ~/.ssh/peanup_deploy
@@ -60,6 +73,7 @@ jobs:
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT || '22' }}
           RELEASE_ID: ${{ github.sha }}
         run: |
+          set -euo pipefail
           ssh -i ~/.ssh/peanup_deploy -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
             "install -d -m 755 /www/wwwroot/pean.caiths.com/releases/$RELEASE_ID"
           rsync -az --delete -e "ssh -i ~/.ssh/peanup_deploy -p $DEPLOY_PORT" \
@@ -71,5 +85,16 @@ jobs:
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT || '22' }}
           RELEASE_ID: ${{ github.sha }}
         run: |
+          set -euo pipefail
           ssh -i ~/.ssh/peanup_deploy -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
             "ln -sfn /www/wwwroot/pean.caiths.com/releases/$RELEASE_ID /www/wwwroot/pean.caiths.com/current && find /www/wwwroot/pean.caiths.com/releases -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\\n' | sort -nr | tail -n +6 | cut -d' ' -f2- | xargs -r rm -rf"
+      - name: Verify active release
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT || '22' }}
+          RELEASE_ID: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/peanup_deploy -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
+            "test -s /www/wwwroot/pean.caiths.com/current/index.html && test \"\$(readlink -f /www/wwwroot/pean.caiths.com/current)\" = \"/www/wwwroot/pean.caiths.com/releases/$RELEASE_ID\""

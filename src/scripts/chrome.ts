@@ -1,6 +1,43 @@
 const header = document.querySelector<HTMLElement>('.site-header');
 const backToTop = document.querySelector<HTMLButtonElement>('.back-to-top');
 const chromeReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+const themeToggles = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+
+type Theme = 'light' | 'dark';
+
+const storedTheme = (): Theme | null => {
+  try {
+    const value = localStorage.getItem('peanup.theme');
+    return value === 'light' || value === 'dark' ? value : null;
+  } catch {
+    return null;
+  }
+};
+
+const updateThemeControls = (theme: Theme) => {
+  const isDark = theme === 'dark';
+  themeToggles.forEach((toggle) => {
+    const label = isDark ? toggle.dataset.labelLight : toggle.dataset.labelDark;
+    toggle.setAttribute('aria-pressed', String(isDark));
+    if (label) {
+      toggle.setAttribute('aria-label', label);
+      toggle.title = label;
+    }
+  });
+};
+
+const applyTheme = (theme: Theme, persist = false) => {
+  document.documentElement.dataset.theme = theme;
+  document.documentElement.style.colorScheme = theme;
+  document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#0e0f0e' : '#ffffff');
+  updateThemeControls(theme);
+  if (persist) {
+    try {
+      localStorage.setItem('peanup.theme', theme);
+    } catch {}
+  }
+};
 
 const updatePageChrome = () => {
   header?.classList.toggle('scrolled', window.scrollY > 32);
@@ -10,7 +47,7 @@ const updatePageChrome = () => {
 const animateToTop = () => {
   const start = window.scrollY;
   if (start <= 0) return;
-  const duration = chromeReduceMotion.matches ? 700 : 1250;
+  const duration = chromeReduceMotion.matches ? 1 : 1100;
   const startedAt = performance.now();
   document.documentElement.classList.add('slow-scroll-active');
 
@@ -27,4 +64,14 @@ const animateToTop = () => {
 
 window.addEventListener('scroll', updatePageChrome, { passive: true });
 backToTop?.addEventListener('click', animateToTop);
+themeToggles.forEach((toggle) => {
+  toggle.addEventListener('click', () => {
+    const current = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+    applyTheme(current === 'dark' ? 'light' : 'dark', true);
+  });
+});
+systemTheme.addEventListener('change', (event) => {
+  if (!storedTheme()) applyTheme(event.matches ? 'dark' : 'light');
+});
+applyTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
 updatePageChrome();

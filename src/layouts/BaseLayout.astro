@@ -1,42 +1,119 @@
 ---
+import type { Locale } from '../i18n/product';
+
+interface AlternateLink { lang: string; href: string }
+
 interface Props {
   title: string;
   description: string;
+  locale?: Locale;
+  htmlLang?: string;
+  ogLocale?: string;
+  canonicalPath?: string;
+  alternates?: AlternateLink[];
+  xDefaultPath?: string;
+  schemaType?: 'Product' | 'TechArticle' | 'none';
+  robots?: string;
+  backTopLabel?: string;
+  ogImage?: string;
 }
 
-const { title, description } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site);
-const productSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Product',
-  name: '花生片 Peanup',
+const {
+  title,
   description,
-  category: '彩色电子墨水屏',
-  brand: { '@type': 'Brand', name: 'Peanup' },
-};
+  locale = 'en',
+  htmlLang = 'en',
+  ogLocale = 'en_US',
+  canonicalPath = Astro.url.pathname,
+  alternates = [],
+  xDefaultPath = '/',
+  schemaType = 'none',
+  robots = 'index,follow,noimageindex,max-image-preview:none',
+  backTopLabel = 'Back to top',
+  ogImage = '/assets/peanup-og.webp',
+} = Astro.props;
+
+const site = Astro.site ?? new URL('https://pean.caiths.com');
+const canonical = new URL(canonicalPath, site);
+const absoluteOgImage = new URL(ogImage, site);
+const schema = schemaType === 'Product'
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: 'Peanup',
+      alternateName: '花生片 Peanup',
+      description,
+      category: 'Six-color electronic paper display',
+      brand: { '@type': 'Brand', name: 'Peanup' },
+      image: absoluteOgImage.href,
+      url: canonical.href,
+      additionalProperty: [
+        { '@type': 'PropertyValue', name: 'Display', value: '3.68-inch E6 six-color e-paper' },
+        { '@type': 'PropertyValue', name: 'Pixel density', value: 'Approximately 258.7 PPI' },
+        { '@type': 'PropertyValue', name: 'Transfer', value: 'Bluetooth Low Energy' },
+      ],
+    }
+  : schemaType === 'TechArticle'
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'TechArticle',
+        headline: title,
+        description,
+        inLanguage: htmlLang,
+        author: { '@type': 'Organization', name: 'Peanup' },
+        publisher: { '@type': 'Organization', name: 'Peanup' },
+        mainEntityOfPage: canonical.href,
+        url: canonical.href,
+      }
+    : null;
 ---
 
 <!doctype html>
-<html lang="zh-CN">
+<html lang={htmlLang} data-locale={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#ffffff" />
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        let saved = null;
+        try {
+          saved = localStorage.getItem('peanup.theme');
+        } catch {}
+        const theme = saved === 'dark' || saved === 'light'
+          ? saved
+          : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        root.dataset.theme = theme;
+        root.style.colorScheme = theme;
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#0e0f0e' : '#ffffff');
+      })();
+    </script>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={robots} />
+    <link rel="canonical" href={canonical.href} />
+    {alternates.map((alternate) => <link rel="alternate" hreflang={alternate.lang} href={new URL(alternate.href, site).href} />)}
+    {alternates.length > 0 && <link rel="alternate" hreflang="x-default" href={new URL(xDefaultPath, site).href} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={schemaType === 'Product' ? 'product' : 'article'} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content="/assets/peanup-lifestyle.webp" />
-    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={absoluteOgImage.href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:site_name" content="Peanup" />
     <meta name="twitter:card" content="summary_large_image" />
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(productSchema)} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={absoluteOgImage.href} />
+    {schema && <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />}
     <title>{title}</title>
   </head>
   <body>
     <slot />
-    <button class="back-to-top" type="button" aria-label="返回页面顶部" title="返回顶部">
+    <button class="back-to-top" type="button" aria-label={backTopLabel} title={backTopLabel}>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V5m0 0-6 6m6-6 6 6" /></svg>
     </button>
     <script>
@@ -46,5 +123,5 @@ const productSchema = {
 </html>
 
 <style is:global>
-  @import '../styles/global.css';
+  @import '../styles/base.css';
 </style>
