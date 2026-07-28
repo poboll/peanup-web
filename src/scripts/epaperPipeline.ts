@@ -26,20 +26,14 @@ const nearest = (r: number, g: number, b: number) => {
 
 const render = () => {
   if (!preview || !source || !source.complete || !source.naturalWidth) return;
-  const width = 720;
-  const height = 540;
+  const width = 640;
+  const height = Math.max(1, Math.round(width * source.naturalHeight / source.naturalWidth));
   preview.width = width;
   preview.height = height;
   const context = preview.getContext('2d', { willReadFrequently: true });
   if (!context) return;
 
-  const sourceRatio = source.naturalWidth / source.naturalHeight;
-  const targetRatio = width / height;
-  const cropWidth = sourceRatio > targetRatio ? source.naturalHeight * targetRatio : source.naturalWidth;
-  const cropHeight = sourceRatio > targetRatio ? source.naturalHeight : source.naturalWidth / targetRatio;
-  const cropX = (source.naturalWidth - cropWidth) / 2;
-  const cropY = (source.naturalHeight - cropHeight) / 2;
-  context.drawImage(source, cropX, cropY, cropWidth, cropHeight, 0, 0, width, height);
+  context.drawImage(source, 0, 0, source.naturalWidth, source.naturalHeight, 0, 0, width, height);
 
   const image = context.getImageData(0, 0, width, height);
   const histogram = new Uint32Array(256);
@@ -56,13 +50,13 @@ const render = () => {
     }
     return 255;
   };
-  const blackPoint = Math.min(48, percentile(.02));
-  const whitePoint = Math.max(205, percentile(.98));
+  const blackPoint = Math.min(28, percentile(.01));
+  const whitePoint = Math.max(232, percentile(.995));
   const range = Math.max(1, whitePoint - blackPoint);
   for (let index = 0; index < image.data.length; index += 4) {
     for (let channel = 0; channel < 3; channel += 1) {
       const normalized = Math.max(0, Math.min(1, (image.data[index + channel] - blackPoint) / range));
-      image.data[index + channel] = 12 + Math.pow(normalized, 1.08) * 226;
+      image.data[index + channel] = 10 + Math.pow(normalized, 1.02) * 235;
     }
   }
   const data = new Float32Array(image.data);
@@ -87,9 +81,21 @@ const render = () => {
   context.putImageData(image, 0, 0);
 };
 
+let renderScheduled = false;
+const scheduleRender = () => {
+  if (renderScheduled) return;
+  renderScheduled = true;
+  const run = () => {
+    renderScheduled = false;
+    render();
+  };
+  if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(run, { timeout: 450 });
+  else globalThis.setTimeout(run, 0);
+};
+
 if (source && preview && pipeline) {
-  source.addEventListener('load', render, { once: true });
-  render();
+  source.addEventListener('load', scheduleRender, { once: true });
+  scheduleRender();
   const observer = new IntersectionObserver(([entry]) => {
     if (!entry?.isIntersecting) return;
     pipeline.classList.add('pipeline-visible');

@@ -12,7 +12,11 @@ const loadNear = (selector: string, loader: () => Promise<unknown>, rootMargin =
   observer.observe(target);
 };
 
-loadNear('.palette', () => import('./epaperShowcase'), '450px');
+let epaperShowcase: Promise<unknown> | undefined;
+const loadEpaperShowcase = () => epaperShowcase ??= import('./epaperShowcase');
+
+loadNear('.palette', loadEpaperShowcase, '450px');
+loadNear('.dither-studio', loadEpaperShowcase, '500px');
 loadNear('#motion', () => Promise.all([import('./heroSketch'), import('./interactiveScreen')]), '700px');
 loadNear('[data-epaper-pipeline]', () => import('./epaperPipeline'), '500px');
 

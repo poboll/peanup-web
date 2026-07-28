@@ -1,5 +1,8 @@
 name: Build and deploy
 
+env:
+  SITE_URL: https://pean.caiths.com
+
 on:
   push:
     branches: [main]
@@ -78,7 +81,8 @@ jobs:
             "install -d -m 755 /www/wwwroot/pean.caiths.com/releases/$RELEASE_ID"
           rsync -az --delete -e "ssh -i ~/.ssh/peanup_deploy -p $DEPLOY_PORT" \
             dist/ "$DEPLOY_USER@$DEPLOY_HOST:/www/wwwroot/pean.caiths.com/releases/$RELEASE_ID/"
-      - name: Activate and retain rollback releases
+      - name: Activate release
+        id: activate
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
@@ -86,8 +90,11 @@ jobs:
           RELEASE_ID: ${{ github.sha }}
         run: |
           set -euo pipefail
+          previous="$(ssh -i ~/.ssh/peanup_deploy -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
+            "readlink -f /www/wwwroot/pean.caiths.com/current 2>/dev/null || true")"
+          echo "previous=$previous" >> "$GITHUB_OUTPUT"
           ssh -i ~/.ssh/peanup_deploy -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
-            "ln -sfn /www/wwwroot/pean.caiths.com/releases/$RELEASE_ID /www/wwwroot/pean.caiths.com/current && find /www/wwwroot/pean.caiths.com/releases -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\\n' | sort -nr | tail -n +6 | cut -d' ' -f2- | xargs -r rm -rf"
+            "test -s /www/wwwroot/pean.caiths.com/releases/$RELEASE_ID/index.html && ln -sfn /www/wwwroot/pean.caiths.com/releases/$RELEASE_ID /www/wwwroot/pean.caiths.com/current"
       - name: Verify active release
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
@@ -98,3 +105,61 @@ jobs:
           set -euo pipefail
           ssh -i ~/.ssh/peanup_deploy -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
             "test -s /www/wwwroot/pean.caiths.com/current/index.html && test \"\$(readlink -f /www/wwwroot/pean.caiths.com/current)\" = \"/www/wwwroot/pean.caiths.com/releases/$RELEASE_ID\""
+      - name: Verify public website
+        run: |
+          set -euo pipefail
+
+          probe() {
+            local url="$1"
+            local expected="$2"
+            local code=""
+            for attempt in $(seq 1 12); do
+              code="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' --max-time 15 "$url" || true)"
+              if [ "$code" = "$expected" ]; then
+                return 0
+              fi
+              echo "Attempt $attempt: $url returned $code, expected $expected"
+              sleep 5
+            done
+            return 1
+          }
+
+          probe "$SITE_URL/" 200
+          probe "$SITE_URL/docs/" 200
+          probe "$SITE_URL/docs/engineering/" 200
+          probe "$SITE_URL/sitemap.xml" 200
+          probe "$SITE_URL/robots.txt" 200
+          probe "$SITE_URL/__deployment-smoke-test-not-found__" 404
+
+          read -r redirect_code redirect_url <<< "$(curl --silent --show-error --output /dev/null --write-out '%{http_code} %{redirect_url}' --max-time 15 "http://pean.caiths.com/" || true)"
+          case "$redirect_code" in 301|302|307|308) ;; *) exit 1 ;; esac
+          [[ "$redirect_url" == https://pean.caiths.com/* ]]
+
+          asset_headers="$(curl --silent --show-error --head --max-time 15 "$SITE_URL/assets/peanup-product.avif")"
+          grep -qi '^x-robots-tag:.*noimageindex' <<< "$asset_headers"
+      - name: Roll back failed release
+        if: ${{ failure() && steps.activate.outcome == 'success' }}
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT || '22' }}
+          RELEASE_ID: ${{ github.sha }}
+          PREVIOUS_RELEASE: ${{ steps.activate.outputs.previous }}
+        run: |
+          set -euo pipefail
+          if [ -z "$PREVIOUS_RELEASE" ]; then
+            echo "No previous release is available for rollback"
+            exit 0
+          fi
+          ssh -i ~/.ssh/peanup_deploy -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
+            "test -d '$PREVIOUS_RELEASE' && test \"\$(readlink -f /www/wwwroot/pean.caiths.com/current)\" = '/www/wwwroot/pean.caiths.com/releases/$RELEASE_ID' && ln -sfn '$PREVIOUS_RELEASE' /www/wwwroot/pean.caiths.com/current"
+      - name: Retain five releases
+        if: ${{ success() }}
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT || '22' }}
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/peanup_deploy -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
+            "find /www/wwwroot/pean.caiths.com/releases -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\\n' | sort -nr | tail -n +6 | cut -d' ' -f2- | xargs -r rm -rf"

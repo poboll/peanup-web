@@ -52,16 +52,10 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
         let locale = null;
         try {
           const preference = localStorage.getItem(preferenceKey);
-          if (preference && Object.hasOwn(paths, preference)) locale = preference;
-        } catch {}
-
-        if (!locale) {
-          const languages = navigator.languages?.length ? navigator.languages : [navigator.language];
-          for (const language of languages) {
-            locale = normalizeLocale(language);
-            if (locale) break;
+          if (preference && Object.hasOwn(paths, preference)) {
+            locale = preference;
           }
-        }
+        } catch {}
 
         if (!locale) {
           let timeZone = '';
@@ -71,11 +65,14 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
           const timeZoneLocales = {
             'Asia/Shanghai': 'zh-cn',
             'Asia/Chongqing': 'zh-cn',
+            'Asia/Harbin': 'zh-cn',
+            'Asia/Urumqi': 'zh-cn',
             'Asia/Taipei': 'zh-tw',
             'Asia/Hong_Kong': 'zh-tw',
             'Asia/Macau': 'zh-tw',
             'Asia/Tokyo': 'ja',
             'Europe/Berlin': 'de',
+            'Europe/Busingen': 'de',
             'Europe/Vienna': 'de',
             'Europe/Paris': 'fr',
             'Europe/Monaco': 'fr',
@@ -89,8 +86,20 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
           }
         }
 
+        if (!locale) {
+          const languages = navigator.languages?.length ? navigator.languages : [navigator.language];
+          for (const language of languages) {
+            locale = normalizeLocale(language);
+            if (locale) break;
+          }
+        }
+
         const target = paths[locale] || '/';
-        if (target !== location.pathname) location.replace(`${target}${location.search}${location.hash}`);
+        if (target !== location.pathname) {
+          location.replace(`${target}${location.search}${location.hash}`);
+          return;
+        }
+        document.documentElement.dataset.suggestedLocale = locale || 'zh-cn';
       })();
     </script>
   )}
@@ -120,8 +129,8 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
     </div>
   </header>
 
-  <main id="top">
-    <section class="hero" aria-labelledby="hero-title">
+  <main id="main-content" tabindex="-1">
+    <section id="top" class="hero" aria-labelledby="hero-title">
       <div class="hero-copy">
         <h1 id="hero-title"><span>花生片</span><b>Peanup</b></h1>
         <p class="hero-statement">{copy.hero.headline[0]}<br />{copy.hero.headline[1]}</p>
@@ -147,7 +156,6 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
         <p>E6 SIX-COLOR E-PAPER<br />≈258.7 PPI</p>
         <div class="hero-color-ruler" aria-label={copy.paper.paletteLabel}>
           {paletteValues.map((color) => <i style={`--ruler:${color}`}></i>)}
-          <small>E6 SIX-COLOR / ≈258.7 PPI</small>
         </div>
       </div>
 
@@ -183,20 +191,24 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
             {copy.scenes.items.map((scene) => (
               <li
                 class:list={{ 'ink-more': scene.id === 'experience' }}
-                data-ink-label={scene.id}
-                data-canvas-heading={scene.canvasHeading}
-                data-canvas-title={scene.canvasTitle}
-                data-canvas-subtitle={scene.canvasSubtitle}
-                data-canvas-meta={scene.canvasMeta}
-                data-canvas-date={scene.date}
-                data-canvas-weather={scene.weather}
-                data-canvas-quote={scene.quote}
-                data-canvas-quote-source={scene.quoteSource}
-                role="button"
-                tabindex="0"
               >
-                <i></i><span>{scene.number}</span><strong>{scene.title}</strong><small>{scene.detail}</small>
-                {scene.id === 'experience' && <div class="ink-more-actions"><button type="button" data-live-start>{copy.scenes.start}</button><a href="#play">{copy.scenes.skip}</a></div>}
+                <button
+                  class="ink-scene-trigger"
+                  type="button"
+                  data-ink-label={scene.id}
+                  data-canvas-heading={scene.canvasHeading}
+                  data-canvas-title={scene.canvasTitle}
+                  data-canvas-subtitle={scene.canvasSubtitle}
+                  data-canvas-meta={scene.canvasMeta}
+                  data-canvas-date={scene.date}
+                  data-canvas-weather={scene.weather}
+                  data-canvas-quote={scene.quote}
+                  data-canvas-quote-source={scene.quoteSource}
+                  aria-current={scene.id === 'rain' ? 'true' : undefined}
+                >
+                  <i></i><span>{scene.number}</span><strong>{scene.title}</strong><small>{scene.detail}</small>
+                </button>
+                {scene.id === 'experience' && <div class="ink-more-actions"><button type="button" data-live-start>{copy.scenes.start}</button><a href="#play" data-continue-browsing>{copy.scenes.skip}</a></div>}
               </li>
             ))}
           </ol>
@@ -208,7 +220,7 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
               <div id="nature-canvas" class="nature-canvas" aria-hidden="true"></div>
               <span class="ink-screen-material" aria-hidden="true"></span>
               <span class="ink-refresh-line" aria-hidden="true"></span>
-              <span class="ink-screen-caption"><b>{copy.scenes.items[0].canvasTitle}</b><i>01 / 04</i></span>
+              <span class="ink-screen-caption"><b>{copy.scenes.items[0].title} / {copy.scenes.items[0].canvasTitle}</b><i>01 / 04</i></span>
               <div
                 class="ink-live-studio"
                 data-live-studio
@@ -219,13 +231,20 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
                 data-live-fallback={copy.scenes.live.defaultText}
                 aria-label={copy.scenes.live.label}
               >
-                <canvas width="480" height="800" data-live-canvas></canvas>
+                <canvas width="528" height="792" data-live-canvas></canvas>
                 <div class="ink-live-toolbar">
                   <div class="ink-live-fields">
                     <label class="ink-live-photo" data-live-photo><input type="file" accept="image/jpeg,image/png,image/webp,image/avif" data-live-file /><span>{copy.scenes.live.drop}</span><small>{copy.scenes.live.local}</small></label>
-                    <label class="ink-live-text" data-live-text><span>{copy.scenes.live.prompt}</span><textarea maxlength="72" rows="2" data-live-input>{copy.scenes.live.defaultText}</textarea></label>
+                    <label class="ink-live-text" data-live-text><span>{copy.scenes.live.prompt}</span><textarea maxlength="120" rows="3" wrap="soft" data-live-input>{copy.scenes.live.defaultText}</textarea></label>
                   </div>
-                  <p data-live-status aria-live="polite">{copy.scenes.live.privacy}</p>
+                  <div class="ink-live-footer">
+                    <p data-live-status aria-live="polite">{copy.scenes.live.privacy}</p>
+                    <output data-live-count aria-live="polite">0 / 120</output>
+                    <button type="button" class="ink-live-reset" data-live-reset title={copy.scenes.live.reset} aria-label={copy.scenes.live.reset}>
+                      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+                      <span>{copy.scenes.live.reset}</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -251,12 +270,12 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
         <h2>{copy.content.title[0]}<br />{copy.content.title[1]}</h2>
         <p>{copy.content.body}</p>
       </div>
-      <div class="mode-demo">
-        <div class="mode-tabs" role="tablist" aria-label={copy.content.modesLabel}>
-          {copy.content.modes.map((mode, index) => <button role="tab" aria-selected={index === 0 ? 'true' : 'false'} aria-controls="mode-screen" data-mode={mode.id} data-title={mode.title} data-meta={mode.meta} class:list={{ active: index === 0 }}>{mode.label}</button>)}
+        <div class="mode-demo">
+          <div class="mode-tabs" role="tablist" aria-label={copy.content.modesLabel}>
+          {copy.content.modes.map((mode, index) => <button id={`mode-tab-${mode.id}`} role="tab" tabindex={index === 0 ? 0 : -1} aria-selected={index === 0 ? 'true' : 'false'} aria-controls="mode-screen" data-mode={mode.id} data-title={mode.title} data-meta={mode.meta} class:list={{ active: index === 0 }}>{mode.label}</button>)}
         </div>
         <div class="device-stage">
-          <div class="device-shell"><div id="mode-screen" class="device-screen screen-photo" role="tabpanel" aria-live="polite"><div class="screen-art" aria-hidden="true"><i></i><i></i><i></i></div><span id="screen-meta">{copy.content.modes[0].meta}</span><strong id="screen-title">{copy.content.modes[0].title}</strong></div><span class="device-name">PEANUP</span></div>
+          <div class="device-shell"><div id="mode-screen" class="device-screen screen-photo" role="tabpanel" aria-labelledby={`mode-tab-${copy.content.modes[0].id}`} aria-live="polite"><div class="screen-art" aria-hidden="true"><i></i><i></i><i></i></div><span id="screen-meta">{copy.content.modes[0].meta}</span><strong id="screen-title">{copy.content.modes[0].title}</strong></div><span class="device-name">PEANUP</span></div>
           <div class="send-status"><i></i><span>Bluetooth</span><b>Ready</b></div>
         </div>
         <ol class="workflow">
@@ -303,7 +322,7 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
         <section class="hardware-path">
           <div class="hardware-head"><span>{copy.hardware.kicker}</span><h3>{copy.hardware.title[0]}<br />{copy.hardware.title[1]}</h3><p>{copy.hardware.body}</p></div>
           <div class="hardware-grid">
-            {copy.hardware.items.map((item, index) => <article tabindex="0" role="button" aria-pressed="false" data-hardware-cube><div class="hardware-cube"><div class="hardware-face hardware-front"><span>{item.label}</span><HardwareIcon name={hardwareIcons[index]} class="hardware-symbol" /><h4>{item.title}</h4><small>{item.short}</small></div><div class="hardware-face hardware-detail"><span>{item.short}</span><strong>{item.body}</strong><b>{item.label}</b></div></div></article>)}
+            {copy.hardware.items.map((item, index) => <article tabindex="0" role="button" aria-pressed="false" aria-label={`${item.title}: ${item.short}`} data-label-front={`${item.title}: ${item.short}`} data-label-detail={`${item.title}: ${item.body}`} data-hardware-cube><div class="hardware-cube"><div class="hardware-face hardware-front"><span>{item.label}</span><HardwareIcon name={hardwareIcons[index]} class="hardware-symbol" /><h4>{item.title}</h4><small>{item.short}</small></div><div class="hardware-face hardware-detail"><span>{item.short}</span><strong>{item.body}</strong><b>{item.label}</b></div></div></article>)}
           </div>
         </section>
       </div>

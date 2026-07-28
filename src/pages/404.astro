@@ -7,8 +7,8 @@ const palette = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#668468
 ---
 
 <BaseLayout
-  title="页面未找到｜花生片 Peanup"
-  description="这张 Peanup 页面暂时没有写入。返回首页，继续了解 3.68 英寸 E6 六色墨水屏。"
+  title="页面未找到 / Page not found | Peanup"
+  description="这张 Peanup 页面暂时没有写入。This Peanup page could not be found."
   locale="zh-cn"
   htmlLang="zh-CN"
   ogLocale="zh_CN"
@@ -18,28 +18,34 @@ const palette = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#668468
   backTopLabel="返回顶部"
 >
   <header class="site-header not-found-header" aria-label="Peanup 404 导航">
-    <a class="brand" href="/" aria-label="返回 Peanup 首页">
+    <a class="brand" href="/" aria-label="返回 Peanup 首页 / Peanup home">
       <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
       <span>花生片 <b>Peanup</b></span>
     </a>
     <span class="not-found-header-code">404 / FRAME NOT FOUND</span>
     <div class="not-found-header-actions">
       <ThemeToggle locale="zh-cn" />
-      <a class="header-link not-found-home-link" href="/">返回首页</a>
+      <a class="header-link not-found-home-link" href="/">首页 / Home</a>
     </div>
   </header>
 
-  <main class="not-found-page">
+  <main id="main-content" class="not-found-page" tabindex="-1">
     <section class="not-found-copy" aria-labelledby="not-found-title">
       <div class="not-found-index"><span>404</span><span>PAGE NOT FOUND</span></div>
-      <h1 id="not-found-title">这一页，<br />暂时没有写入。</h1>
-      <p>链接可能已经移动，或者这一帧还没有准备好。回到首页，继续看看花生片如何把喜欢的画面留在纸上。</p>
+      <h1 id="not-found-title">
+        这一页，<br />暂时没有写入。
+        <span lang="en">Page not found.</span>
+      </h1>
+      <p>
+        链接可能已经移动。回到首页，继续看看花生片。
+        <span lang="en">The link may have moved. Return home to continue exploring Peanup.</span>
+      </p>
       <div class="not-found-actions">
-        <a class="not-found-primary" href="/">
-          <span>返回首页</span>
+        <a class="not-found-primary" href="/" aria-label="返回首页 / Return home">
+          <span>返回首页 / Home</span>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5" /></svg>
         </a>
-        <a class="not-found-secondary" href="/#product">查看产品</a>
+        <a class="not-found-secondary" href="/#product">产品 / Product</a>
       </div>
       <div class="not-found-palette" aria-label="E6 六色电子纸色板">
         <span>E6 SIX-COLOR</span>

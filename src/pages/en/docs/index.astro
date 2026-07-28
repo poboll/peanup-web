@@ -55,7 +55,7 @@ const faqs = [
 
 <BaseLayout
   title="Peanup Product Guide | 3.68-inch E6 six-color e-paper"
-  description="Product documentation for Peanup: 3.68-inch E6 six-color e-paper at 528 × 792 pixels, Bluetooth transfer, Apple Shortcuts, WeChat Mini Program, Qi charging, magnetic placement, privacy and CUID NFC."
+  description="Peanup product guide: 3.68-inch E6 six-color e-paper, 528 × 792 resolution, Bluetooth transfer, Apple Shortcuts, Qi charging and CUID NFC."
   locale="en"
   htmlLang="en"
   ogLocale="en_US"
@@ -66,6 +66,9 @@ const faqs = [
   ]}
   xDefaultPath="/docs/"
   schemaType="TechArticle"
+  datePublished="2026-07-28"
+  dateModified="2026-07-28"
+  image="/assets/peanup-og.webp"
   backTopLabel="Back to top"
 >
   <header class="docs-topbar">
@@ -77,8 +80,8 @@ const faqs = [
       <a aria-current="page" href="/en/docs/">Product guide</a>
       <a href="/en/docs/engineering/">Engineering notes</a>
       <a lang="zh-CN" href="/docs/" hreflang="zh-CN">简体中文</a>
-      <a class="docs-product-link" href="/en/">Product <span aria-hidden="true">↗</span></a>
     </nav>
+    <a class="docs-product-link docs-topbar-product" href="/en/">Product <span aria-hidden="true">↗</span></a>
     <ThemeToggle locale="en" />
     <details class="docs-mobile-nav">
       <summary>Menu</summary>
@@ -86,18 +89,17 @@ const faqs = [
         <a aria-current="page" href="/en/docs/">Product guide</a>
         <a href="/en/docs/engineering/">Engineering notes</a>
         <a lang="zh-CN" href="/docs/" hreflang="zh-CN">简体中文</a>
-        <a class="docs-product-link" href="/en/">Product <span aria-hidden="true">↗</span></a>
       </nav>
     </details>
   </header>
 
-  <main class="docs-layout">
+  <main id="main-content" class="docs-layout" tabindex="-1">
     <aside class="docs-toc" aria-label="On this page">
       <p>PRODUCT GUIDE</p>
       <nav>
         {toc.map(([id, label], index) => <a href={`#${id}`}><i>{String(index + 1).padStart(2, '0')}</i>{label}</a>)}
       </nav>
-      <small>Preview edition<br />Updated July 2026</small>
+      <small>Preview edition<br />Updated 28 July 2026</small>
     </aside>
 
     <article class="docs-article">

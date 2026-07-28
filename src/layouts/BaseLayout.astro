@@ -16,6 +16,9 @@ interface Props {
   robots?: string;
   backTopLabel?: string;
   ogImage?: string;
+  datePublished?: string;
+  dateModified?: string;
+  image?: string;
 }
 
 const {
@@ -31,11 +34,23 @@ const {
   robots = 'index,follow,noimageindex,max-image-preview:none',
   backTopLabel = 'Back to top',
   ogImage = '/assets/peanup-og.webp',
+  datePublished,
+  dateModified,
+  image,
 } = Astro.props;
 
 const site = Astro.site ?? new URL('https://pean.caiths.com');
 const canonical = new URL(canonicalPath, site);
 const absoluteOgImage = new URL(ogImage, site);
+const absoluteSchemaImage = image ? new URL(image, site) : null;
+const skipLabels: Record<Locale, string> = {
+  'zh-cn': '跳到主要内容',
+  'zh-tw': '跳到主要內容',
+  en: 'Skip to main content',
+  ja: 'メインコンテンツへ移動',
+  de: 'Zum Hauptinhalt',
+  fr: 'Aller au contenu principal',
+};
 const schema = schemaType === 'Product'
   ? {
       '@context': 'https://schema.org',
@@ -64,6 +79,9 @@ const schema = schemaType === 'Product'
         publisher: { '@type': 'Organization', name: 'Peanup' },
         mainEntityOfPage: canonical.href,
         url: canonical.href,
+        ...(datePublished ? { datePublished } : {}),
+        ...(dateModified ? { dateModified } : {}),
+        ...(absoluteSchemaImage ? { image: absoluteSchemaImage.href } : {}),
       }
     : null;
 ---
@@ -104,6 +122,8 @@ const schema = schemaType === 'Product'
     <meta property="og:url" content={canonical.href} />
     <meta property="og:locale" content={ogLocale} />
     <meta property="og:site_name" content="Peanup" />
+    {schemaType === 'TechArticle' && datePublished && <meta property="article:published_time" content={datePublished} />}
+    {schemaType === 'TechArticle' && dateModified && <meta property="article:modified_time" content={dateModified} />}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
@@ -112,6 +132,7 @@ const schema = schemaType === 'Product'
     <title>{title}</title>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">{skipLabels[locale]}</a>
     <div class="theme-curtain" data-theme-curtain aria-hidden="true"></div>
     <slot />
     <button class="back-to-top" type="button" aria-label={backTopLabel} title={backTopLabel}>

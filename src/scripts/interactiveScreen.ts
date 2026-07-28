@@ -6,16 +6,41 @@ if (liveStudio) {
   const photo = liveStudio.querySelector<HTMLElement>('[data-live-photo]');
   const fileInput = liveStudio.querySelector<HTMLInputElement>('[data-live-file]');
   const textInput = liveStudio.querySelector<HTMLTextAreaElement>('[data-live-input]');
+  const toolbar = liveStudio.querySelector<HTMLElement>('.ink-live-toolbar');
   const status = liveStudio.querySelector<HTMLElement>('[data-live-status]');
+  const count = liveStudio.querySelector<HTMLOutputElement>('[data-live-count]');
+  const reset = liveStudio.querySelector<HTMLButtonElement>('[data-live-reset]');
   const start = document.querySelector<HTMLButtonElement>('[data-live-start]');
   const introText = liveStudio.dataset.liveIntro ?? 'Try a frame here';
   const readyText = liveStudio.dataset.liveReady ?? 'Six-color refresh complete';
   const textReady = liveStudio.dataset.liveTextReady ?? 'Text held on e-paper';
   const errorText = liveStudio.dataset.liveError ?? 'This image could not be read';
   const fallbackText = liveStudio.dataset.liveFallback ?? 'Keep today in plain sight.';
+  const initialStatus = status?.textContent ?? '';
   const palette = [[31,34,38], [226,230,225], [35,63,142], [53,86,58], [98,32,30], [193,187,30]] as const;
   let objectUrl = '';
   let renderRevision = 0;
+
+  const resizeTextInput = () => {
+    if (!textInput) return;
+    const styles = getComputedStyle(textInput);
+    const minHeight = Number.parseFloat(styles.minHeight) || 40;
+    const maxHeight = Number.parseFloat(styles.maxHeight) || 108;
+    textInput.style.height = 'auto';
+    textInput.style.height = `${Math.max(minHeight, Math.min(textInput.scrollHeight, maxHeight))}px`;
+    textInput.style.overflowY = textInput.scrollHeight > maxHeight ? 'auto' : 'hidden';
+  };
+
+  const updateCount = () => {
+    if (!count || !textInput) return;
+    count.value = `${Array.from(textInput.value).length} / ${textInput.maxLength}`;
+  };
+
+  const previewBottomInset = () => {
+    if (!canvas || !toolbar) return 210;
+    const renderedHeight = Math.max(1, liveStudio.getBoundingClientRect().height);
+    return Math.max(190, toolbar.getBoundingClientRect().height * canvas.height / renderedHeight + 36);
+  };
 
   const nearest = (r: number, g: number, b: number) => {
     const lightness = r * .2126 + g * .7152 + b * .0722;
@@ -58,7 +83,10 @@ if (liveStudio) {
   const intro = () => {
     if (!canvas || !context) return;
     context.fillStyle = '#e2e6e1'; context.fillRect(0, 0, canvas.width, canvas.height);
-    ['#23408e','#35563a','#62201e','#c1bb1e'].forEach((color, index) => { context.fillStyle = color; context.fillRect(56 + index * 94, 94, 64, 8); });
+    const barWidth = 64;
+    const barGap = 30;
+    const barStart = (canvas.width - (barWidth * 4 + barGap * 3)) / 2;
+    ['#23408e','#35563a','#62201e','#c1bb1e'].forEach((color, index) => { context.fillStyle = color; context.fillRect(barStart + index * (barWidth + barGap), 94, barWidth, 8); });
     let titleSize = 42;
     do {
       context.font = `500 ${titleSize}px "Songti SC", "Yu Mincho", serif`;
@@ -75,34 +103,56 @@ if (liveStudio) {
     context.fillStyle = '#e2e6e1'; context.fillRect(0, 0, canvas.width, canvas.height);
     context.fillStyle = '#23408e'; context.fillRect(46, 48, 72, 7);
     context.fillStyle = '#1f2226'; context.textAlign = 'left'; context.font = '12px ui-monospace, monospace'; context.fillText('PEANUP / NOTE', 46, 86);
-    context.font = '500 42px "Songti SC", serif';
-    const lines: string[] = [];
-    for (const paragraph of (textInput.value || fallbackText).split('\n')) {
-      let line = '';
-      let breakAt = -1;
-      for (const character of paragraph) {
-        const candidate = line + character;
-        if (!line || context.measureText(candidate).width <= canvas.width - 92) {
-          line = candidate;
-          if (/\s/.test(character)) breakAt = line.length;
-          continue;
+    const wrapText = (fontSize: number) => {
+      context.font = `500 ${fontSize}px "Songti SC", "Yu Mincho", serif`;
+      const lines: string[] = [];
+      for (const paragraph of (textInput.value || fallbackText).split('\n')) {
+        let line = '';
+        let breakAt = -1;
+        for (const character of paragraph) {
+          const candidate = line + character;
+          if (!line || context.measureText(candidate).width <= canvas.width - 92) {
+            line = candidate;
+            if (/\s/.test(character)) breakAt = line.length;
+            continue;
+          }
+          if (breakAt > 0) {
+            lines.push(line.slice(0, breakAt).trimEnd());
+            line = `${line.slice(breakAt).trimStart()}${character}`;
+          } else {
+            lines.push(line);
+            line = character.trimStart();
+          }
+          breakAt = -1;
+          for (let index = line.length - 1; index >= 0; index -= 1) {
+            if (/\s/.test(line[index])) { breakAt = index + 1; break; }
+          }
         }
-        if (breakAt > 0) {
-          lines.push(line.slice(0, breakAt).trimEnd());
-          line = `${line.slice(breakAt).trimStart()}${character}`;
-        } else {
-          lines.push(line);
-          line = character.trimStart();
-        }
-        breakAt = -1;
-        for (let index = line.length - 1; index >= 0; index -= 1) {
-          if (/\s/.test(line[index])) { breakAt = index + 1; break; }
-        }
+        if (line) lines.push(line.trimEnd());
+        else if (!paragraph) lines.push('');
       }
-      if (line) lines.push(line.trimEnd());
+      return lines;
+    };
+
+    let fontSize = 42;
+    let lines = wrapText(fontSize);
+    const textTop = 158;
+    const availableHeight = canvas.height - textTop - previewBottomInset();
+    let lineHeight = Math.round(fontSize * 1.38);
+    while (fontSize > 22 && lines.length > Math.min(7, Math.floor(availableHeight / lineHeight))) {
+      fontSize -= 1;
+      lines = wrapText(fontSize);
+      lineHeight = Math.round(fontSize * 1.38);
     }
-    lines.slice(0, 6).forEach((value, index) => context.fillText(value, 46, 190 + index * 58));
-    context.fillStyle = '#62201e'; context.fillRect(46, canvas.height - 62, canvas.width - 92, 2);
+    const visibleLines = Math.max(1, Math.min(7, Math.floor(availableHeight / lineHeight)));
+    const fittedLines = lines.slice(0, visibleLines);
+    if (lines.length > visibleLines && fittedLines.length) {
+      const last = fittedLines.length - 1;
+      fittedLines[last] = `${fittedLines[last].replace(/[\s…]+$/u, '')}…`;
+    }
+    context.font = `500 ${fontSize}px "Songti SC", "Yu Mincho", serif`;
+    fittedLines.forEach((value, index) => context.fillText(value, 46, textTop + index * lineHeight));
+    context.fillStyle = '#62201e'; context.fillRect(46, canvas.height - previewBottomInset() + 18, canvas.width - 92, 2);
   };
 
   const handleFile = (file?: File) => {
@@ -123,13 +173,33 @@ if (liveStudio) {
     image.src = objectUrl;
   };
 
-  start?.addEventListener('click', () => fileInput?.focus());
+  start?.addEventListener('click', () => fileInput?.click());
   fileInput?.addEventListener('change', () => handleFile(fileInput.files?.[0]));
   photo?.addEventListener('dragover', (event) => { event.preventDefault(); photo.classList.add('dragging'); });
   photo?.addEventListener('dragleave', () => photo.classList.remove('dragging'));
   photo?.addEventListener('drop', (event) => { event.preventDefault(); photo.classList.remove('dragging'); handleFile(event.dataTransfer?.files[0]); });
-  textInput?.addEventListener('input', () => { renderRevision += 1; drawText(); if (status) status.textContent = textReady; });
+  textInput?.addEventListener('input', () => {
+    renderRevision += 1;
+    resizeTextInput();
+    updateCount();
+    drawText();
+    if (status) status.textContent = textReady;
+  });
+  reset?.addEventListener('click', () => {
+    renderRevision += 1;
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    objectUrl = '';
+    if (fileInput) fileInput.value = '';
+    if (textInput) textInput.value = fallbackText;
+    resizeTextInput();
+    updateCount();
+    intro();
+    if (status) status.textContent = initialStatus;
+  });
+  window.addEventListener('resize', resizeTextInput, { passive: true });
   window.addEventListener('beforeunload', () => { if (objectUrl) URL.revokeObjectURL(objectUrl); });
+  resizeTextInput();
+  updateCount();
   intro();
 }
 

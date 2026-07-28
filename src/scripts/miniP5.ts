@@ -95,6 +95,7 @@ export default class MiniP5 {
   private startedAt = performance.now();
   private ready = false;
   private looping = true;
+  private redrawPending = false;
   private canvasVisible = true;
   private viewportObserver?: IntersectionObserver;
   private randomState = Math.floor(Math.random() * 0x100000000) >>> 0;
@@ -135,23 +136,25 @@ export default class MiniP5 {
     this.startedAt = performance.now();
     this.setup?.();
     this.ready = true;
+    if (this.redrawPending) this.scheduleFrame();
     this.scheduleFrame();
   }
 
   private scheduleFrame() {
-    if (!this.ready || !this.looping || !this.canvasVisible || document.hidden || this.animationFrame) return;
+    if (!this.ready || (!this.looping && !this.redrawPending) || !this.canvasVisible || document.hidden || this.animationFrame) return;
     this.animationFrame = requestAnimationFrame(this.renderFrame);
   }
 
   private renderFrame = (timestamp: number) => {
     this.animationFrame = 0;
-    if (!this.looping || !this.canvasVisible || document.hidden) return;
+    if ((!this.looping && !this.redrawPending) || !this.canvasVisible || document.hidden) return;
 
     const interval = 1000 / this.targetFrameRate;
     if (!this.lastDrawAt || timestamp - this.lastDrawAt >= interval - 0.5) {
       const elapsed = this.lastDrawAt ? timestamp - this.lastDrawAt : interval;
       this.lastDrawAt = timestamp - (elapsed % interval);
       this.frameCount += 1;
+      this.redrawPending = false;
       this.draw?.();
     }
 
@@ -166,7 +169,7 @@ export default class MiniP5 {
     this.canvas.height = Math.max(1, Math.round(this.height * this.density));
     this.canvas.style.width = `${this.width}px`;
     this.canvas.style.height = `${this.height}px`;
-    this.context = this.canvas.getContext('2d') ?? undefined;
+    this.context = this.canvas.getContext('2d', { willReadFrequently: true }) ?? undefined;
     if (!this.context) throw new Error('Canvas 2D is not available.');
     this.context.setTransform(this.density, 0, 0, this.density, 0, 0);
     this.context.lineCap = 'round';
@@ -298,14 +301,21 @@ export default class MiniP5 {
 
   noLoop() {
     this.looping = false;
-    if (this.animationFrame) cancelAnimationFrame(this.animationFrame);
-    this.animationFrame = 0;
+    if (!this.redrawPending) {
+      if (this.animationFrame) cancelAnimationFrame(this.animationFrame);
+      this.animationFrame = 0;
+    }
   }
 
   loop() {
-    if (this.looping) return;
+    const wasLooping = this.looping;
     this.looping = true;
-    this.lastDrawAt = 0;
+    if (!wasLooping) this.lastDrawAt = 0;
+    this.scheduleFrame();
+  }
+
+  redraw() {
+    this.redrawPending = true;
     this.scheduleFrame();
   }
 
@@ -463,14 +473,24 @@ export default class MiniP5 {
     this.state.tint = null;
   }
 
-  image(image: MiniImage, x: number, y: number, width = image.width, height = image.height) {
+  image(
+    image: MiniImage,
+    x: number,
+    y: number,
+    width = image.width,
+    height = image.height,
+    sourceX = 0,
+    sourceY = 0,
+    sourceWidth = image.width,
+    sourceHeight = image.height,
+  ) {
     if (!this.context || !image.width || !image.height || width === 0 || height === 0) return;
     const drawX = this.state.imageAnchor === 'center' ? x - width / 2 : x;
     const drawY = this.state.imageAnchor === 'center' ? y - height / 2 : y;
     const source = this.state.tint ? this.tintedSource(image, this.state.tint) : image.element;
     this.context.save();
     if (this.state.tint) this.context.globalAlpha *= this.state.tint.alpha / 255;
-    this.context.drawImage(source, drawX, drawY, width, height);
+    this.context.drawImage(source, sourceX, sourceY, sourceWidth, sourceHeight, drawX, drawY, width, height);
     this.context.restore();
   }
 

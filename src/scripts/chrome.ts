@@ -6,6 +6,19 @@ const themeToggles = document.querySelectorAll<HTMLButtonElement>('[data-theme-t
 const themeCurtain = document.querySelector<HTMLElement>('[data-theme-curtain]');
 let themeTransitioning = false;
 
+document.querySelectorAll<HTMLImageElement>('img').forEach((image) => { image.draggable = false; });
+
+const isProtectedMediaTarget = (target: EventTarget | null) => target instanceof Element
+  && Boolean(target.closest('img, picture, .protected-media'));
+
+document.addEventListener('dragstart', (event) => {
+  if (isProtectedMediaTarget(event.target)) event.preventDefault();
+}, { capture: true });
+
+document.addEventListener('contextmenu', (event) => {
+  if (isProtectedMediaTarget(event.target)) event.preventDefault();
+}, { capture: true });
+
 type Theme = 'light' | 'dark';
 
 const storedTheme = (): Theme | null => {
@@ -45,6 +58,25 @@ const waitForPaint = () => new Promise<void>((resolve) => {
   requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
 });
 
+const decodeThemeImage = async (theme: Theme) => {
+  const image = document.querySelector<HTMLImageElement>(`.hero-product-image--${theme} img`);
+  if (!image) return;
+  if (!image.complete) {
+    await new Promise<void>((resolve) => {
+      image.addEventListener('load', () => resolve(), { once: true });
+      image.addEventListener('error', () => resolve(), { once: true });
+    });
+  }
+  try {
+    await image.decode();
+  } catch {}
+};
+
+// Both hero photographs are already in the document. Decode them while idle so
+// the curtain never has to wait with a mismatched image underneath it.
+void decodeThemeImage('light');
+void decodeThemeImage('dark');
+
 const setThemeControlsBusy = (busy: boolean) => {
   themeToggles.forEach((toggle) => {
     toggle.toggleAttribute('disabled', busy);
@@ -66,30 +98,29 @@ const switchThemeWithCurtain = async (theme: Theme) => {
 
   try {
     if (theme === 'dark') {
-      document.documentElement.classList.add('theme-image-entering-dark');
+      const imageReady = decodeThemeImage('dark');
       const descend = themeCurtain.animate(
         [
           { transform: 'translate3d(0, -100%, 0)', opacity: 1 },
           { transform: 'translate3d(0, 0, 0)', opacity: 1 },
         ],
-        { duration: 560, easing: 'cubic-bezier(.65, 0, .35, 1)', fill: 'forwards' },
+        { duration: 480, easing: 'cubic-bezier(.76, 0, .24, 1)', fill: 'forwards' },
       );
-      await descend.finished;
+      await Promise.all([descend.finished, imageReady]);
       applyTheme('dark', true);
       await waitForPaint();
       descend.cancel();
-
-      const settle = themeCurtain.animate(
-        [{ transform: 'translate3d(0, 0, 0)', opacity: 1 }, { transform: 'translate3d(0, 0, 0)', opacity: 0 }],
-        { duration: 240, easing: 'ease-out', fill: 'forwards' },
+      const reveal = themeCurtain.animate(
+        [{ transform: 'translate3d(0, 0, 0)', opacity: 1 }, { transform: 'translate3d(0, 100%, 0)', opacity: 1 }],
+        { duration: 520, easing: 'cubic-bezier(.76, 0, .24, 1)', fill: 'forwards' },
       );
-      await settle.finished;
-      settle.cancel();
+      await reveal.finished;
+      reveal.cancel();
     } else {
+      await decodeThemeImage('light');
       themeCurtain.style.transform = 'translate3d(0, 0, 0)';
       themeCurtain.style.opacity = '1';
       await waitForPaint();
-      document.documentElement.classList.add('theme-image-entering-light');
       applyTheme('light', true);
       await waitForPaint();
 
@@ -98,7 +129,7 @@ const switchThemeWithCurtain = async (theme: Theme) => {
           { transform: 'translate3d(0, 0, 0)', opacity: 1 },
           { transform: 'translate3d(0, -100%, 0)', opacity: 1 },
         ],
-        { duration: 560, easing: 'cubic-bezier(.65, 0, .35, 1)', fill: 'forwards' },
+        { duration: 560, easing: 'cubic-bezier(.76, 0, .24, 1)', fill: 'forwards' },
       );
       await rise.finished;
       rise.cancel();
@@ -110,7 +141,6 @@ const switchThemeWithCurtain = async (theme: Theme) => {
     themeCurtain.style.removeProperty('opacity');
     themeCurtain.classList.remove('is-active');
     document.documentElement.classList.remove('theme-is-transitioning');
-    document.documentElement.classList.remove('theme-image-entering-dark', 'theme-image-entering-light');
     setThemeControlsBusy(false);
     themeTransitioning = false;
   }

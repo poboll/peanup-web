@@ -26,7 +26,7 @@ const algorithms = [
 
 <BaseLayout
   title="Peanup Engineering Notes | Local rendering and BLE"
-  description="Engineering notes for Peanup covering its 3.68-inch E6 six-color 528 × 792 panel profile, image pipeline, dithering families, BLE state machine, local-first architecture and hardware validation boundaries."
+  description="Peanup engineering notes: the 3.68-inch E6 panel, local six-color image pipeline, dithering, BLE transfer states, power model and validation limits."
   locale="en"
   htmlLang="en"
   ogLocale="en_US"
@@ -37,6 +37,9 @@ const algorithms = [
   ]}
   xDefaultPath="/docs/engineering/"
   schemaType="TechArticle"
+  datePublished="2026-07-28"
+  dateModified="2026-07-28"
+  image="/assets/peanup-og.webp"
   backTopLabel="Back to top"
 >
   <header class="docs-topbar">
@@ -48,8 +51,8 @@ const algorithms = [
       <a href="/en/docs/">Product guide</a>
       <a aria-current="page" href="/en/docs/engineering/">Engineering notes</a>
       <a lang="zh-CN" href="/docs/engineering/" hreflang="zh-CN">简体中文</a>
-      <a class="docs-product-link" href="/en/">Product <span aria-hidden="true">↗</span></a>
     </nav>
+    <a class="docs-product-link docs-topbar-product" href="/en/">Product <span aria-hidden="true">↗</span></a>
     <ThemeToggle locale="en" />
     <details class="docs-mobile-nav">
       <summary>Menu</summary>
@@ -57,18 +60,17 @@ const algorithms = [
         <a href="/en/docs/">Product guide</a>
         <a aria-current="page" href="/en/docs/engineering/">Engineering notes</a>
         <a lang="zh-CN" href="/docs/engineering/" hreflang="zh-CN">简体中文</a>
-        <a class="docs-product-link" href="/en/">Product <span aria-hidden="true">↗</span></a>
       </nav>
     </details>
   </header>
 
-  <main class="docs-layout">
+  <main id="main-content" class="docs-layout" tabindex="-1">
     <aside class="docs-toc" aria-label="On this page">
       <p>ENGINEERING NOTES</p>
       <nav>
         {toc.map(([id, label], index) => <a href={`#${id}`}><i>{String(index + 1).padStart(2, '0')}</i>{label}</a>)}
       </nav>
-      <small>Evidence-led working notes<br />Revision 0.2 · July 2026</small>
+      <small>Evidence-led working notes<br />Revision 0.2 · 28 July 2026</small>
     </aside>
 
     <article class="docs-article docs-article--engineering">
