@@ -14,12 +14,12 @@
   backdrop-filter: blur(18px);
 }
 
-.docs-primary-nav { display: flex; align-items: center; gap: 30px; font-size: 13px; }
+.docs-primary-nav { position: relative; z-index: 2; display: flex; align-items: center; gap: 30px; font-size: 13px; }
 .docs-topbar > .theme-toggle { justify-self: end; }
 .docs-primary-nav a { position: relative; padding: 10px 0; color: var(--muted); }
 .docs-primary-nav a:hover, .docs-primary-nav a:focus-visible, .docs-primary-nav a[aria-current="page"] { color: var(--ink); }
 .docs-primary-nav a[aria-current="page"]::after { content: ""; position: absolute; inset: auto 0 3px; height: 1px; background: var(--ink); }
-.docs-primary-nav .docs-product-link { margin-left: 2px; padding-left: 20px; border-left: 1px solid var(--line); color: var(--ink); }
+.docs-primary-nav .docs-product-link { margin-left: 2px; padding-left: 20px; border-left: 1px solid var(--line); color: var(--ink); pointer-events: auto; touch-action: manipulation; }
 .docs-product-link span { display: inline-block; margin-left: 5px; font-size: 11px; transition: transform .25s var(--ease); }
 .docs-product-link:hover span, .docs-product-link:focus-visible span { transform: translate(2px, -2px); }
 .docs-mobile-nav { display: none; position: relative; justify-self: end; }

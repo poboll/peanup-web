@@ -29,24 +29,11 @@ const updateThemeControls = (theme: Theme) => {
   });
 };
 
-const updateThemeMedia = (theme: Theme) => {
-  const key = theme === 'dark' ? 'dark' : 'light';
-  document.querySelectorAll<HTMLSourceElement>('[data-theme-source]').forEach((source) => {
-    const next = source.dataset[`${key}Srcset`];
-    if (next && source.srcset !== next) source.srcset = next;
-  });
-  document.querySelectorAll<HTMLImageElement>('[data-theme-image]').forEach((image) => {
-    const next = image.dataset[`${key}Src`];
-    if (next && image.getAttribute('src') !== next) image.src = next;
-  });
-};
-
 const applyTheme = (theme: Theme, persist = false) => {
   document.documentElement.dataset.theme = theme;
   document.documentElement.style.colorScheme = theme;
   document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#10110f' : '#ffffff');
   updateThemeControls(theme);
-  updateThemeMedia(theme);
   if (persist) {
     try {
       localStorage.setItem('peanup.theme', theme);
@@ -79,12 +66,13 @@ const switchThemeWithCurtain = async (theme: Theme) => {
 
   try {
     if (theme === 'dark') {
+      document.documentElement.classList.add('theme-image-entering-dark');
       const descend = themeCurtain.animate(
         [
           { transform: 'translate3d(0, -100%, 0)', opacity: 1 },
           { transform: 'translate3d(0, 0, 0)', opacity: 1 },
         ],
-        { duration: 520, easing: 'cubic-bezier(.72, 0, .2, 1)', fill: 'forwards' },
+        { duration: 560, easing: 'cubic-bezier(.65, 0, .35, 1)', fill: 'forwards' },
       );
       await descend.finished;
       applyTheme('dark', true);
@@ -93,7 +81,7 @@ const switchThemeWithCurtain = async (theme: Theme) => {
 
       const settle = themeCurtain.animate(
         [{ transform: 'translate3d(0, 0, 0)', opacity: 1 }, { transform: 'translate3d(0, 0, 0)', opacity: 0 }],
-        { duration: 220, easing: 'ease-out', fill: 'forwards' },
+        { duration: 240, easing: 'ease-out', fill: 'forwards' },
       );
       await settle.finished;
       settle.cancel();
@@ -101,6 +89,7 @@ const switchThemeWithCurtain = async (theme: Theme) => {
       themeCurtain.style.transform = 'translate3d(0, 0, 0)';
       themeCurtain.style.opacity = '1';
       await waitForPaint();
+      document.documentElement.classList.add('theme-image-entering-light');
       applyTheme('light', true);
       await waitForPaint();
 
@@ -109,7 +98,7 @@ const switchThemeWithCurtain = async (theme: Theme) => {
           { transform: 'translate3d(0, 0, 0)', opacity: 1 },
           { transform: 'translate3d(0, -100%, 0)', opacity: 1 },
         ],
-        { duration: 560, easing: 'cubic-bezier(.72, 0, .2, 1)', fill: 'forwards' },
+        { duration: 560, easing: 'cubic-bezier(.65, 0, .35, 1)', fill: 'forwards' },
       );
       await rise.finished;
       rise.cancel();
@@ -121,6 +110,7 @@ const switchThemeWithCurtain = async (theme: Theme) => {
     themeCurtain.style.removeProperty('opacity');
     themeCurtain.classList.remove('is-active');
     document.documentElement.classList.remove('theme-is-transitioning');
+    document.documentElement.classList.remove('theme-image-entering-dark', 'theme-image-entering-light');
     setThemeControlsBusy(false);
     themeTransitioning = false;
   }

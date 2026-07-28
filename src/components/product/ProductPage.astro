@@ -130,9 +130,13 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
       </div>
 
       <figure class="hero-product protected-media" aria-label={copy.hero.imageAlt}>
-        <picture>
-          <source data-theme-source data-light-srcset="/assets/peanup-product.avif" data-dark-srcset="/assets/peanup-product-cutout.avif" srcset="/assets/peanup-product.avif" type="image/avif" />
-          <img data-theme-image data-light-src="/assets/peanup-product.webp" data-dark-src="/assets/peanup-product-cutout.webp" src="/assets/peanup-product.webp" alt={copy.hero.imageAlt} width="740" height="1120" fetchpriority="high" decoding="async" draggable="false" />
+        <picture class="hero-product-image hero-product-image--light" aria-hidden="true">
+          <source srcset="/assets/peanup-product.avif" type="image/avif" />
+          <img src="/assets/peanup-product.webp" alt="" width="740" height="1120" fetchpriority="high" decoding="async" draggable="false" />
+        </picture>
+        <picture class="hero-product-image hero-product-image--dark" aria-hidden="true">
+          <source srcset="/assets/peanup-product-cutout.avif" type="image/avif" />
+          <img src="/assets/peanup-product-cutout.webp" alt="" width="768" height="1152" fetchpriority="high" decoding="auto" draggable="false" />
         </picture>
       </figure>
 
