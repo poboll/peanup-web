@@ -108,7 +108,6 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
     </nav>
     <div class="header-actions">
       <a class="header-link" href={docsPath}>{copy.nav.docs}</a>
-      <ThemeToggle locale={copy.locale} />
       <details class="language-menu">
         <summary aria-label={copy.nav.language}>{currentLocale.name}</summary>
         <div>
@@ -117,6 +116,7 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
           ))}
         </div>
       </details>
+      <ThemeToggle locale={copy.locale} />
     </div>
   </header>
 
@@ -131,10 +131,9 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
 
       <figure class="hero-product protected-media" aria-label={copy.hero.imageAlt}>
         <picture>
-          <source srcset="/assets/peanup-product.avif" type="image/avif" />
-          <img src="/assets/peanup-product.webp" alt={copy.hero.imageAlt} width="740" height="1120" fetchpriority="high" decoding="async" draggable="false" />
+          <source data-theme-source data-light-srcset="/assets/peanup-product.avif" data-dark-srcset="/assets/peanup-product-cutout.avif" srcset="/assets/peanup-product.avif" type="image/avif" />
+          <img data-theme-image data-light-src="/assets/peanup-product.webp" data-dark-src="/assets/peanup-product-cutout.webp" src="/assets/peanup-product.webp" alt={copy.hero.imageAlt} width="740" height="1120" fetchpriority="high" decoding="async" draggable="false" />
         </picture>
-        <span class="product-shadow" aria-hidden="true"></span>
       </figure>
 
       <div class="hero-object-label" aria-hidden="true"><span>01</span><i></i><p>MAGNETIC<br />E-PAPER OBJECT</p></div>
@@ -188,6 +187,7 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
                 data-canvas-date={scene.date}
                 data-canvas-weather={scene.weather}
                 data-canvas-quote={scene.quote}
+                data-canvas-quote-source={scene.quoteSource}
                 role="button"
                 tabindex="0"
               >
@@ -318,8 +318,8 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
     <section id="design" class="details section-pad">
       <div class="section-index"><span>{copy.design.index}</span><span>{copy.design.kicker}</span></div>
       <div class="details-head"><h2>{copy.design.title[0]}<br />{copy.design.title[1]}</h2><p>{copy.design.body}</p></div>
-      <figure class="detail-photo detail-phone protected-media"><picture><source srcset="/assets/peanup-phone.avif" type="image/avif" /><img src="/assets/peanup-phone.webp" alt={copy.design.phoneAlt} width="1080" height="1380" loading="lazy" decoding="async" draggable="false" /></picture><figcaption>{copy.design.thin}</figcaption></figure>
-      <figure class="detail-photo detail-hand protected-media"><picture><source srcset="/assets/peanup-hand.avif" type="image/avif" /><img src="/assets/peanup-hand.webp" alt={copy.design.handAlt} width="1080" height="1430" loading="lazy" decoding="async" draggable="false" /></picture><figcaption>{copy.design.light}</figcaption></figure>
+      <figure class="detail-photo detail-phone protected-media"><picture><source srcset="/assets/peanup-phone.avif" type="image/avif" /><img src="/assets/peanup-phone.webp" alt={copy.design.phoneAlt} width="1122" height="1402" loading="lazy" decoding="async" draggable="false" /></picture><figcaption>{copy.design.thin}</figcaption></figure>
+      <figure class="detail-photo detail-hand protected-media"><picture><source srcset="/assets/peanup-hand.avif" type="image/avif" /><img src="/assets/peanup-hand.webp" alt={copy.design.handAlt} width="1122" height="1402" loading="lazy" decoding="async" draggable="false" /></picture><figcaption>{copy.design.light}</figcaption></figure>
     </section>
 
     <section id="story" class="story section-pad">

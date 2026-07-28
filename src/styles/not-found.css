@@ -128,8 +128,9 @@
 .not-found-device picture { display: block; }
 .not-found-device picture,
 .not-found-device img { width: 100%; height: auto; }
-.not-found-device img { mix-blend-mode: multiply; }
-html[data-theme="dark"] .not-found-device img { mix-blend-mode: normal; }
+.not-found-device img { mix-blend-mode: normal; filter: drop-shadow(0 24px 30px rgba(20, 20, 18, .14)); }
+html[data-theme="dark"] .not-found-device img { filter: drop-shadow(0 28px 34px rgba(0, 0, 0, .32)); }
+html[data-theme="dark"] .not-found-visual figcaption { border-color: var(--line); }
 
 .not-found-scan {
   position: absolute;

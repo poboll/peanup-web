@@ -3,6 +3,8 @@ const backToTop = document.querySelector<HTMLButtonElement>('.back-to-top');
 const chromeReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
 const themeToggles = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+const themeCurtain = document.querySelector<HTMLElement>('[data-theme-curtain]');
+let themeTransitioning = false;
 
 type Theme = 'light' | 'dark';
 
@@ -27,15 +29,82 @@ const updateThemeControls = (theme: Theme) => {
   });
 };
 
+const updateThemeMedia = (theme: Theme) => {
+  const key = theme === 'dark' ? 'dark' : 'light';
+  document.querySelectorAll<HTMLSourceElement>('[data-theme-source]').forEach((source) => {
+    const next = source.dataset[`${key}Srcset`];
+    if (next && source.srcset !== next) source.srcset = next;
+  });
+  document.querySelectorAll<HTMLImageElement>('[data-theme-image]').forEach((image) => {
+    const next = image.dataset[`${key}Src`];
+    if (next && image.getAttribute('src') !== next) image.src = next;
+  });
+};
+
 const applyTheme = (theme: Theme, persist = false) => {
   document.documentElement.dataset.theme = theme;
   document.documentElement.style.colorScheme = theme;
-  document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#0e0f0e' : '#ffffff');
+  document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#10110f' : '#ffffff');
   updateThemeControls(theme);
+  updateThemeMedia(theme);
   if (persist) {
     try {
       localStorage.setItem('peanup.theme', theme);
     } catch {}
+  }
+};
+
+const waitForPaint = () => new Promise<void>((resolve) => {
+  requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+});
+
+const setThemeControlsBusy = (busy: boolean) => {
+  themeToggles.forEach((toggle) => {
+    toggle.toggleAttribute('disabled', busy);
+    toggle.setAttribute('aria-busy', String(busy));
+  });
+};
+
+const switchThemeWithCurtain = async (theme: Theme) => {
+  if (themeTransitioning) return;
+  if (chromeReduceMotion.matches || !themeCurtain || typeof themeCurtain.animate !== 'function') {
+    applyTheme(theme, true);
+    return;
+  }
+
+  themeTransitioning = true;
+  setThemeControlsBusy(true);
+  document.documentElement.classList.add('theme-is-transitioning');
+  themeCurtain.classList.add('is-active');
+
+  try {
+    const cover = themeCurtain.animate(
+      [
+        { transform: 'translate3d(0, -100%, 0)' },
+        { transform: 'translate3d(0, 0, 0)' },
+      ],
+      { duration: 540, easing: 'cubic-bezier(.76, 0, .24, 1)', fill: 'forwards' },
+    );
+    await cover.finished;
+
+    applyTheme(theme, true);
+    await waitForPaint();
+
+    cover.cancel();
+    const reveal = themeCurtain.animate(
+      [
+        { transform: 'translate3d(0, 0, 0)' },
+        { transform: 'translate3d(0, 100%, 0)' },
+      ],
+      { duration: 680, easing: 'cubic-bezier(.76, 0, .24, 1)', fill: 'forwards' },
+    );
+    await reveal.finished;
+    reveal.cancel();
+  } finally {
+    themeCurtain.classList.remove('is-active');
+    document.documentElement.classList.remove('theme-is-transitioning');
+    setThemeControlsBusy(false);
+    themeTransitioning = false;
   }
 };
 
@@ -67,7 +136,7 @@ backToTop?.addEventListener('click', animateToTop);
 themeToggles.forEach((toggle) => {
   toggle.addEventListener('click', () => {
     const current = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-    applyTheme(current === 'dark' ? 'light' : 'dark', true);
+    void switchThemeWithCurtain(current === 'dark' ? 'light' : 'dark');
   });
 });
 systemTheme.addEventListener('change', (event) => {

@@ -86,7 +86,7 @@ const schema = schemaType === 'Product'
           : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         root.dataset.theme = theme;
         root.style.colorScheme = theme;
-        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#0e0f0e' : '#ffffff');
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#10110f' : '#ffffff');
       })();
     </script>
     <meta name="description" content={description} />
@@ -112,6 +112,7 @@ const schema = schemaType === 'Product'
     <title>{title}</title>
   </head>
   <body>
+    <div class="theme-curtain" data-theme-curtain aria-hidden="true"></div>
     <slot />
     <button class="back-to-top" type="button" aria-label={backTopLabel} title={backTopLabel}>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V5m0 0-6 6m6-6 6 6" /></svg>

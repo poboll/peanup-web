@@ -86,6 +86,7 @@ if (mount && gallery) {
       date: label?.getAttribute('data-canvas-date') || '',
       weather: label?.getAttribute('data-canvas-weather') || '',
       quote: label?.getAttribute('data-canvas-quote') || '',
+      quoteSource: label?.getAttribute('data-canvas-quote-source') || '',
       index: number ? `${number} / 04` : phaseNames[phase][1],
     };
   };
@@ -406,6 +407,12 @@ if (mount && gallery) {
       p.textFont('Songti SC'); p.textAlign(p.LEFT);
       p.textSize(longQuote ? Math.max(18, p.width * .052) : Math.max(25, p.width * .07));
       p.text(framedQuote, p.width * .075, p.height * .255, p.width * .84, p.height * .19);
+      if (copy.quoteSource) {
+        p.fill(31, 34, 38);
+        p.textFont('Songti SC'); p.textAlign(p.RIGHT);
+        p.textSize(Math.max(12, p.width * .03));
+        p.text(copy.quoteSource, p.width * .925, p.height * .38);
+      }
       p.fill(31, 34, 38);
       p.textAlign(p.LEFT);
       if (!reducedMotion || branchFrame < 180) {
