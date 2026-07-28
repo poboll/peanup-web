@@ -7,6 +7,7 @@ const toc = [
   ['overview', 'Overview'],
   ['display', 'Display & form'],
   ['transfer', 'Updating Peanup'],
+  ['first-update', 'First update'],
   ['platforms', 'Platforms'],
   ['power', 'Power & placement'],
   ['privacy', 'Privacy'],
@@ -46,6 +47,8 @@ const faqs = [
   ['Is there an Android app?', 'A native Android app is not planned for the first release. Android devices can send images through the WeChat Mini Program.'],
   ['Is the magnetic ring MagSafe certified?', 'Peanup does not claim that certification. Its magnetic ring works with compatible MagSafe accessories.'],
   ['Can CUID NFC replace my access card?', 'Only where the access system supports CUID. Enrollment needs the operator’s approval and must follow local rules.'],
+  ['Does a refresh happen instantly like a phone screen?', 'No. E-paper is not a video display. A visible refresh takes place before the new frame is held. Final refresh timing and visual behavior will be published after production-hardware validation.'],
+  ['What if my phone cannot find Peanup?', 'Check that Peanup has power, Bluetooth is enabled and the device is close to your phone. If another phone is connected, disconnect it before scanning again in the app.'],
   ['Are the final dimensions guaranteed?', 'The 3.68-inch E6 panel and 528 × 792 pixel matrix come from the manufacturer specification. The 3 mm profile, 28 g weight and one-month-plus battery life are Kickstarter targets. Battery life depends on refresh frequency.'],
 ];
 ---
@@ -73,8 +76,8 @@ const faqs = [
     <nav class="docs-primary-nav" aria-label="Documentation">
       <a aria-current="page" href="/en/docs/">Product guide</a>
       <a href="/en/docs/engineering/">Engineering notes</a>
-      <a lang="zh-CN" href="/docs/" hreflang="zh-CN">中文</a>
-      <a href="/en/">Product</a>
+      <a lang="zh-CN" href="/docs/" hreflang="zh-CN">简体中文</a>
+      <a class="docs-product-link" href="/en/">Product <span aria-hidden="true">↗</span></a>
     </nav>
     <ThemeToggle locale="en" />
     <details class="docs-mobile-nav">
@@ -82,8 +85,8 @@ const faqs = [
       <nav aria-label="Mobile documentation">
         <a aria-current="page" href="/en/docs/">Product guide</a>
         <a href="/en/docs/engineering/">Engineering notes</a>
-        <a lang="zh-CN" href="/docs/" hreflang="zh-CN">中文</a>
-        <a href="/en/">Product</a>
+        <a lang="zh-CN" href="/docs/" hreflang="zh-CN">简体中文</a>
+        <a class="docs-product-link" href="/en/">Product <span aria-hidden="true">↗</span></a>
       </nav>
     </details>
   </header>
@@ -149,8 +152,19 @@ const faqs = [
         <p class="docs-note"><b>Connection model</b><span>Bluetooth connects only while a frame is being sent. Once the update finishes, Peanup returns to standby.</span></p>
       </section>
 
+      <section class="docs-section" id="first-update">
+        <header><span>04 / FIRST UPDATE</span><h2>Your first update,<br />in one clear path.</h2></header>
+        <ol class="docs-steps">
+          <li><span>01</span><strong>Add power</strong><p>Place Peanup on a compatible Qi charger before its first update.</p></li>
+          <li><span>02</span><strong>Enable Bluetooth</strong><p>Turn on Bluetooth and allow the Peanup app to find nearby devices.</p></li>
+          <li><span>03</span><strong>Preview a frame</strong><p>Choose a photo or text, confirm the crop and six-color preview, then send it.</p></li>
+          <li><span>04</span><strong>Wait for completion</strong><p>Keep Peanup close until the app confirms the refresh, then place it where you want it.</p></li>
+        </ol>
+        <p class="docs-note"><b>About refreshing</b><span>E-paper is not a video display. A visible refresh happens before the new frame stays quietly in place. Final refresh timing and visual behavior will be published after production-hardware validation.</span></p>
+      </section>
+
       <section class="docs-section" id="platforms">
-        <header><span>04 / PLATFORMS</span><h2>Built for iPhone.<br />Open to more ways to send.</h2></header>
+        <header><span>05 / PLATFORMS</span><h2>Built for iPhone.<br />Open to more ways to send.</h2></header>
         <div class="docs-grid docs-grid--three">
           <article><span>IOS & IPADOS</span><h3>Capture, preview, send</h3><p>Take a photo, check the six-color preview and send it in the Peanup app. Saved frames stay on your phone.</p></article>
           <article><span>APPLE SHORTCUTS</span><h3>Repeat without repeating yourself</h3><p>Use Siri, widgets and personal automations to prepare familiar frames with fewer steps.</p></article>
@@ -163,7 +177,7 @@ const faqs = [
       </section>
 
       <section class="docs-section" id="power">
-        <header><span>05 / POWER & PLACEMENT</span><h2>The image stays.<br />Power is spent on change.</h2></header>
+        <header><span>06 / POWER & PLACEMENT</span><h2>The image stays.<br />Power is spent on change.</h2></header>
         <div class="docs-grid docs-grid--three">
           <article><span>BATTERY</span><h3>One month or more</h3><p>This is the crowdfunding target, not a fixed runtime promise. Actual battery life depends most of all on refresh frequency and operating conditions.</p></article>
           <article><span>QI</span><h3>Place it to charge</h3><p>Qi wireless charging supports the no-exposed-connector body and keeps everyday charging uncomplicated.</p></article>
@@ -172,7 +186,7 @@ const faqs = [
       </section>
 
       <section class="docs-section" id="privacy">
-        <header><span>06 / PRIVACY</span><h2>Your photograph can stay<br />on your devices.</h2></header>
+        <header><span>07 / PRIVACY</span><h2>Your photograph can stay<br />on your devices.</h2></header>
         <div class="docs-split">
           <p class="docs-lead">Photos are prepared on your phone, then sent over Bluetooth. Cropping and six-color conversion stay local.</p>
           <div class="docs-copy">
@@ -183,7 +197,7 @@ const faqs = [
       </section>
 
       <section class="docs-section" id="nfc">
-        <header><span>07 / CUID NFC</span><h2>Access card,<br />where supported.</h2></header>
+        <header><span>08 / CUID NFC</span><h2>Access card,<br />where supported.</h2></header>
         <div class="docs-policy">
           <strong>Conditional compatibility</strong>
           <p>Peanup may work as an access card where the reader supports CUID. Enrollment needs the system owner’s approval and must follow local rules. Unsupported systems will not work.</p>
@@ -191,7 +205,7 @@ const faqs = [
       </section>
 
       <section class="docs-section" id="specifications">
-        <header><span>08 / SPECIFICATIONS</span><h2>The working product<br />specification.</h2></header>
+        <header><span>09 / SPECIFICATIONS</span><h2>The working product<br />specification.</h2></header>
         <div class="docs-table-wrap" tabindex="0" aria-label="Scrollable product specifications">
           <table class="docs-table">
             <tbody>
@@ -203,7 +217,7 @@ const faqs = [
       </section>
 
       <section class="docs-section docs-faq" id="faq">
-        <header><span>09 / FAQ</span><h2>Before you ask.</h2></header>
+        <header><span>10 / FAQ</span><h2>Before you ask.</h2></header>
         <div class="docs-accordion">
           {faqs.map(([question, answer], index) => (
             <details>

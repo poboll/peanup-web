@@ -78,29 +78,47 @@ const switchThemeWithCurtain = async (theme: Theme) => {
   themeCurtain.classList.add('is-active');
 
   try {
-    const cover = themeCurtain.animate(
-      [
-        { transform: 'translate3d(0, -100%, 0)' },
-        { transform: 'translate3d(0, 0, 0)' },
-      ],
-      { duration: 540, easing: 'cubic-bezier(.76, 0, .24, 1)', fill: 'forwards' },
-    );
-    await cover.finished;
+    if (theme === 'dark') {
+      const descend = themeCurtain.animate(
+        [
+          { transform: 'translate3d(0, -100%, 0)', opacity: 1 },
+          { transform: 'translate3d(0, 0, 0)', opacity: 1 },
+        ],
+        { duration: 520, easing: 'cubic-bezier(.72, 0, .2, 1)', fill: 'forwards' },
+      );
+      await descend.finished;
+      applyTheme('dark', true);
+      await waitForPaint();
+      descend.cancel();
 
+      const settle = themeCurtain.animate(
+        [{ transform: 'translate3d(0, 0, 0)', opacity: 1 }, { transform: 'translate3d(0, 0, 0)', opacity: 0 }],
+        { duration: 220, easing: 'ease-out', fill: 'forwards' },
+      );
+      await settle.finished;
+      settle.cancel();
+    } else {
+      themeCurtain.style.transform = 'translate3d(0, 0, 0)';
+      themeCurtain.style.opacity = '1';
+      await waitForPaint();
+      applyTheme('light', true);
+      await waitForPaint();
+
+      const rise = themeCurtain.animate(
+        [
+          { transform: 'translate3d(0, 0, 0)', opacity: 1 },
+          { transform: 'translate3d(0, -100%, 0)', opacity: 1 },
+        ],
+        { duration: 560, easing: 'cubic-bezier(.72, 0, .2, 1)', fill: 'forwards' },
+      );
+      await rise.finished;
+      rise.cancel();
+    }
+  } catch {
     applyTheme(theme, true);
-    await waitForPaint();
-
-    cover.cancel();
-    const reveal = themeCurtain.animate(
-      [
-        { transform: 'translate3d(0, 0, 0)' },
-        { transform: 'translate3d(0, 100%, 0)' },
-      ],
-      { duration: 680, easing: 'cubic-bezier(.76, 0, .24, 1)', fill: 'forwards' },
-    );
-    await reveal.finished;
-    reveal.cancel();
   } finally {
+    themeCurtain.style.removeProperty('transform');
+    themeCurtain.style.removeProperty('opacity');
     themeCurtain.classList.remove('is-active');
     document.documentElement.classList.remove('theme-is-transitioning');
     setThemeControlsBusy(false);

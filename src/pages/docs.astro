@@ -7,6 +7,7 @@ const toc = [
   ['overview', '概览'],
   ['display', '屏幕与形态'],
   ['transfer', '更新画面'],
+  ['first-update', '第一次更新'],
   ['platforms', '平台与生态'],
   ['power', '续航与摆放'],
   ['privacy', '隐私'],
@@ -46,6 +47,8 @@ const faqs = [
   ['有 Android App 吗？', '首发版本不提供独立 Android App。Android 设备可以通过微信小程序传图。'],
   ['磁环经过 MagSafe 认证吗？', '没有这样的认证声明。内置磁环可以搭配兼容的 MagSafe 磁吸配件。'],
   ['CUID NFC 可以替代门禁卡吗？', '门禁系统支持 CUID 时，Peanup 才可能用作门禁卡。录入前需要管理方授权，也要遵守当地规则。'],
+  ['刷屏会像手机屏幕一样瞬间完成吗？', '不会。电子纸不是视频屏幕，更新时会经历可见的刷屏过程，完成后再保持画面。最终刷新时间和视觉过程会在量产硬件验证后公布。'],
+  ['手机找不到 Peanup 怎么办？', '先确认设备有电、手机蓝牙已开启，并让 Peanup 靠近手机。如果它正连接另一台设备，请先断开，再回到 App 重新扫描。'],
   ['最终尺寸和续航已经锁定了吗？', '3.68 英寸 E6 面板和 528 × 792 pixels 是厂家规格。3 mm、28 g 和一个月以上续航仍是众筹目标。续航取决于刷新频率。'],
 ];
 ---
@@ -74,7 +77,7 @@ const faqs = [
       <a aria-current="page" href="/docs/">产品指南</a>
       <a href="/docs/engineering/">工程文档</a>
       <a lang="en" href="/en/docs/" hreflang="en">English</a>
-      <a href="/">产品页</a>
+      <a class="docs-product-link" href="/">产品页 <span aria-hidden="true">↗</span></a>
     </nav>
     <ThemeToggle locale="zh-cn" />
     <details class="docs-mobile-nav">
@@ -83,7 +86,7 @@ const faqs = [
         <a aria-current="page" href="/docs/">产品指南</a>
         <a href="/docs/engineering/">工程文档</a>
         <a lang="en" href="/en/docs/" hreflang="en">English</a>
-        <a href="/">产品页</a>
+        <a class="docs-product-link" href="/">产品页 <span aria-hidden="true">↗</span></a>
       </nav>
     </details>
   </header>
@@ -149,8 +152,19 @@ const faqs = [
         <p class="docs-note"><b>连接方式</b><span>蓝牙只在发送画面时连接。更新完成后，Peanup 会回到待机状态。</span></p>
       </section>
 
+      <section class="docs-section" id="first-update">
+        <header><span>04 / FIRST UPDATE</span><h2>第一次更新，<br />只需要走一遍这条路。</h2></header>
+        <ol class="docs-steps">
+          <li><span>01</span><strong>补充电量</strong><p>把 Peanup 放在兼容的 Qi 充电器上，为第一次更新准备电量。</p></li>
+          <li><span>02</span><strong>打开蓝牙</strong><p>在手机上打开蓝牙，并允许 Peanup App 查找附近设备。</p></li>
+          <li><span>03</span><strong>预览一帧</strong><p>选择照片或文字，确认裁切与六色预览，再开始发送。</p></li>
+          <li><span>04</span><strong>等待完成</strong><p>让设备留在手机附近，直到 App 显示刷屏完成，再把它放到喜欢的位置。</p></li>
+        </ol>
+        <p class="docs-note"><b>关于刷屏</b><span>电子纸不是视频屏幕。更新时画面会经历可见的刷新过程，完成后安静保持。最终刷新时间和视觉过程会在量产硬件验证后公布。</span></p>
+      </section>
+
       <section class="docs-section" id="platforms">
-        <header><span>04 / PLATFORMS</span><h2>从 iPhone 开始，<br />更多设备也能传图。</h2></header>
+        <header><span>05 / PLATFORMS</span><h2>从 iPhone 开始，<br />更多设备也能传图。</h2></header>
         <div class="docs-grid docs-grid--three">
           <article><span>IOS & IPADOS</span><h3>拍、看、传，一次完成</h3><p>在 Peanup App 里拍照、预览六色效果，再发送到设备。作品也可以保存在手机上。</p></article>
           <article><span>APPLE SHORTCUTS</span><h3>把重复交给自动化</h3><p>通过 Siri、小组件和个人自动化，以更少步骤准备熟悉的画面。</p></article>
@@ -163,7 +177,7 @@ const faqs = [
       </section>
 
       <section class="docs-section" id="power">
-        <header><span>05 / POWER & PLACEMENT</span><h2>画面一直在，<br />电量只为变化而用。</h2></header>
+        <header><span>06 / POWER & PLACEMENT</span><h2>画面一直在，<br />电量只为变化而用。</h2></header>
         <div class="docs-grid docs-grid--three">
           <article><span>BATTERY</span><h3>1 个月以上</h3><p>这是众筹目标，不是固定续航承诺。实际续航主要取决于刷新频率和使用环境。</p></article>
           <article><span>QI</span><h3>放上即可补充电量</h3><p>Qi 无线充电支持无外露接口的机身，让日常充电保持简单。</p></article>
@@ -172,7 +186,7 @@ const faqs = [
       </section>
 
       <section class="docs-section" id="privacy">
-        <header><span>06 / PRIVACY</span><h2>你的照片，<br />可以只留在自己的设备。</h2></header>
+        <header><span>07 / PRIVACY</span><h2>你的照片，<br />可以只留在自己的设备。</h2></header>
         <div class="docs-split">
           <p class="docs-lead">照片先在手机上处理，再通过蓝牙发送。裁切和六色转换都在本地完成。</p>
           <div class="docs-copy">
@@ -183,7 +197,7 @@ const faqs = [
       </section>
 
       <section class="docs-section" id="nfc">
-        <header><span>07 / CUID NFC</span><h2>条件合适时，<br />也可以用作门禁卡。</h2></header>
+        <header><span>08 / CUID NFC</span><h2>条件合适时，<br />也可以用作门禁卡。</h2></header>
         <div class="docs-policy">
           <strong>有条件兼容</strong>
           <p>门禁系统支持 CUID 时，Peanup 才可能登记为门禁卡。录入前需要管理方授权，也要遵守当地规则。不兼容的系统无法使用。</p>
@@ -191,7 +205,7 @@ const faqs = [
       </section>
 
       <section class="docs-section" id="specifications">
-        <header><span>08 / SPECIFICATIONS</span><h2>当前产品规格。</h2></header>
+        <header><span>09 / SPECIFICATIONS</span><h2>当前产品规格。</h2></header>
         <div class="docs-table-wrap" tabindex="0" aria-label="可横向滚动的产品规格">
           <table class="docs-table">
             <tbody>
@@ -203,7 +217,7 @@ const faqs = [
       </section>
 
       <section class="docs-section docs-faq" id="faq">
-        <header><span>09 / FAQ</span><h2>常见问题。</h2></header>
+        <header><span>10 / FAQ</span><h2>常见问题。</h2></header>
         <div class="docs-accordion">
           {faqs.map(([question, answer], index) => (
             <details>

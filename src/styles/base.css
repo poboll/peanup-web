@@ -84,7 +84,7 @@ footer,
   background: #0a0b0a;
   box-shadow: 0 18px 48px rgba(0, 0, 0, .34);
   contain: strict;
-  will-change: transform;
+  will-change: transform, opacity;
 }
 .theme-curtain::before {
   content: "";
@@ -100,8 +100,8 @@ footer,
   right: 0;
   bottom: 0;
   height: 1px;
-  background: rgba(124, 159, 201, .5);
-  box-shadow: 0 1px 18px rgba(124, 159, 201, .22);
+  background: rgba(255, 255, 255, .16);
+  box-shadow: 0 1px 18px rgba(0, 0, 0, .28);
 }
 .theme-curtain.is-active { visibility: visible; pointer-events: auto; }
 html.theme-is-transitioning { cursor: progress; }

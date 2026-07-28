@@ -19,6 +19,9 @@
 .docs-primary-nav a { position: relative; padding: 10px 0; color: var(--muted); }
 .docs-primary-nav a:hover, .docs-primary-nav a:focus-visible, .docs-primary-nav a[aria-current="page"] { color: var(--ink); }
 .docs-primary-nav a[aria-current="page"]::after { content: ""; position: absolute; inset: auto 0 3px; height: 1px; background: var(--ink); }
+.docs-primary-nav .docs-product-link { margin-left: 2px; padding-left: 20px; border-left: 1px solid var(--line); color: var(--ink); }
+.docs-product-link span { display: inline-block; margin-left: 5px; font-size: 11px; transition: transform .25s var(--ease); }
+.docs-product-link:hover span, .docs-product-link:focus-visible span { transform: translate(2px, -2px); }
 .docs-mobile-nav { display: none; position: relative; justify-self: end; }
 .docs-mobile-nav summary { position: relative; padding: 10px 22px 10px 0; list-style: none; font-size: 13px; cursor: pointer; }
 .docs-mobile-nav summary::-webkit-details-marker { display: none; }
@@ -29,6 +32,7 @@
 .docs-mobile-nav nav { position: absolute; top: calc(100% + 10px); right: 0; width: min(260px, calc(100vw - 40px)); padding: 7px; border: 1px solid var(--line); background: var(--menu-bg); box-shadow: 0 18px 50px var(--shadow); }
 .docs-mobile-nav nav a { display: block; padding: 13px 12px; color: var(--muted); font-size: 14px; }
 .docs-mobile-nav nav a:hover, .docs-mobile-nav nav a:focus-visible, .docs-mobile-nav nav a[aria-current="page"] { color: var(--ink); background: var(--surface-hover); }
+.docs-mobile-nav nav .docs-product-link { margin-top: 6px; border-top: 1px solid var(--line); color: var(--ink); }
 
 .docs-layout { width: min(100%, 1600px); margin: 0 auto; padding-top: 72px; display: grid; grid-template-columns: minmax(220px, 20vw) minmax(0, 1fr); }
 .docs-toc { position: sticky; top: 72px; height: calc(100vh - 72px); min-height: 560px; padding: 56px 34px 36px var(--pad); display: flex; flex-direction: column; border-right: 1px solid var(--line); background: var(--surface); }
