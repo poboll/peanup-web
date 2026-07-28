@@ -50,6 +50,9 @@ server {
 
     location /_astro/ {
         add_header Cache-Control "public, max-age=31536000, immutable" always;
+        add_header Cross-Origin-Resource-Policy "same-origin" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header X-Robots-Tag "noindex, noarchive" always;
         try_files $uri =404;
     }
 

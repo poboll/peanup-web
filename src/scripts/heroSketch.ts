@@ -183,7 +183,13 @@ if (mount && gallery) {
       const copy = sceneCopy(phase);
       const captionTitle = caption?.querySelector<HTMLElement>('b');
       const captionIndex = caption?.querySelector<HTMLElement>('i');
-      if (captionTitle) captionTitle.textContent = [copy.sectionTitle, copy.title].filter((value, index, values) => value && values.indexOf(value) === index).join(' / ');
+      if (captionTitle) {
+        captionTitle.textContent = phase === 'experience'
+          ? copy.sectionTitle
+          : [copy.sectionTitle, copy.title]
+            .filter((value, index, values) => value && values.indexOf(value) === index)
+            .join(' / ');
+      }
       if (captionIndex) captionIndex.textContent = copy.index;
       if (phase === 'branch') resetBranches();
       if (phase === 'bird') {
@@ -680,26 +686,9 @@ if (mount && gallery) {
     };
 
     const drawExperience = () => {
-      const copy = sceneCopy('experience');
+      // The live studio is revealed over this neutral paper frame. Keeping the
+      // base free of placeholder copy prevents text leaking through the wipe.
       p.background(226, 230, 225);
-      const blocks = [[35,63,142], [98,32,30], [193,187,30], [53,86,58]];
-      p.noStroke();
-      blocks.forEach((color, index) => {
-        p.fill(color[0], color[1], color[2]);
-        p.rect(p.width * (.13 + index * .19), p.height * .22, p.width * .13, p.height * .012);
-      });
-      p.fill(31, 34, 38);
-      p.textAlign(p.CENTER);
-      p.textFont('Georgia');
-      p.textSize(Math.max(24, p.width * .085));
-      p.text(copy.title || 'Your turn.', p.width * .5, p.height * .47);
-      p.textSize(Math.max(7, p.width * .019));
-      p.text(copy.subtitle || 'DROP A PHOTO  /  WRITE A LINE', p.width * .5, p.height * .53);
-      p.noFill(); p.stroke(31, 34, 38); p.strokeWeight(1);
-      p.rect(p.width * .25, p.height * .62, p.width * .5, p.height * .085);
-      p.noStroke(); p.fill(31, 34, 38); p.textSize(Math.max(8, p.width * .021));
-      p.text(copy.meta || 'PREVIEW ON PEANUP', p.width * .5, p.height * .675);
-      p.textAlign(p.LEFT);
     };
 
     const drawRefresh = () => {

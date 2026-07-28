@@ -288,9 +288,19 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
       <div class="section-index"><span>{copy.ecosystem.index}</span><span>{copy.ecosystem.kicker}</span></div>
       <div class="apple-head"><div><span>PEANUP / iOS</span><h2>{copy.ecosystem.title[0]}<br />{copy.ecosystem.title[1]}</h2></div><p>{copy.ecosystem.body}</p></div>
       <div class="apple-stage">
-        <div class="shortcut-phone" aria-label="Apple Shortcuts">
-          <div class="dynamic-island"><i></i><span>Peanup</span><b>68%</b></div>
-          <div class="shortcut-screen"><span>SHORTCUT / AUTOMATION</span><h3>{copy.ecosystem.title[0]}<br />{copy.ecosystem.title[1]}</h3><div class="shortcut-flow">{copy.ecosystem.flow.map((item, index) => <><i>{item}</i>{index < copy.ecosystem.flow.length - 1 && <b></b>}</>)}</div></div>
+        <div class="shortcut-phone" role="img" aria-label={`${copy.ecosystem.kicker}. ${copy.ecosystem.title.join(' ')}`}>
+          <div class="iphone-device">
+            <i class="iphone-button iphone-button-action" aria-hidden="true"></i>
+            <i class="iphone-button iphone-button-volume-up" aria-hidden="true"></i>
+            <i class="iphone-button iphone-button-volume-down" aria-hidden="true"></i>
+            <i class="iphone-button iphone-button-power" aria-hidden="true"></i>
+            <div class="iphone-glass">
+              <div class="iphone-status" aria-hidden="true"><span>9:41</span><b>68%</b></div>
+              <div class="dynamic-island" aria-hidden="true"><i></i></div>
+              <div class="shortcut-screen"><span>PEANUP / SHORTCUTS</span><h3>{copy.ecosystem.title[0]}<br />{copy.ecosystem.title[1]}</h3><div class="shortcut-flow">{copy.ecosystem.flow.map((item, index) => <><i>{item}</i>{index < copy.ecosystem.flow.length - 1 && <b></b>}</>)}</div></div>
+              <i class="home-indicator" aria-hidden="true"></i>
+            </div>
+          </div>
         </div>
         <div class="apple-features">{copy.ecosystem.features.map((feature) => <article><span>{feature.label}</span><h3>{feature.title}</h3><p>{feature.body}</p></article>)}</div>
       </div>

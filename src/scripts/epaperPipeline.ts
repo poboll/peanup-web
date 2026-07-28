@@ -26,8 +26,9 @@ const nearest = (r: number, g: number, b: number) => {
 
 const render = () => {
   if (!preview || !source || !source.complete || !source.naturalWidth) return;
-  const width = 640;
-  const height = Math.max(1, Math.round(width * source.naturalHeight / source.naturalWidth));
+  const scale = Math.min(1, 960 / source.naturalWidth);
+  const width = Math.max(1, Math.round(source.naturalWidth * scale));
+  const height = Math.max(1, Math.round(source.naturalHeight * scale));
   preview.width = width;
   preview.height = height;
   const context = preview.getContext('2d', { willReadFrequently: true });

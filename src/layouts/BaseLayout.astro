@@ -16,6 +16,7 @@ interface Props {
   robots?: string;
   backTopLabel?: string;
   ogImage?: string;
+  ogImageAlt?: string;
   datePublished?: string;
   dateModified?: string;
   image?: string;
@@ -34,6 +35,7 @@ const {
   robots = 'index,follow,noimageindex,max-image-preview:none',
   backTopLabel = 'Back to top',
   ogImage = '/assets/peanup-og.webp',
+  ogImageAlt = title,
   datePublished,
   dateModified,
   image,
@@ -117,6 +119,7 @@ const schema = schemaType === 'Product'
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={absoluteOgImage.href} />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:url" content={canonical.href} />
@@ -128,6 +131,7 @@ const schema = schemaType === 'Product'
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={absoluteOgImage.href} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
     {schema && <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />}
     <title>{title}</title>
   </head>
