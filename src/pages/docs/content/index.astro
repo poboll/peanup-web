@@ -1,0 +1,171 @@
+---
+import DocsShell from '../../../components/docs/DocsShell.astro';
+import type { DocPageConfig } from '../../../types/docs';
+import '../../../styles/docs-content.css';
+
+const toc = [
+  ['overview', '从照片开始'],
+  ['formats', '六种内容方式'],
+  ['rhythm', '一天中的节奏'],
+  ['composition', '六色构图建议'],
+  ['sources', '来源与网络边界'],
+  ['automation', '自动更新方式'],
+  ['possibilities', '不止这些'],
+  ['faq', '常见问题'],
+];
+
+const faqs: Array<[string, string]> = [
+  ['Peanup 只能显示照片、日历、天气和书摘吗？', '不是。这些是用来理解产品的常见示例。只要内容能整理成 528 × 792 的六色画面，就有机会成为 Peanup 的下一帧。'],
+  ['照片会上传到 Peanup 的服务器吗？', '当前网页体验只在浏览器本地处理照片。产品目标同样是让裁切和六色转换在手机上完成，再通过蓝牙发送完成帧。'],
+  ['哪些内容需要联网？', '自选照片和文字可以完全本地处理。天气、在线书摘或其他第三方内容需要从相应服务取得数据，可能需要网络、账号或授权。'],
+  ['内容可以自动更新吗？', 'Apple 快捷指令是计划中的主要自动化路径。可用触发条件、后台执行和最终更新时间会遵循 iOS 权限与系统规则。'],
+  ['文字应该写多长？', '短句在 3.68 英寸竖向屏幕上最清楚。App 会根据内容缩放和换行，但建议把重点控制在一眼能读完的范围内。'],
+];
+
+const config: DocPageConfig = {
+  title: 'Peanup 内容玩法｜照片、日历、天气、书摘与自动化',
+  description: '了解 Peanup 如何展示照片、日历、天气、书摘、自定义文字和一日总结，以及六色电子纸的构图、网络、权限和自动更新边界。',
+  locale: 'zh-cn',
+  current: 'content',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'CONTENT GUIDE',
+  revisionLabel: '众筹预览版\n更新于 2026.07.30',
+  datePublished: '2026-07-29',
+  dateModified: '2026-07-30',
+  schemaType: 'WebPage',
+  articleClass: 'docs-content-guide',
+  faqs,
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / CONTENT GUIDE</span><b>02</b></div>
+    <h1>从照片开始，<br />却不止于照片。</h1>
+    <p class="docs-deck">Peanup 可以留下刚拍到的风景，也可以在需要的时候显示日历、天气、书摘或一句自己的话。内容会改变，电子纸依然安静。</p>
+    <div class="docs-fact-strip" aria-label="内容方式概览">
+      <span><b>PHOTO</b><small>随手拍到的画面</small></span>
+      <span><b>INFO</b><small>日历与天气</small></span>
+      <span><b>TEXT</b><small>书摘与自定义文字</small></span>
+      <span><b>AUTO</b><small>快捷指令与定时更新</small></span>
+    </div>
+    <p class="docs-status"><i></i> 内容示例不是显示上限</p>
+  </section>
+
+  <section class="docs-section" id="formats">
+    <header><span>01 / CONTENT ATLAS</span><h2>每一种内容，<br />都有自己的节奏。</h2></header>
+    <p class="docs-lead docs-lead--offset">App 里的内容架把照片、日历、天气和书摘放在同一个选择界面。它们是下一帧的入口，不是用途的上限。</p>
+    <a class="docs-context-link docs-lead--offset" href="/#ecosystem-library">在首页手机模型中体验内容架 <span aria-hidden="true">→</span></a>
+    <div class="content-atlas" aria-label="Peanup 内容示例">
+      <article>
+        <span>01 / PHOTO</span>
+        <div class="content-specimen content-specimen--photo" aria-hidden="true"><i></i><i></i><i></i><b>16:24</b></div>
+        <h3>照片</h3><p>把刚拍到的风景、朋友或一顿饭，直接留在纸上。</p>
+      </article>
+      <article>
+        <span>02 / CALENDAR</span>
+        <div class="content-specimen content-specimen--calendar" aria-hidden="true"><small>JUL / SUNDAY</small><b>27</b><i>今日 3 项</i></div>
+        <h3>日历</h3><p>只留下今天真正需要看见的日期和安排。</p>
+      </article>
+      <article>
+        <span>03 / WEATHER</span>
+        <div class="content-specimen content-specimen--weather" aria-hidden="true"><small>SHENZHEN</small><b>28°</b><i>阵雨转晴</i></div>
+        <h3>天气</h3><p>出门前看一眼，不需要点亮另一块屏幕。</p>
+      </article>
+      <article>
+        <span>04 / READING</span>
+        <div class="content-specimen content-specimen--quote" aria-hidden="true"><b>“</b><i>家人闲坐，<br />灯火可亲。</i><small>——《冬天》</small></div>
+        <h3>书摘</h3><p>让值得再看的句子，在阅读结束后继续陪着你。</p>
+      </article>
+      <article>
+        <span>05 / SUMMARY</span>
+        <div class="content-specimen content-specimen--summary" aria-hidden="true"><small>TODAY / 18:30</small><b>今天，<br />收成一页。</b><i>完成 · 记住 · 明天</i></div>
+        <h3>一日总结</h3><p>把一天里分散的信息，整理成一张安静的卡片。</p>
+      </article>
+      <article>
+        <span>06 / YOUR FRAME</span>
+        <div class="content-specimen content-specimen--open" aria-hidden="true"><b>…</b><i>下一幅画面<br />由你决定</i></div>
+        <h3>自定义内容</h3><p>照片、短句或后续第三方来源，都可以成为新的画面入口。</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="docs-section" id="rhythm">
+    <header><span>02 / A QUIET DAY</span><h2>一天会变，<br />纸面慢慢跟上。</h2></header>
+    <div class="docs-split">
+      <p class="docs-lead">不是为了频繁刷新，而是在真正有用的时刻换一张。</p>
+      <div class="docs-copy"><p>下面是一条自动化使用示例。它说明内容如何进入生活，不代表固定模板，也不承诺系统会在后台任意时刻强制执行。</p></div>
+    </div>
+    <ol class="content-rhythm" aria-label="一天中的内容更新示例">
+      <li><time>07:30</time><span>WEATHER</span><strong>出门前</strong><p>天气、温度和第一项日程。</p></li>
+      <li><time>12:40</time><span>PHOTO</span><strong>刚刚发生</strong><p>手动挑一张值得留下的照片。</p></li>
+      <li><time>18:30</time><span>SUMMARY</span><strong>回到家</strong><p>把今天收成一张简短卡片。</p></li>
+      <li><time>22:30</time><span>READING</span><strong>睡前</strong><p>留下明天仍想看见的一句话。</p></li>
+    </ol>
+  </section>
+
+  <section class="docs-section" id="composition">
+    <header><span>03 / COMPOSE FOR E6</span><h2>六种颜色，<br />重点要更清楚。</h2></header>
+    <div class="docs-care content-composition">
+      <div><dt>SUBJECT</dt><dd>主体要清楚</dd><small>人物或物件不要太小。背景越简单，六色转换后越容易读懂。</small></div>
+      <div><dt>CONTRAST</dt><dd>保留明暗差</dd><small>避免大面积接近的灰色。明确的亮暗关系更适合电子纸。</small></div>
+      <div><dt>SAFE AREA</dt><dd>边缘留呼吸</dd><small>重要的脸、日期和文字不要贴边，裁切时才有调整空间。</small></div>
+      <div><dt>TEXT</dt><dd>一句就够了</dd><small>短句比长段落更适合 3.68 英寸竖向画面，也更容易一眼读完。</small></div>
+    </div>
+    <p class="docs-caption">App 预览会把内容映射到 528 × 792 的 E6 六色色板。照片不被拉伸；文字会自动换行和缩放。最终量产版本仍会根据真机显示效果继续校准。</p>
+    <a class="docs-context-link" href="/docs/image-guide/">打开六色画面指南，继续了解选图、裁切与预览 <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="sources">
+    <header><span>04 / SOURCE & NETWORK</span><h2>有些来自你，<br />有些来自世界。</h2></header>
+    <div class="docs-split">
+      <p class="docs-lead">网络只用来取得需要更新的信息，不应该成为每一张照片的必经之路。</p>
+      <div class="docs-copy"><p>自选照片和文字可以完全在本地准备。天气、在线书摘和第三方服务需要各自的数据来源、网络和授权。</p><a class="docs-context-link" href="/docs/privacy/">查看隐私与数据边界 <span aria-hidden="true">→</span></a></div>
+    </div>
+    <div class="docs-table-wrap content-source-table" tabindex="0" role="region" aria-label="内容来源与网络边界">
+      <table class="docs-table">
+        <thead><tr><th scope="col">内容</th><th scope="col">画面在哪里准备</th><th scope="col">是否需要网络</th><th scope="col">产品定位</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">照片与自定义文字</th><td>手机本地裁切、排版与六色转换</td><td>不需要</td><td>核心更新路径</td></tr>
+          <tr><th scope="row">系统日历</th><td>读取用户允许的日历项目后在本地排版</td><td>取决于日历来源</td><td>众筹目标</td></tr>
+          <tr><th scope="row">天气</th><td>取得天气数据后在手机生成卡片</td><td>需要</td><td>内容服务目标</td></tr>
+          <tr><th scope="row">书摘</th><td>从用户选择或获授权的阅读来源生成</td><td>取决于来源</td><td>扩展目标</td></tr>
+          <tr><th scope="row">一日总结</th><td>由快捷指令组合用户授权的数据</td><td>取决于数据来源</td><td>自动化示例</td></tr>
+          <tr><th scope="row">第三方内容</th><td>由未来接入方提供，再转换为完成帧</td><td>由服务决定</td><td>后续扩展空间</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="docs-section" id="automation">
+    <header><span>05 / AUTOMATION</span><h2>自动化准备画面，<br />你决定留下什么。</h2></header>
+    <ol class="docs-steps content-automation-steps">
+      <li><span>01 / TRIGGER</span><strong>选择时机</strong><p>时间、专注模式或你主动运行的快捷指令。</p></li>
+      <li><span>02 / SOURCE</span><strong>取得内容</strong><p>照片、日历、天气或一段你选中的文字。</p></li>
+      <li><span>03 / PREVIEW</span><strong>准备画面</strong><p>在手机上排版并转换为六色完成帧。</p></li>
+      <li><span>04 / SEND</span><strong>靠近后发送</strong><p>连接 Peanup，传输并等待电子纸刷新完成。</p></li>
+    </ol>
+    <div class="docs-callout">
+      <span>SYSTEM BOUNDARY</span>
+      <p>Apple 快捷指令的后台运行、权限提示和可用触发条件遵循 iOS 规则。Peanup 会在系统允许且设备靠近时准备并发送画面。阅读完整的 <a class="docs-context-link" href="/docs/shortcuts/">快捷指令指南 <span aria-hidden="true">→</span></a></p>
+    </div>
+  </section>
+
+  <section class="docs-section" id="possibilities">
+    <header><span>06 / OPEN FRAME</span><h2>这些内容，<br />都只是开始。</h2></header>
+    <div class="docs-decision content-open-frame">
+      <span>PHOTO · INFORMATION · TEXT · MORE</span>
+      <strong>只要能成为一幅六色画面，<br />就有机会留在 Peanup 上。</strong>
+      <p>第一版会先把照片、文字、常用信息和 Apple 自动化做好。后续第三方接入会围绕同一个原则：内容在需要时更新，完成后安静地留在纸上。</p>
+    </div>
+  </section>
+
+  <section class="docs-section" id="faq">
+    <header><span>07 / FAQ</span><h2>关于内容，<br />先回答这些。</h2></header>
+    <div class="docs-accordion">
+      {faqs.map(([question, answer], index) => (
+        <details open={index === 0}><summary><i>{String(index + 1).padStart(2, '0')}</i>{question}</summary><p>{answer}</p></details>
+      ))}
+    </div>
+  </section>
+</DocsShell>

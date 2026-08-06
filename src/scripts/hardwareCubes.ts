@@ -17,6 +17,12 @@ if (hardwareGrid && hardwareCubes.length) {
       setCubeState(cube, flipped);
     });
     cube.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        hardwareCubes.forEach((item) => setCubeState(item, false));
+        cube.focus();
+        return;
+      }
       if (event.key !== 'Enter' && event.key !== ' ') return;
       event.preventDefault();
       cube.click();

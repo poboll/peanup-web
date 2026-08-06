@@ -1,0 +1,137 @@
+---
+import DocsShell from '../../../components/docs/DocsShell.astro';
+import type { DocPageConfig } from '../../../types/docs';
+
+const toc = [
+  ['overview', '快速理解'],
+  ['display', 'E6 面板'],
+  ['refresh', '一次刷新'],
+  ['battery', '续航条件'],
+  ['charging', 'Qi 充电'],
+  ['placement', '磁吸摆放'],
+  ['care', '使用与保养'],
+  ['targets', '规格证据'],
+];
+
+const faqs: Array<[string, string]> = [
+  ['画面保持时会一直耗电吗？', '电子纸不需要持续重绘来保持画面。整机仍有控制器与待机功耗，但主要用电发生在唤醒、传输和刷新阶段。'],
+  ['一个月以上续航是已经锁定的规格吗？', '不是。一个月以上是 Kickstarter 目标，实际续航会受到刷新频率、温度、无线连接和最终硬件参数影响。'],
+  ['手机背面可以直接给 Peanup 充电吗？', '磁吸摆放与无线充电是两件事。兼容 MagSafe 磁吸配件不代表手机会为 Peanup 供电；充电请使用兼容的 Qi 充电器。'],
+  ['为什么没有外露充电口？', '无外露接口是当前产品目标，日常补能通过 Qi 无线充电完成。最终充电功率、温升和状态提示会以量产硬件验证为准。'],
+  ['可以在雨天或浴室使用吗？', '当前没有整机防水承诺。请避开雨水、潮气和凝露，也不要弯折或按压电子纸显示区域。'],
+];
+
+const config: DocPageConfig = {
+  title: 'Peanup 硬件与电源｜E6 电子纸、Qi、磁吸与续航',
+  description: '了解 Peanup 3.68 英寸 E6 六色电子纸、一次刷新怎样使用电量、Qi 无线充电、磁吸摆放、续航条件、保养方式与众筹目标规格。',
+  locale: 'zh-cn',
+  current: 'hardware',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'HARDWARE & POWER',
+  revisionLabel: '众筹预览版\n更新于 2026.07.30',
+  datePublished: '2026-07-30',
+  dateModified: '2026-07-30',
+  schemaType: 'TechArticle',
+  articleClass: 'docs-hardware-page',
+  faqs,
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / HARDWARE & POWER</span><b>01</b></div>
+    <h1><span>电量只为变化而用，</span><span>画面不为等待耗电。</span></h1>
+    <p class="docs-deck">Peanup 的 E6 电子纸在刷新后继续保持画面。手机负责计算，蓝牙负责近场发送，电量主要留给唤醒、传输和写屏。</p>
+    <div class="docs-fact-strip" aria-label="硬件摘要">
+      <span><b>3.68” E6</b><small>六色电子纸</small></span>
+      <span><b>528 × 792</b><small>面板像素矩阵</small></span>
+      <span><b>QI</b><small>无线充电目标</small></span>
+      <span><b>BISTABLE</b><small>刷新后保持</small></span>
+    </div>
+    <p class="docs-status"><i></i> 面板参数来自厂家规格 · 整机能力仍以量产验证为准</p>
+  </section>
+
+  <section class="docs-section" id="display">
+    <header><span>02 / E6 DISPLAY</span><h2>六种实体颜色，<br />组成一张不会发光的画面。</h2></header>
+    <div class="docs-split">
+      <p class="docs-lead">面板依靠环境光观看，不使用手机屏幕那样的背光。照片会先转成黑、纸白、红、黄、蓝、绿六种实体颜色，再写入电子纸。</p>
+      <div class="docs-copy">
+        <p>厂家规格给出的有效显示区是 51.84 × 77.76 mm，像素矩阵为 528 × 792。按有效区计算，像素密度约为 258.7 PPI。</p>
+        <p>网页上的纸纹、抖动和写屏动画用于解释视觉特征，不等同于实物的色彩校准或刷新时间。</p>
+      </div>
+    </div>
+    <dl class="docs-panel-profile" aria-label="E6 面板参数">
+      <div><dt>DISPLAY</dt><dd>3.68” E6</dd><small>六色电子纸</small></div>
+      <div><dt>RESOLUTION</dt><dd>528 × 792</dd><small>竖向像素矩阵</small></div>
+      <div><dt>ACTIVE AREA</dt><dd>51.84 × 77.76 mm</dd><small>有效显示区</small></div>
+      <div><dt>DENSITY</dt><dd>≈258.7 PPI</dd><small>按有效区计算</small></div>
+      <div><dt>REFLECTIVITY</dt><dd>35% typ.</dd><small>厂家面板数据</small></div>
+      <div><dt>CONTRAST</dt><dd>10:1 typ.</dd><small>厂家面板数据</small></div>
+    </dl>
+    <a class="docs-context-link" href="/docs/image-guide/">继续了解照片怎样变成六色画面 <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="refresh">
+    <header><span>03 / ONE REFRESH</span><h2>一幅画面，<br />只在变化时刷新。</h2></header>
+    <ol class="hardware-cycle" aria-label="一次电子纸更新的能量路径">
+      <li><span>01 / PREPARE</span><strong>手机完成计算</strong><p>裁切、排版和六色转换在手机上完成。</p></li>
+      <li><span>02 / WAKE</span><strong>设备短暂唤醒</strong><p>准备接收新的完成帧。</p></li>
+      <li><span>03 / TRANSFER</span><strong>BLE 近场发送</strong><p>蓝牙只发送已经处理好的画面。</p></li>
+      <li><span>04 / REFRESH</span><strong>E6 写入新画面</strong><p>面板经历可见刷新，再完成显示。</p></li>
+      <li class="is-passive"><span>05 / HOLD</span><strong>断开并保持</strong><p>连接回到空闲，电子纸继续显示这一帧。</p></li>
+    </ol>
+    <p class="docs-note"><b>为什么适合静态内容</b><span>照片、日历、天气和书摘不需要每秒变化。Peanup 把能量留给真正发生的更新，而不是持续点亮屏幕。</span></p>
+  </section>
+
+  <section class="docs-section" id="battery">
+    <header><span>04 / BATTERY LIFE</span><h2>一个月以上，<br />是目标，也是需要验证的结果。</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>REFRESH RATE</span><h3>更新越少，续航越长</h3><p>写屏是主要用电阶段之一。每天更新次数会直接影响实际续航。</p></article>
+      <article><span>WIRELESS</span><h3>发送完成后断开</h3><p>蓝牙不为保持画面持续在线，异常重试和长时间连接仍会增加消耗。</p></article>
+      <article><span>ENVIRONMENT</span><h3>温度也会影响电池</h3><p>低温、高温与最终电芯参数都会改变可用电量和充电表现。</p></article>
+    </div>
+    <p class="docs-caption">“一个月以上”是 Kickstarter 目标，不是所有刷新习惯下的固定保证。量产前会公布测试条件、刷新频率与测量方法。</p>
+  </section>
+
+  <section class="docs-section" id="charging">
+    <header><span>05 / QI CHARGING</span><h2>没有外露接口，<br />放下即可补能。</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>01 / CENTER</span><h3>对准充电区域</h3><p>平放在兼容的 Qi 充电器中央，避免线圈偏离。</p></article>
+      <article><span>02 / CLEAR</span><h3>保持表面干净</h3><p>移开硬币、钥匙和其他金属异物，不在潮湿表面充电。</p></article>
+      <article><span>03 / COOL</span><h3>异常发热就暂停</h3><p>明显发热或状态异常时先移开，恢复正常后再继续。</p></article>
+    </div>
+    <p class="docs-caption">最终输入功率、充电时间、温升、对位容差与状态提示仍由量产硬件验证。</p>
+  </section>
+
+  <section class="docs-section" id="placement">
+    <header><span>06 / MAGNETIC PLACEMENT</span><h2>轻轻吸住，<br />先确认表面真的适合。</h2></header>
+    <div class="hardware-placement-grid">
+      <article><span>FRIDGE</span><i class="hardware-placement-mark" aria-hidden="true"></i><h3>冰箱与磁性表面</h3><p>先用手托住测试吸力。并非所有不锈钢表面都有足够磁性。</p></article>
+      <article><span>DESK</span><i class="hardware-placement-mark" aria-hidden="true"></i><h3>桌面磁吸配件</h3><p>选择稳定、平整的支架，避免显示面承受局部压力。</p></article>
+      <article><span>MAGSAFE ACCESSORY</span><i class="hardware-placement-mark" aria-hidden="true"></i><h3>兼容的磁吸配件</h3><p>描述的是机械摆放兼容，不代表 Apple 认证，也不等于手机反向供电。</p></article>
+    </div>
+    <a class="docs-context-link" href="/docs/compatibility/#nfc">查看平台、磁吸配件与 CUID NFC 的兼容边界 <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="care">
+    <header><span>07 / CARE</span><h2>像照顾一张纸，<br />也像照顾一件电子产品。</h2></header>
+    <dl class="docs-care" aria-label="使用环境与保养">
+      <div><dt>0–50°C</dt><dd>面板工作范围</dd><small>厂家面板条件，不等同于整机认证。</small></div>
+      <div><dt>DRY</dt><dd>避开雨水与凝露</dd><small>当前没有整机防水承诺。</small></div>
+      <div><dt>GENTLE</dt><dd>不要弯折或重压</dd><small>避免在显示区域施加集中压力。</small></div>
+      <div><dt>CLEAN</dt><dd>使用柔软干布</dd><small>先停止充电，再轻轻清洁表面。</small></div>
+    </dl>
+  </section>
+
+  <section class="docs-section" id="targets">
+    <header><span>08 / EVIDENCE</span><h2>哪些来自规格书，<br />哪些仍是众筹目标。</h2></header>
+    <div class="hardware-proof">
+      <div><span>CONFIRMED PANEL</span><h3>面板已经明确</h3><p>3.68 英寸 E6、528 × 792 像素、51.84 × 77.76 mm 有效区、0.87 mm 面板模组厚度，以及厂家提供的反射率、对比度和工作范围。</p></div>
+      <div><span>KICKSTARTER TARGET</span><h3>整机仍在打磨</h3><p>3 mm 整机厚度、28 g 重量、一个月以上续航、无外露接口、Qi 无线充电、内置磁环、iOS App、快捷指令、微信小程序与 CUID NFC 都需要在最终硬件和软件上完成验证。</p></div>
+    </div>
+    <div class="docs-callout">
+      <span>需要排查？</span>
+      <div><p>如果充电、发现设备、传输或刷屏停在某一步，按照当前状态继续，而不是反复从头尝试。</p><a class="docs-context-link" href="/docs/troubleshooting/">打开连接与排查指南 <span aria-hidden="true">→</span></a></div>
+    </div>
+  </section>
+</DocsShell>

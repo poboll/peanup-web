@@ -1,7 +1,7 @@
 ---
-import BaseLayout from '../../../layouts/BaseLayout.astro';
-import ThemeToggle from '../../../components/ThemeToggle.astro';
-import '../../../styles/docs.css';
+import DocsShell from '../../../components/docs/DocsShell.astro';
+import DocsMap from '../../../components/docs/DocsMap.astro';
+import type { DocPageConfig } from '../../../types/docs';
 
 const toc = [
   ['overview', 'Overview'],
@@ -9,7 +9,9 @@ const toc = [
   ['transfer', 'Updating Peanup'],
   ['first-update', 'First update'],
   ['platforms', 'Platforms'],
+  ['content', 'Content & automation'],
   ['power', 'Power & placement'],
+  ['care', 'Care & environment'],
   ['privacy', 'Privacy'],
   ['nfc', 'CUID NFC'],
   ['specifications', 'Specifications'],
@@ -39,9 +41,10 @@ const specifications = [
   ['NFC', 'CUID-compatible NFC, subject to system support and authorization'],
 ];
 
-const faqs = [
+const faqs: Array<[string, string]> = [
   ['Does the screen stay on all the time?', 'No backlight is needed. E-paper keeps the image after each refresh. Bluetooth then returns to standby.'],
   ['What is the confirmed display specification?', 'The manufacturer specifies a 3.68-inch E6 six-color panel at 528 × 792 pixels. Its 51.84 × 77.76 mm active area works out to about 258.7 PPI. The website preview only simulates the look.'],
+  ['Is Peanup limited to photos, calendars, weather and reading notes?', 'No. Those are approachable examples. Any content that the app, Mini Program or a Shortcut can prepare as a 528 × 792 six-color frame may become the next display. The final release will document which content sources are available.'],
   ['Do my photos need to be uploaded?', 'No. Cropping and six-color conversion happen on iPhone or iPad. Bluetooth sends only the finished frame, and core features do not need a Peanup cloud account.'],
   ['Can it update automatically?', 'Apple Shortcuts can prepare automated updates. Actual timing still depends on iOS and the rules of each content service.'],
   ['Is there an Android app?', 'A native Android app is not planned for the first release. Android devices can send images through the WeChat Mini Program.'],
@@ -51,61 +54,25 @@ const faqs = [
   ['What if my phone cannot find Peanup?', 'Check that Peanup has power, Bluetooth is enabled and the device is close to your phone. If another phone is connected, disconnect it before scanning again in the app.'],
   ['Are the final dimensions guaranteed?', 'The 3.68-inch E6 panel and 528 × 792 pixel matrix come from the manufacturer specification. The 3 mm profile, 28 g weight and one-month-plus battery life are Kickstarter targets. Battery life depends on refresh frequency.'],
 ];
+
+const config: DocPageConfig = {
+  title: 'Peanup Product Guide | 3.68-inch E6 six-color e-paper',
+  description: 'Peanup product guide: 3.68-inch E6 six-color e-paper, 528 × 792 resolution, Bluetooth transfer, Apple Shortcuts, Qi charging and CUID NFC.',
+  locale: 'en',
+  current: 'product',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'PRODUCT GUIDE',
+  revisionLabel: 'Preview edition\nUpdated 31 July 2026',
+  datePublished: '2026-07-28',
+  dateModified: '2026-07-31',
+  faqs,
+};
 ---
 
-<BaseLayout
-  title="Peanup Product Guide | 3.68-inch E6 six-color e-paper"
-  description="Peanup product guide: 3.68-inch E6 six-color e-paper, 528 × 792 resolution, Bluetooth transfer, Apple Shortcuts, Qi charging and CUID NFC."
-  locale="en"
-  htmlLang="en"
-  ogLocale="en_US"
-  canonicalPath="/en/docs/"
-  alternates={[
-    { lang: 'zh-CN', href: '/docs/' },
-    { lang: 'en', href: '/en/docs/' },
-  ]}
-  xDefaultPath="/docs/"
-  schemaType="TechArticle"
-  datePublished="2026-07-28"
-  dateModified="2026-07-28"
-  image="/assets/peanup-og.webp"
-  backTopLabel="Back to top"
->
-  <header class="docs-topbar">
-    <a class="brand" href="/en/" aria-label="Peanup home">
-      <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
-      <span>Peanup</span>
-    </a>
-    <nav class="docs-primary-nav" aria-label="Documentation">
-      <a aria-current="page" href="/en/docs/">Product guide</a>
-      <a href="/en/docs/engineering/">Engineering notes</a>
-      <a lang="zh-CN" href="/docs/" hreflang="zh-CN">简体中文</a>
-    </nav>
-    <a class="docs-product-link docs-topbar-product" href="/en/">Product <span aria-hidden="true">↗</span></a>
-    <ThemeToggle locale="en" />
-    <details class="docs-mobile-nav">
-      <summary>Menu</summary>
-      <nav aria-label="Mobile documentation">
-        <a aria-current="page" href="/en/docs/">Product guide</a>
-        <a href="/en/docs/engineering/">Engineering notes</a>
-        <a lang="zh-CN" href="/docs/" hreflang="zh-CN">简体中文</a>
-      </nav>
-    </details>
-  </header>
-
-  <main id="main-content" class="docs-layout" tabindex="-1">
-    <aside class="docs-toc" aria-label="On this page">
-      <p>PRODUCT GUIDE</p>
-      <nav>
-        {toc.map(([id, label], index) => <a href={`#${id}`}><i>{String(index + 1).padStart(2, '0')}</i>{label}</a>)}
-      </nav>
-      <small>Preview edition<br />Updated 28 July 2026</small>
-    </aside>
-
-    <article class="docs-article">
+<DocsShell config={config}>
       <section class="docs-hero" id="overview">
         <div class="docs-eyebrow"><span>PEANUP / PRODUCT GUIDE</span><b>01</b></div>
-        <h1>A changing piece of paper<br />for the moments you keep.</h1>
+        <h1 class="docs-product-title"><span>Paper changes.</span>{' '}<span>Moments stay.</span></h1>
         <p class="docs-deck">Peanup is a portrait six-color e-paper display for photos and everyday information. Update it from your phone, and the image stays quietly in view.</p>
         <div class="docs-fact-strip" aria-label="Product summary">
           <span><b>3.68”</b><small>E6 SIX-COLOR E-PAPER</small></span>
@@ -113,8 +80,10 @@ const faqs = [
           <span><b>BLE</b><small>NEARBY TRANSFER</small></span>
           <span><b>QI</b><small>WIRELESS CHARGING</small></span>
         </div>
-        <p class="docs-status"><i></i> Crowdfunding preview · final production details may evolve</p>
+        <a class="docs-status docs-status-link" href="/en/docs/campaign/"><i></i><span>Crowdfunding preview · final production details may evolve</span><b aria-hidden="true">→</b></a>
       </section>
+
+      <DocsMap locale="en" />
 
       <section class="docs-section" id="display">
         <header><span>02 / DISPLAY & FORM</span><h2>Physical pigment,<br />not emitted light.</h2></header>
@@ -142,10 +111,11 @@ const faqs = [
           <span><i></i><b>Green</b><small>06</small></span>
         </div>
         <div class="docs-display-principles" aria-label="How the e-paper display works">
-          <article><span>01 / REFLECTIVE</span><h3>More ambient light.<br />A clearer paper surface.</h3><p>There is no backlight. Ambient light reaches the pigment surface and reflects toward your eyes, so the image remains readable in sunlight without glowing continuously.</p></article>
+          <article><span>01 / REFLECTIVE</span><h3>Ambient light reveals<br />the paper surface.</h3><p>There is no backlight. Ambient light reaches the pigment surface and reflects toward your eyes, keeping the image readable in bright conditions within the panel specification without glowing continuously.</p></article>
           <article><span>02 / DITHER</span><h3>Six pigments.<br />More visible nuance.</h3><p>The phone prepares each photograph first. Dithering interleaves six physical colors to represent tone, texture and color relationships beyond six flat swatches.</p></article>
           <article><span>03 / HOLD</span><h3>Refresh once.<br />Keep the frame on paper.</h3><p>You can see the e-paper update while a new frame is written. It then stays visible without continuous redraw, and Bluetooth is needed only for the next update.</p></article>
         </div>
+        <a class="docs-context-link" href="/en/docs/image-guide/">How should a photograph be prepared for six-color e-paper? Read the image guide <span aria-hidden="true">→</span></a>
       </section>
 
       <section class="docs-section" id="transfer">
@@ -168,6 +138,7 @@ const faqs = [
           <li><span>04</span><strong>Wait for completion</strong><p>Keep Peanup close until the app confirms the refresh, then place it where you want it.</p></li>
         </ol>
         <p class="docs-note"><b>About refreshing</b><span>E-paper is not a video display. A visible refresh happens before the new frame stays quietly in place. Final refresh timing and visual behavior will be published after production-hardware validation.</span></p>
+        <a class="docs-context-link" href="/en/docs/troubleshooting/">First connection did not finish? Open setup and troubleshooting <span aria-hidden="true">→</span></a>
       </section>
 
       <section class="docs-section" id="platforms">
@@ -177,34 +148,83 @@ const faqs = [
           <article><span>APPLE SHORTCUTS</span><h3>Repeat without repeating yourself</h3><p>Use Siri, widgets and personal automations to prepare familiar frames with fewer steps.</p></article>
           <article><span>WECHAT MINI PROGRAM</span><h3>Send from Android</h3><p>Choose and send an image through the WeChat Mini Program. A native Android app is not planned for the first release.</p></article>
         </div>
+        <div class="docs-table-wrap docs-compatibility" tabindex="0" aria-label="Platform compatibility matrix">
+          <table class="docs-table">
+            <thead><tr><th scope="col">Platform</th><th scope="col">Transfer</th><th scope="col">Automation</th><th scope="col">Launch status</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">iPhone / iPad</th><td>Peanup app · BLE</td><td>Apple Shortcuts</td><td>Planned</td></tr>
+              <tr><th scope="row">Android</th><td>WeChat Mini Program · BLE</td><td>Subject to Mini Program capabilities</td><td>Planned</td></tr>
+              <tr><th scope="row">Third-party content</th><td>Frames prepared through the app</td><td>Shortcuts and future interfaces</td><td>Expandable</td></tr>
+            </tbody>
+          </table>
+        </div>
         <div class="docs-callout">
           <span>MORE CONTENT</span>
-          <p>Shortcuts can schedule calendars, weather and reading notes. Future content sources will depend on platform permissions and service support.</p>
+          <div>
+            <p>Shortcuts can schedule calendars, weather and reading notes. Future content sources will depend on platform permissions and service support.</p>
+            <a class="docs-context-link" href="/en/docs/shortcuts/">Open the Shortcuts guide <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="content">
+        <header><span>06 / CONTENT & AUTOMATION</span><h2>Content can change.<br />The original can stay on your phone.</h2></header>
+        <div class="docs-split">
+          <p class="docs-lead">Photos, text and the six-color preview are prepared on-device. Calendar, weather and reading cards request only the content needed to compose that frame.</p>
+          <div class="docs-copy">
+            <p>Apple Shortcuts can connect frame selection, card generation and sending. Whether an automation runs on time still depends on iOS permissions, content-service rules and Peanup being nearby.</p>
+            <p>Core photo transfer does not require a Peanup cloud account. External services provide information such as weather or reading notes; they do not store the original photo for conversion.</p>
+            <a class="docs-context-link" href="/en/docs/content/">Continue with content ideas <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+        <div class="docs-table-wrap" tabindex="0" aria-label="Content sources and network requirements">
+          <table class="docs-table">
+            <thead><tr><th scope="col">Content</th><th scope="col">Prepared by</th><th scope="col">Network</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Photos and text</th><td>Locally on iPhone / iPad</td><td>No original-photo upload</td></tr>
+              <tr><th scope="row">Calendar cards</th><td>System calendar + local layout</td><td>Depends on calendar sync</td></tr>
+              <tr><th scope="row">Weather and reading</th><td>Content service + local layout</td><td>Needed when fetching content</td></tr>
+              <tr><th scope="row">Automation</th><td>Apple Shortcuts</td><td>Subject to system permissions and triggers</td></tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
       <section class="docs-section" id="power">
-        <header><span>06 / POWER & PLACEMENT</span><h2>The image stays.<br />Power is spent on change.</h2></header>
+        <header><span>07 / POWER & PLACEMENT</span><h2>The image stays.<br />Power is spent on change.</h2></header>
         <div class="docs-grid docs-grid--three">
           <article><span>BATTERY</span><h3>One month or more</h3><p>This is the crowdfunding target, not a fixed runtime promise. Actual battery life depends most of all on refresh frequency and operating conditions.</p></article>
           <article><span>QI</span><h3>Place it to charge</h3><p>Qi wireless charging supports the no-exposed-connector body and keeps everyday charging uncomplicated.</p></article>
           <article><span>MAGNETIC RING</span><h3>Fridge, desk, phone accessory</h3><p>The integrated ring supports magnetic placement and compatible MagSafe accessories. It does not imply Apple certification.</p></article>
         </div>
+        <a class="docs-context-link" href="/en/docs/hardware/">Continue to one refresh, Qi, magnets and care <span aria-hidden="true">→</span></a>
+      </section>
+
+      <section class="docs-section" id="care">
+        <header><span>08 / CARE & ENVIRONMENT</span><h2>Handle it lightly.<br />Keep the paper dry and flat.</h2></header>
+        <dl class="docs-care" aria-label="Operating environment and everyday care">
+          <div><dt>0–50°C</dt><dd>Panel operating range</dd><small>This is panel data, not an enclosure protection rating for the finished Peanup device.</small></div>
+          <div><dt>DRY</dt><dd>Avoid moisture and condensation</dd><small>Keep it away from rain, bathrooms and rapid temperature changes that can create condensation.</small></div>
+          <div><dt>GENTLE</dt><dd>Do not press or bend</dd><small>E-paper is made to be viewed, not subjected to point pressure, twisting or drop impact.</small></div>
+          <div><dt>CLEAN</dt><dd>Use a soft, dry cloth</dd><small>Remove it from charging first, then wipe lightly. Do not use a wet cloth or corrosive cleaner.</small></div>
+        </dl>
+        <p class="docs-caption">These are panel limits and everyday care guidelines, not claims of water, dust or impact resistance for the finished product.</p>
       </section>
 
       <section class="docs-section" id="privacy">
-        <header><span>07 / PRIVACY</span><h2>Your photograph can stay<br />on your devices.</h2></header>
+        <header><span>09 / PRIVACY</span><h2>Your photograph can stay<br />on your devices.</h2></header>
         <div class="docs-split">
           <p class="docs-lead">Photos are prepared on your phone, then sent over Bluetooth. Cropping and six-color conversion stay local.</p>
           <div class="docs-copy">
             <p>Core capture, import, preview, gallery and nearby transfer do not require a Peanup cloud account. Photos and device binding stay local.</p>
             <p>Weather and reading cards may contact their source services for content. Your photos are not uploaded for cloud conversion.</p>
+            <a class="docs-context-link" href="/en/docs/privacy/">Read the full privacy and data guide <span aria-hidden="true">→</span></a>
           </div>
         </div>
       </section>
 
       <section class="docs-section" id="nfc">
-        <header><span>08 / CUID NFC</span><h2>Access card,<br />where supported.</h2></header>
+        <header><span>10 / CUID NFC</span><h2>Access card,<br />where supported.</h2></header>
         <div class="docs-policy">
           <strong>Conditional compatibility</strong>
           <p>Peanup may work as an access card where the reader supports CUID. Enrollment needs the system owner’s approval and must follow local rules. Unsupported systems will not work.</p>
@@ -212,19 +232,20 @@ const faqs = [
       </section>
 
       <section class="docs-section" id="specifications">
-        <header><span>09 / SPECIFICATIONS</span><h2>The working product<br />specification.</h2></header>
-        <div class="docs-table-wrap" tabindex="0" aria-label="Scrollable product specifications">
+        <header><span>11 / SPECIFICATIONS</span><h2>The working product<br />specification.</h2></header>
+        <div class="docs-table-wrap docs-specifications" aria-label="Product specifications">
           <table class="docs-table">
             <tbody>
               {specifications.map(([name, value]) => <tr><th scope="row">{name}</th><td>{value}</td></tr>)}
             </tbody>
           </table>
         </div>
-        <p class="docs-caption">Panel data follows the manufacturer’s Tentative Specification V0.2. The 3 mm profile, 28 g weight and one-month-plus battery life are Kickstarter targets and may change before production. Battery life depends on refresh frequency. Clean with a soft dry cloth and avoid pressure, moisture and condensation.</p>
+        <p class="docs-caption">Panel data follows the manufacturer’s Tentative Specification V0.2. The 3 mm profile, 28 g weight and one-month-plus battery life are Kickstarter targets and may change before production. Battery life depends on refresh frequency.</p>
+        <a class="docs-context-link" href="/en/docs/glossary/">Unsure what E6, PPI, BLE or a crowdfunding target means? Open the glossary <span aria-hidden="true">→</span></a>
       </section>
 
       <section class="docs-section docs-faq" id="faq">
-        <header><span>10 / FAQ</span><h2>Before you ask.</h2></header>
+        <header><span>12 / FAQ</span><h2>Before you ask.</h2></header>
         <div class="docs-accordion">
           {faqs.map(([question, answer], index) => (
             <details>
@@ -235,10 +256,4 @@ const faqs = [
         </div>
       </section>
 
-      <div class="docs-footer">
-        <div><span>PEANUP / PRODUCT GUIDE</span><p>Questions about the product? <a href="mailto:i@caiths.com">i@caiths.com</a></p></div>
-        <a href="/en/docs/engineering/">Read the engineering notes <span aria-hidden="true">→</span></a>
-      </div>
-    </article>
-  </main>
-</BaseLayout>
+</DocsShell>

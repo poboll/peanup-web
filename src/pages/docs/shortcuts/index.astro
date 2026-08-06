@@ -1,0 +1,182 @@
+---
+import DocsShell from '../../../components/docs/DocsShell.astro';
+import ShortcutPlanner, { type ShortcutPlannerGroup } from '../../../components/docs/ShortcutPlanner.astro';
+import type { DocPageConfig } from '../../../types/docs';
+
+const toc = [
+  ['overview', '快速理解'],
+  ['model', '一次更新'],
+  ['recipes', '日常示例'],
+  ['builder', '搭一条流程'],
+  ['actions', '动作草案'],
+  ['conditions', '条件与失败'],
+  ['privacy', '隐私边界'],
+  ['faq', '常见问题'],
+];
+
+const plannerGroups: ShortcutPlannerGroup[] = [
+  {
+    id: 'trigger', label: 'TRIGGER', title: '从什么时刻开始？',
+    options: [
+      { id: 'time', label: '固定时间', phrase: '每天 07:30，', note: '时间自动化是否需要确认，由 iOS 规则决定。' },
+      { id: 'manual', label: '手动运行', phrase: '当你运行快捷指令时，', note: '手动运行适合第一次配置和临时更新。' },
+      { id: 'focus', label: '专注模式', phrase: '进入你选择的专注模式时，', note: '专注模式需要先在系统自动化中授权。' },
+      { id: 'share', label: '分享菜单', phrase: '从照片分享菜单开始时，', note: '分享菜单只使用你主动选择的内容。' },
+    ],
+  },
+  {
+    id: 'content', label: 'CONTENT', title: '画面从哪里来？',
+    options: [
+      { id: 'photo', label: '一张照片', phrase: '在手机上准备一张照片，', note: '照片目标是在设备本地裁切和六色转换。' },
+      { id: 'weather', label: '天气与日程', phrase: '组合天气和第一项日程，', note: '天气需要网络和明确的数据来源；日历需要系统权限。' },
+      { id: 'reading', label: '一句书摘', phrase: '排版一句你选择的书摘，', note: '在线书摘是否需要联网取决于内容来源。' },
+      { id: 'summary', label: '一日总结', phrase: '生成一张简短的一日总结，', note: '总结只使用你授权给快捷指令的数据。' },
+    ],
+  },
+  {
+    id: 'delivery', label: 'DELIVERY', title: '什么时候真正写屏？',
+    options: [
+      { id: 'preview', label: '预览后发送', phrase: '先预览六色结果，再由你确认发送。', note: '这是最稳妥的默认流程。' },
+      { id: 'nearby', label: '设备在旁时发送', phrase: '检测到附近 Peanup 后再尝试发送。', note: '发送仍需要设备有电、在蓝牙范围内并可连接。' },
+      { id: 'prepare', label: '只准备画面', phrase: '先保存完成帧，等设备在旁时再发送。', note: '准备画面不需要让 Peanup 持续连接。' },
+      { id: 'confirm', label: '每次询问', phrase: '每次更新前都请求你的确认。', note: '适合包含个人照片或敏感信息的内容。' },
+    ],
+  },
+];
+
+const faqs: Array<[string, string]> = [
+  ['快捷指令会让 Peanup 一直保持蓝牙连接吗？', '不会。设计目标是先在手机上准备画面，只在真正发送更新时建立近场连接，完成后回到空闲。'],
+  ['自动化能在完全无人操作时刷新吗？', '要看 iOS 触发条件、系统权限、设备距离和最终 App 能力。有些自动化可能仍需要确认，正式版本会逐项标明。'],
+  ['照片会上传到云端吗？', '核心照片路径的目标是在 iPhone 或 iPad 本地完成裁切和六色转换，再把完成帧通过 BLE 发给附近的 Peanup。'],
+  ['这些快捷指令动作现在已经发布了吗？', '还没有。本页描述众筹预览阶段的产品接口草案，动作名称、输入字段和后台执行能力会随 App 与硬件验证调整。'],
+];
+
+const config: DocPageConfig = {
+  title: 'Peanup 快捷指令与自动化｜照片、天气、日历与书摘更新',
+  description: 'Peanup Apple 快捷指令与自动化说明：触发、六色预览、蓝牙发送、日常示例、权限条件、失败处理和本地隐私边界。',
+  locale: 'zh-cn',
+  current: 'shortcuts',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'SHORTCUTS & AUTOMATION',
+  revisionLabel: '众筹预览接口草案\n更新于 2026.07.30',
+  datePublished: '2026-07-29',
+  dateModified: '2026-07-30',
+  schemaType: 'TechArticle',
+  articleClass: 'docs-shortcuts',
+  faqs,
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / SHORTCUTS</span><b>01</b></div>
+    <h1><span class="shortcut-title-line">让画面在合适的时候更新，</span><span class="shortcut-title-line">而不是多制造一个提醒。</span></h1>
+    <p class="docs-deck">快捷指令负责选择触发条件和内容。Peanup App 在手机上整理并预览六色画面，只在发送时连接附近的设备。</p>
+    <div class="docs-fact-strip" aria-label="快捷指令能力摘要">
+      <span><b>SIRI</b><small>语音与系统入口</small></span>
+      <span><b>WIDGET</b><small>一键准备画面</small></span>
+      <span><b>AUTO</b><small>时间与个人自动化</small></span>
+      <span><b>LOCAL</b><small>照片在设备上处理</small></span>
+    </div>
+    <p class="docs-status"><i></i> 产品接口草案 · 最终能力以 App 与硬件验证为准</p>
+  </section>
+
+  <section class="docs-section" id="model">
+    <header><span>02 / ONE UPDATE</span><h2>一次更新，<br />拆成四个清楚的动作。</h2></header>
+    <ol class="docs-steps">
+      <li><span>01 / TRIGGER</span><strong>选择触发</strong><p>时间、Siri、小组件、分享菜单或你主动点击。</p></li>
+      <li><span>02 / PREPARE</span><strong>准备内容</strong><p>使用照片、日历、天气、书摘或一张模板卡片。</p></li>
+      <li><span>03 / PREVIEW</span><strong>确认六色效果</strong><p>在手机上完成裁切、色板映射和必要的抖动。</p></li>
+      <li><span>04 / SEND</span><strong>近场发送</strong><p>连接附近的 Peanup，显示进度，完成后断开。</p></li>
+    </ol>
+    <p class="docs-note"><b>默认保持克制</b><span>自动化不是让设备一直联网。内容可以提前准备，真正写屏时才使用蓝牙。</span></p>
+    <a class="docs-context-link" href="/#automation">在产品页体验一天中的更新时刻 <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="recipes">
+    <header><span>03 / DAILY RECIPES</span><h2>四种日常时刻，<br />只是起点。</h2></header>
+    <div class="docs-grid docs-grid--two shortcut-recipes">
+      <article><span>07:30 / WEATHER</span><h3>出门前的天气</h3><p>组合温度、天气、第一项日程。适合每天早晨更新一次，不需要持续刷新。</p></article>
+      <article><span>12:40 / PHOTO</span><h3>今天的一张照片</h3><p>从系统分享菜单选择照片，先看六色预览，再决定是否发送。</p></article>
+    </div>
+    <div class="docs-grid docs-grid--two shortcut-recipes shortcut-recipes--continued">
+      <article><span>18:30 / SUMMARY</span><h3>把一天收成卡片</h3><p>用日历、习惯或一日总结生成一张安静的信息卡。</p></article>
+      <article><span>22:30 / READING</span><h3>留下一句书摘</h3><p>从阅读笔记选择一句话，让它在第二天仍留在纸上。</p></article>
+    </div>
+    <div class="docs-callout">
+      <span>NOT A LIMIT</span>
+      <p>照片、天气、日历和书摘用来说明内容路径，不是四种限制。只要能在手机上生成 528 × 792 的完成帧，就可以成为新的显示内容。</p>
+    </div>
+  </section>
+
+  <section class="docs-section" id="builder">
+    <header><span>04 / BUILD A ROUTINE</span><h2>先搭一条流程，<br />再决定是否自动。</h2></header>
+    <div class="docs-split">
+      <p class="docs-lead">选择一个开始时刻、一种内容和一次写屏方式，看看它们怎样组成完整更新。</p>
+      <div class="docs-copy"><p>这里不会创建系统快捷指令，也不会连接设备。它只把产品接口草案变成一条看得懂、能讨论的流程。</p></div>
+    </div>
+    <ShortcutPlanner
+      ariaLabel="快捷指令流程试搭"
+      summaryLabel="你的流程"
+      noteLabel="成立条件"
+      linkLabel="查看动作草案"
+      groups={plannerGroups}
+    />
+    <p class="docs-caption">流程试搭不代表这些动作已经发布。正式能力仍取决于 iOS 权限、后台执行条件、BLE 协议和最终 App。</p>
+  </section>
+
+  <section class="docs-section" id="actions">
+    <header><span>05 / ACTION DRAFT</span><h2>动作名称要短，<br />输入和结果要一眼明白。</h2></header>
+    <div class="docs-table-wrap" tabindex="0" aria-label="快捷指令动作草案">
+      <table class="docs-table docs-shortcut-actions">
+        <thead><tr><th scope="col">动作草案</th><th scope="col">输入</th><th scope="col">结果</th><th scope="col">状态</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">准备 Peanup 照片</th><td>照片、裁切位置</td><td>六色完成帧</td><td>众筹目标</td></tr>
+          <tr><th scope="row">生成信息卡</th><td>模板、文字、日期</td><td>预览画面</td><td>众筹目标</td></tr>
+          <tr><th scope="row">发送到 Peanup</th><td>完成帧、目标设备</td><td>传输与写屏状态</td><td>硬件验证中</td></tr>
+          <tr><th scope="row">读取最近状态</th><td>目标设备</td><td>连接、进度或错误</td><td>接口草案</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="docs-caption">这不是已经发布的 API 清单。动作命名、参数、后台执行与回调结果会根据 iOS 限制、BLE 协议和最终交互继续收敛。</p>
+  </section>
+
+  <section class="docs-section" id="conditions">
+    <header><span>06 / CONDITIONS</span><h2>能不能自动完成，<br />取决于当时的条件。</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>NEARBY</span><h3>设备需要在附近</h3><p>发送时，目标 Peanup 需要在蓝牙范围内并处于可连接状态。</p></article>
+      <article><span>PERMISSION</span><h3>权限由你决定</h3><p>照片、日历、位置和蓝牙权限只在对应动作需要时请求。</p></article>
+      <article><span>CONFIRMATION</span><h3>系统可能要求确认</h3><p>部分个人自动化或敏感权限可能需要解锁、确认或打开 App。</p></article>
+    </div>
+    <div class="docs-table-wrap docs-compatibility" tabindex="0" aria-label="自动化失败处理">
+      <table class="docs-table">
+        <thead><tr><th scope="col">情况</th><th scope="col">页面或 App 应该怎样回应</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">找不到设备</th><td>保留已经准备好的画面，提示靠近设备后重试，不丢失原始选择。</td></tr>
+          <tr><th scope="row">发送被中断</th><td>显示已发送进度与可重试状态，不把失败写成“完成”。</td></tr>
+          <tr><th scope="row">内容权限被拒绝</th><td>只停用对应内容来源，不阻止本地照片和手动传图。</td></tr>
+          <tr><th scope="row">后台条件不允许</th><td>说明需要确认或前台运行，不承诺 iOS 不允许的静默执行。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="docs-section" id="privacy">
+    <header><span>07 / PRIVACY</span><h2>网络只取需要的内容，<br />照片尽量不离开手机。</h2></header>
+    <div class="docs-split">
+      <p class="docs-lead">本地照片路径与联网内容路径分开。天气需要天气来源，日历需要系统权限，但这不等于照片必须上传。</p>
+      <div class="docs-copy">
+        <p><b>照片：</b>目标是在 iPhone 或 iPad 本地完成裁切、缩放、六色量化和抖动。</p>
+        <p><b>联网内容：</b>只在生成对应卡片时向所选来源请求必要数据。最终服务提供方会在正式版本中单独说明。</p>
+        <a class="docs-context-link" href="/docs/privacy/">阅读完整隐私与数据说明 <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="docs-section" id="faq">
+    <header><span>08 / FAQ</span><h2>先把边界说清楚。</h2></header>
+    <div class="docs-accordion">
+      {faqs.map(([question, answer], index) => <details><summary><i>{String(index + 1).padStart(2, '0')}</i>{question}</summary><p>{answer}</p></details>)}
+    </div>
+  </section>
+</DocsShell>

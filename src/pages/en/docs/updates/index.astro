@@ -1,0 +1,144 @@
+---
+import DocsShell from '../../../../components/docs/DocsShell.astro';
+import type { DocPageConfig } from '../../../../types/docs';
+import '../../../../styles/docs-updates.css';
+
+const toc = [
+  ['overview', 'Why publish updates'],
+  ['timeline', 'Published nodes'],
+  ['gates', 'Validation gates'],
+  ['next', 'What comes next'],
+  ['faq', 'FAQ'],
+];
+
+const filters = [
+  ['all', 'All'],
+  ['product', 'Product'],
+  ['software', 'Software'],
+  ['validation', 'Validation'],
+] as const;
+
+const updates = [
+  {
+    date: '2026.07',
+    type: 'product',
+    label: 'Product',
+    title: 'The E6 panel language is now consistent',
+    body: 'The public pages and Docs now use one panel reference: 3.68 inches, 528 × 792 pixels, a 51.84 × 77.76 mm active area and approximately 258.7 PPI. These are manufacturer panel facts, not proof that the complete enclosure has finished production validation.',
+    mark: 'PANEL / E6',
+  },
+  {
+    date: '2026.07',
+    type: 'software',
+    label: 'Software',
+    title: 'Prepare locally, then send one finished frame',
+    body: 'Photo cropping, six-color preview, text layout and everyday information cards all follow a local-first path. The web stage explains that path; it does not upload photographs to a Peanup cloud.',
+    mark: 'LOCAL / FRAME',
+  },
+  {
+    date: '2026.07',
+    type: 'validation',
+    label: 'Validation',
+    title: 'Every target now has a checkable gate',
+    body: 'BLE transfer and recovery, refresh timing, standby power, Qi temperature and alignment, magnetic stability, and conditional CUID NFC support are now listed as checks before public pledges open.',
+    mark: 'TEST / GATES',
+  },
+  {
+    date: '2026.06',
+    type: 'software',
+    label: 'Experience',
+    title: 'The four scenes keep one idea in view',
+    body: 'Rain, branches, swallows and the write-screen transition belong to one story: the world can move outside, while e-paper holds one quiet frame after the refresh.',
+    mark: 'STAGE / HOLD',
+  },
+] as const;
+
+const faqs: Array<[string, string]> = [
+  ['Do these dates mean production dates?', 'No. They are dates for public website and documentation progress, not dates for manufacturing, shipping or Kickstarter launch.'],
+  ['Which specifications are already defined?', 'The 3.68-inch E6 panel, 528 × 792 pixels, active area and approximately 258.7 PPI come from the manufacturer sheet. The 3 mm, 28 g, Qi, magnetic, one-month-plus battery and software features are complete-device targets that still need final validation.'],
+  ['Why publish the validation gates?', 'An e-paper product is more than its panel size. Transfer, refresh, power, charging, magnets and NFC all need measurements on real hardware. Public gates keep a web demonstration from being mistaken for a finished promise.'],
+  ['Where will the next updates appear?', 'New public nodes will appear here first. Final launch scope, price, regions, delivery, warranty and returns will be published together before Kickstarter support opens.'],
+];
+
+const config: DocPageConfig = {
+  title: 'Peanup Project Updates | Nodes and validation gates',
+  description: 'Track Peanup public progress across the E6 panel, local image path and hardware validation gates while separating facts, targets and Kickstarter disclosures.',
+  locale: 'en',
+  current: 'updates',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'PROJECT UPDATES',
+  revisionLabel: 'Preview edition\nUpdated 31 July 2026',
+  datePublished: '2026-07-31',
+  dateModified: '2026-07-31',
+  schemaType: 'WebPage',
+  articleClass: 'docs-updates',
+  faqs,
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / PROJECT UPDATES</span><b>01</b></div>
+    <h1><span>Publish the progress.</span><span>Publish the boundary too.</span></h1>
+    <p class="docs-deck">This page records public product, software and validation nodes. It is not a countdown or a pre-order promise. Each note says where it came from and what still needs to be proven.</p>
+    <div class="docs-fact-strip" aria-label="Project update summary">
+      <span><b>12</b><small>DOCUMENT TOPICS</small></span>
+      <span><b>E6</b><small>PANEL RECORD</small></span>
+      <span><b>LOCAL</b><small>WEB EXPERIENCE</small></span>
+      <span><b>OPEN</b><small>PUBLIC NOTES</small></span>
+    </div>
+    <p class="docs-status"><i></i> Public preview · not a pre-order or delivery schedule</p>
+  </section>
+
+  <section class="docs-section" id="timeline">
+    <header><span>02 / PUBLISHED NODES</span><h2>Every update returns<br />to one piece of evidence.</h2></header>
+    <div class="docs-update-filter" role="toolbar" aria-label="Filter project updates" data-update-filters>
+      {filters.map(([id, label], index) => <button type="button" data-update-filter={id} aria-pressed={index === 0 ? 'true' : 'false'}>{label}</button>)}
+    </div>
+    <ol class="docs-updates-timeline" data-updates-list>
+      {updates.map((item) => (
+        <li data-update-item data-update-type={item.type}>
+          <time datetime={item.date.replace('.', '-')}>{item.date}</time>
+          <span class="docs-update-kind">{item.label}</span>
+          <div>
+            <small>{item.mark}</small>
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+    <p class="docs-update-empty" data-updates-empty hidden>No more public nodes match this filter yet.</p>
+  </section>
+
+  <section class="docs-section" id="gates">
+    <header><span>03 / VALIDATION GATES</span><h2>Measure the hardware first.<br />Then turn targets into promises.</h2></header>
+    <div class="docs-update-gates">
+      <article><span>01 / RADIO</span><h3>BLE transfer and recovery</h3><p>Confirm discovery, connection, framing, backpressure, retries and standby behavior after a finished transfer.</p><b>Real-hardware measurement</b></article>
+      <article><span>02 / DISPLAY</span><h3>Refresh timing and hold</h3><p>Test full-frame writes, density changes, refresh behavior and the time a new image remains held.</p><b>Real-hardware measurement</b></article>
+      <article><span>03 / POWER</span><h3>Power and Qi</h3><p>Record refresh frequency, standby, charging temperature and Qi alignment in one repeatable test set.</p><b>Real-hardware measurement</b></article>
+      <article><span>04 / ACCESS</span><h3>Magnets and CUID NFC</h3><p>Confirm magnetic stability, accessory boundaries and the real authorization conditions for CUID access systems.</p><b>Conditional compatibility</b></article>
+    </div>
+    <div class="docs-callout"><span>READ THE BOUNDARY</span><p>Full specifications, engineering status and campaign disclosures live in <a class="docs-context-link" href="/en/docs/campaign/">Campaign status</a> and <a class="docs-context-link" href="/en/docs/engineering/">Engineering notes</a>.</p></div>
+  </section>
+
+  <section class="docs-section" id="next">
+    <header><span>04 / WHAT COMES NEXT</span><h2>The next step is not another slogan.<br />It is better evidence.</h2></header>
+    <ol class="docs-steps docs-update-next">
+      <li><span>01 / HARDWARE</span><strong>Freeze the complete-device language</strong><p>Publish thickness, weight, enclosure, panel assembly and connector boundaries.</p></li>
+      <li><span>02 / PERFORMANCE</span><strong>Publish transfer and battery conditions</strong><p>Give typical refresh time, refresh frequency, power and test environment.</p></li>
+      <li><span>03 / SERVICE</span><strong>Complete support and delivery rules</strong><p>Before support opens, publish price, regions, shipping, warranty, returns and repair scope.</p></li>
+      <li><span>04 / CAMPAIGN</span><strong>Then open the support page</strong><p>When facts, targets and risks can be read clearly, the Kickstarter page can open.</p></li>
+    </ol>
+  </section>
+
+  <section class="docs-section docs-faq" id="faq">
+    <header><span>05 / FAQ</span><h2>About progress,<br />start with these answers.</h2></header>
+    <div class="docs-accordion">
+      {faqs.map(([question, answer], index) => <details open={index === 0}><summary><i>{String(index + 1).padStart(2, '0')}</i>{question}</summary><p>{answer}</p></details>)}
+    </div>
+  </section>
+  <script>
+    import '../../../../scripts/docsUpdates';
+  </script>
+</DocsShell>

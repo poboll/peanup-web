@@ -1,0 +1,145 @@
+---
+import DocsShell from '../../../components/docs/DocsShell.astro';
+import type { DocPageConfig } from '../../../types/docs';
+
+const toc = [
+  ['overview', '这份说明'],
+  ['principles', '数据路径'],
+  ['website', '当前网站'],
+  ['preview', '在线体验'],
+  ['app', 'App 与设备'],
+  ['services', '外部内容'],
+  ['nfc', 'NFC 与门禁'],
+  ['control', '你的控制'],
+];
+
+const config: DocPageConfig = {
+  title: 'Peanup 隐私与数据｜照片本地处理与设备边界',
+  description: 'Peanup 隐私与数据说明：网站偏好、在线电子纸预览、本地照片处理、蓝牙传输、Apple 快捷指令、外部内容服务与 CUID NFC 的数据边界。',
+  locale: 'zh-cn',
+  current: 'privacy',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'PRIVACY & DATA',
+  revisionLabel: '公开预览版\n更新于 2026.07.30',
+  datePublished: '2026-07-29',
+  dateModified: '2026-07-30',
+  schemaType: 'WebPage',
+  articleClass: 'docs-privacy',
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / PRIVACY & DATA</span><b>01</b></div>
+    <h1><span class="privacy-title-line">照片是否离开设备，</span><span class="privacy-title-line">应该一眼看明白。</span></h1>
+    <p class="docs-deck">这份说明同时覆盖当前网站与仍在开发中的 Peanup App 和硬件。已经发生的处理与产品目标分开标注，不把未来方案写成当前事实。</p>
+    <div class="docs-fact-strip" aria-label="隐私摘要">
+      <span><b>0</b><small>第三方分析 SDK</small></span>
+      <span><b>2</b><small>本地偏好项</small></span>
+      <span><b>LOCAL</b><small>在线照片预览</small></span>
+      <span><b>BLE</b><small>目标设备通道</small></span>
+    </div>
+    <p class="docs-status"><i></i> 当前网站事实 · 产品隐私目标另行标注</p>
+  </section>
+
+  <section class="docs-section" id="principles">
+    <header><span>02 / DATA PATH</span><h2>先说明数据去哪里，<br />再谈它能做什么。</h2></header>
+    <div class="privacy-status" aria-label="说明状态">
+      <article><span>CURRENT / 当前网站</span><h3>可以直接验证</h3><p>这一类内容描述此刻打开的网站：浏览器保存什么、在线体验怎样处理照片，以及页面是否接入分析服务。</p></article>
+      <article><span>PRODUCT TARGET / 产品目标</span><h3>发布前继续验证</h3><p>这一类内容描述 App 与硬件的设计目标。最终权限、服务提供方、保存周期与发布版本隐私政策会在上线前确认。</p></article>
+    </div>
+    <ol class="privacy-flow" aria-label="Peanup 目标照片数据路径">
+      <li><span>01</span><strong>选择照片</strong><p>由你在浏览器或系统照片选择器中主动选择。</p></li>
+      <li><span>02</span><strong>本地整理</strong><p>裁切、缩放和六色转换在当前设备完成。</p></li>
+      <li><span>03</span><strong>近场发送</strong><p>App 目标是只通过 BLE 发送准备好的画面。</p></li>
+      <li><span>04</span><strong>纸上保持</strong><p>写屏完成后，电子纸保持画面，连接回到空闲。</p></li>
+    </ol>
+  </section>
+
+  <section class="docs-section" id="website">
+    <header><span>03 / CURRENT WEBSITE</span><h2>没有账号，<br />也没有行为画像。</h2></header>
+    <div class="docs-split">
+      <p class="docs-lead">当前网站没有注册、登录、支付或预约表单，也没有接入第三方分析 SDK。</p>
+      <div class="docs-copy">
+        <p>页面只在浏览器本地保存主题和语言选择。它们用于让下次访问保持相同的明暗主题与语言，不用于识别真实身份。</p>
+        <p>网页脚本和展示素材从本站加载。托管或 CDN 基础设施仍可能按照其安全与运维规则记录标准访问日志。</p>
+      </div>
+    </div>
+    <div class="docs-table-wrap" tabindex="0" aria-label="当前网站数据清单">
+      <table class="docs-table privacy-ledger">
+        <thead><tr><th scope="col">数据</th><th scope="col">位置</th><th scope="col">用途</th><th scope="col">保留方式</th></tr></thead>
+        <tbody>
+          <tr><th scope="row"><code>peanup.theme</code></th><td>当前浏览器</td><td>记住明暗主题</td><td>直到你清除站点数据</td></tr>
+          <tr><th scope="row"><code>peanup.locale</code></th><td>当前浏览器</td><td>记住手动选择的语言</td><td>直到你清除站点数据</td></tr>
+          <tr><th scope="row">标准访问日志</th><td>托管 / CDN 基础设施</td><td>传输、安全与故障排查</td><td>遵循基础设施提供方规则</td></tr>
+          <tr><th scope="row">邮件内容</th><td>你与 Peanup 的邮箱</td><td>回复你主动发来的问题</td><td>不经过网站表单</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="docs-section" id="preview">
+    <header><span>04 / LIVE PREVIEW</span><h2>拖进来的照片，<br />只在这个浏览器里变成六色。</h2></header>
+    <p class="docs-lead docs-lead--offset">第四幕在线体验使用浏览器文件接口和 Canvas。照片不会发给 Peanup 服务器，也不会写入网站的本地存储。</p>
+    <ol class="docs-steps privacy-preview-steps">
+      <li><span>01</span><strong>你主动选择</strong><p>网站只读取你在文件选择器中确认的那一张图片。</p></li>
+      <li><span>02</span><strong>浏览器解码</strong><p>图片在当前标签页内解码、裁切并适配预览画幅。</p></li>
+      <li><span>03</span><strong>Canvas 转换</strong><p>六色色板映射与抖动在本地完成，不调用云端图片接口。</p></li>
+      <li><span>04</span><strong>重置即清除</strong><p>点击重置或关闭页面即可释放这次预览；网站不会把原图存入偏好项。</p></li>
+    </ol>
+    <div class="docs-callout">
+      <span>TECHNICAL BOUNDARY</span>
+      <p>网页无法阻止设备本身的截图、浏览器扩展或被修改的客户端读取页面内容。这里承诺的是 Peanup 当前网站代码不会主动上传你拖入的照片。</p>
+    </div>
+  </section>
+
+  <section class="docs-section" id="app">
+    <header><span>05 / APP & DEVICE TARGET</span><h2>计算留在手机，<br />设备只接收完成的画面。</h2></header>
+    <div class="privacy-boundaries">
+      <article><span>ON DEVICE</span><h3>裁切与六色成像</h3><p>App 的目标路径是在 iPhone 或 iPad 本地完成方向修正、裁切、色彩量化与抖动。核心照片传图不以 Peanup 云账号为前提。</p></article>
+      <article><span>NEARBY</span><h3>Bluetooth Low Energy</h3><p>目标是连接附近的 Peanup，只发送为面板准备好的完成帧、传输状态和必要控制信息，不把原始照片交给硬件。</p></article>
+      <article><span>LOCAL RECORD</span><h3>作品与设备关联</h3><p>作品记录、设备名称和最近连接等数据计划优先保留在本地。最终字段、备份方式和删除入口会随 App 发布版确认。</p></article>
+    </div>
+    <p class="docs-caption">本节是产品隐私目标，不是 App Store 已发布版本的政策。正式 App 上线前会提供与实际权限、SDK 和服务端配置一致的独立隐私政策。</p>
+  </section>
+
+  <section class="docs-section" id="services">
+    <header><span>06 / CONNECTED CONTENT</span><h2>只有需要内容时，<br />才向对应来源请求。</h2></header>
+    <div class="docs-table-wrap" tabindex="0" aria-label="外部内容与权限边界">
+      <table class="docs-table privacy-ledger">
+        <thead><tr><th scope="col">能力</th><th scope="col">可能使用的数据</th><th scope="col">控制方</th><th scope="col">当前状态</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">系统照片</th><td>你主动选择的照片</td><td>Apple 系统照片权限</td><td>产品目标</td></tr>
+          <tr><th scope="row">日历卡片</th><td>你允许访问的日历内容</td><td>系统权限与日历账户</td><td>产品目标</td></tr>
+          <tr><th scope="row">天气与书摘</th><td>生成卡片所需的地点或文本</td><td>对应内容服务</td><td>提供方待发布前确认</td></tr>
+          <tr><th scope="row">Apple 快捷指令</th><td>你在自动化中选择的输入</td><td>iOS 权限与触发规则</td><td>产品目标</td></tr>
+          <tr><th scope="row">微信小程序</th><td>传图所需的账号与运行环境数据</td><td>微信平台与小程序政策</td><td>发布前单独说明</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="docs-note"><b>最小权限原则</b><span>正式版本只应请求完成当前动作所需的权限。拒绝某项内容权限，不应阻止与它无关的本地照片预览和近场传图。</span></p>
+  </section>
+
+  <section class="docs-section" id="nfc">
+    <header><span>07 / CUID NFC</span><h2>门禁是否放行，<br />始终由门禁系统决定。</h2></header>
+    <div class="docs-policy">
+      <strong>有条件兼容，不是通用钥匙</strong>
+      <p>Peanup 只有在门禁系统支持 CUID、管理方允许录入并符合当地规则时，才可能用作门禁卡。门禁标识、授权记录和通行日志由对应门禁管理方控制；Peanup 网站不会替你创建通行权限，也无法绕过不兼容的系统。</p>
+    </div>
+  </section>
+
+  <section class="docs-section" id="control">
+    <header><span>08 / YOUR CONTROL</span><h2>留下什么，<br />由你决定。</h2></header>
+    <div class="docs-grid docs-grid--three privacy-controls">
+      <article><span>BROWSER</span><h3>清除站点数据</h3><p>在浏览器设置中清除 pean.caiths.com 的站点数据，即可移除已保存的主题和语言偏好。</p></article>
+      <article><span>PREVIEW</span><h3>重置在线画面</h3><p>在第四幕点击“重置”，或直接关闭标签页，即可结束当前照片或文字预览。</p></article>
+      <article><span>SYSTEM</span><h3>管理系统权限</h3><p>未来 App 的照片、蓝牙、日历与快捷指令权限可在 Apple 系统设置中查看和撤回。</p></article>
+    </div>
+    <div class="docs-decision privacy-contact">
+      <span>CONTACT & UPDATES</span>
+      <strong>对数据处理有疑问，<br />直接写给我们。</strong>
+      <p>联系 <a href="mailto:i@caiths.com">i@caiths.com</a>。这份说明会随网站、App 权限、内容提供方和硬件方案更新，并在页面顶部标注修改日期。</p>
+    </div>
+  </section>
+
+</DocsShell>

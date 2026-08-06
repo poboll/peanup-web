@@ -1,0 +1,143 @@
+---
+import DocsShell from '../../../../components/docs/DocsShell.astro';
+import type { DocPageConfig } from '../../../../types/docs';
+
+const toc = [
+  ['overview', 'At a glance'],
+  ['platforms', 'Platform matrix'],
+  ['apple', 'Apple ecosystem'],
+  ['wechat', 'WeChat Mini Program'],
+  ['web', 'Web experience'],
+  ['bluetooth', 'Bluetooth boundaries'],
+  ['nfc', 'CUID NFC'],
+  ['accessibility', 'Access & readability'],
+  ['checklist', 'Choose a path'],
+];
+
+const config: DocPageConfig = {
+  title: 'Peanup Platforms | iPhone, Shortcuts, WeChat & CUID NFC',
+  description: 'Check Peanup support for iPhone, iPad, Apple Shortcuts, WeChat Mini Program, the web preview, Bluetooth Low Energy and conditional CUID NFC.',
+  locale: 'en',
+  current: 'compatibility',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'PLATFORMS & COMPATIBILITY',
+  revisionLabel: 'Crowdfunding preview\nUpdated 2026.07.31',
+  datePublished: '2026-07-29',
+  dateModified: '2026-07-31',
+  schemaType: 'WebPage',
+  articleClass: 'docs-compatibility-page',
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / PLATFORMS</span><b>01</b></div>
+    <h1>Start with iPhone.<br />Leave room for more devices.</h1>
+    <p class="docs-deck">iPhone is the primary Peanup experience: capture, preview, transfer and automation stay on one path. iPad, WeChat Mini Program, the web experience and future integrations each play a different role.</p>
+    <div class="docs-fact-strip" aria-label="Platform summary">
+      <span><b>iOS</b><small>Primary app experience</small></span>
+      <span><b>iPadOS</b><small>Compose and transfer</small></span>
+      <span><b>WECHAT</b><small>Other-device entry</small></span>
+      <span><b>BLE</b><small>Nearby device updates</small></span>
+    </div>
+    <p class="docs-status"><i></i> Crowdfunding targets · final platform scope depends on the first release and system permissions</p>
+  </section>
+
+  <section class="docs-section" id="platforms">
+    <header><span>02 / PLATFORM MATRIX</span><h2>The same frame<br />can arrive from different places.</h2></header>
+    <div class="docs-table-wrap docs-compatibility" tabindex="0" aria-label="Platform compatibility matrix">
+      <table class="docs-table">
+        <thead><tr><th scope="col">Platform</th><th scope="col">Planned experience</th><th scope="col">Current position</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">iPhone</th><td>Capture, import, six-color preview, BLE transfer and Shortcuts</td><td>Primary product path</td></tr>
+          <tr><th scope="row">iPad</th><td>Import, compose, preview and nearby transfer</td><td>Validated with the iOS app</td></tr>
+          <tr><th scope="row">Android</th><td>Select and transfer content through a WeChat Mini Program</td><td>No standalone Android app promise</td></tr>
+          <tr><th scope="row">Web</th><td>Try six-color previews, text and content styles</td><td>The current website does not control hardware</td></tr>
+          <tr><th scope="row">Third-party integrations</th><td>Extend content through Shortcuts or future public interfaces</td><td>Post-campaign direction</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="docs-section" id="apple">
+    <header><span>03 / APPLE ECOSYSTEM</span><h2>Capture, preview and send<br />inside a familiar system.</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>PEANUP APP</span><h3>Complete one frame</h3><p>Capture or import a photo, adjust the crop, preview six colors and send to a nearby Peanup.</p></article>
+      <article><span>SHARE SHEET</span><h3>Start in another app</h3><p>The planned system share entry passes photos or text to Peanup without repeated importing.</p></article>
+      <article><span>SHORTCUTS</span><h3>Automate repetition</h3><p>Calendars, weather, reading notes and familiar layouts can prepare the next frame through Apple Shortcuts.</p></article>
+    </div>
+    <ol class="docs-app-flow" aria-label="Four Peanup app views">
+      <li><span>01 / LOCAL</span><strong>Compose one frame</strong><p>Capture or import, then crop and convert to six colors on iPhone or iPad.</p></li>
+      <li><span>02 / CONTENT</span><strong>Choose the content</strong><p>Photos, calendars, weather and reading notes share one clear preview path.</p></li>
+      <li><span>03 / SHORTCUTS</span><strong>Prepare automation</strong><p>Let Siri, a widget or a personal automation prepare the next frame.</p></li>
+      <li><span>04 / TRANSFER</span><strong>See update progress</strong><p>Follow connection, transfer and e-paper refresh state inside the app.</p></li>
+    </ol>
+    <p class="docs-caption">Whether a Shortcut runs automatically still depends on iOS permissions, triggers, content services and Peanup being nearby.</p>
+    <a class="docs-context-link" href="/en/docs/shortcuts/">Review Apple Shortcuts boundaries and examples <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="wechat">
+    <header><span>04 / WECHAT MINI PROGRAM</span><h2>No standalone Android app.<br />Still a path for sending a frame.</h2></header>
+    <div class="docs-split">
+      <p class="docs-lead">The WeChat Mini Program is the planned entry for other devices, covering image selection, preview and transfer to a nearby Peanup.</p>
+      <div class="docs-copy">
+        <p>Its capabilities depend on WeChat permissions, the phone OS, Bluetooth support and review rules. The site does not present it as an already released native Android app.</p>
+        <p>Final photo processing and connection behavior will follow the first Mini Program release. Networked content uses the internet only when retrieving that information.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="docs-section" id="web">
+    <header><span>05 / WEB EXPERIENCE</span><h2>Try it on the web.<br />Do not mistake it for a hardware controller.</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>PREVIEW</span><h3>See the six-color relationship</h3><p>Drop in a photo or enter text to inspect crop, paper texture and six-color preview.</p></article>
+      <article><span>PRIVACY</span><h3>Keep the preview in the browser</h3><p>The current experience processes input locally rather than uploading it as device-binding data.</p></article>
+      <article><span>BOUNDARY</span><h3>No direct Peanup connection</h3><p>The product site demonstrates and explains. The app or Mini Program performs real transfers.</p></article>
+    </div>
+    <a class="docs-context-link" href="/en/#motion">Return to the four-scene e-paper stage <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="bluetooth">
+    <header><span>06 / BLUETOOTH</span><h2>Stay nearby, allow, send.<br />Then return to idle.</h2></header>
+    <ol class="docs-steps">
+      <li><span>01 / PERMISSION</span><strong>Allow Bluetooth</strong><p>The system must let the app or Mini Program discover nearby devices.</p></li>
+      <li><span>02 / NEARBY</span><strong>Keep it close</strong><p>Leave Peanup near the phone during transfer to reduce interruptions.</p></li>
+      <li><span>03 / SINGLE OWNER</span><strong>Avoid duplicate links</strong><p>If another device is connected, disconnect it before trying again.</p></li>
+      <li><span>04 / FINISH</span><strong>Wait for refresh</strong><p>Move Peanup only after the app reports completion; the link then returns to idle.</p></li>
+    </ol>
+    <p class="docs-note"><b>Bluetooth does not hold the frame</b><span>E-paper retains the image after refresh. BLE only carries a new completed frame to a nearby device.</span></p>
+  </section>
+
+  <section class="docs-section" id="nfc">
+    <header><span>07 / CUID NFC</span><h2>The access system decides<br />whether a door opens.</h2></header>
+    <div class="docs-policy">
+      <strong>System support + administrator approval + local rules</strong>
+      <p>Peanup may act as an access card only where the reader supports CUID, the administrator authorizes enrollment and local rules allow it. Incompatible systems will not work, and Peanup cannot create or bypass access rights.</p>
+    </div>
+    <a class="docs-context-link" href="/en/docs/privacy/#nfc">Review NFC identifiers and access-data boundaries <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="accessibility">
+    <header><span>08 / ACCESSIBILITY</span><h2>Information should not rely on color alone.<br />Motion should not become a barrier.</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>CURRENT WEBSITE</span><h3>Keyboard, touch and reduced motion</h3><p>Scenes, content modes and phone states can be operated with a keyboard or touch. When the system requests reduced motion, non-essential movement is shortened or removed.</p></article>
+      <article><span>COLOR & LIGHT</span><h3>Keep text beside color</h3><p>Palette colors, states and steps also use names, numbers or shapes. E-paper has no backlight, so the physical display still needs suitable ambient light.</p></article>
+      <article><span>APP TARGET</span><h3>Validate system access before launch</h3><p>VoiceOver names, Dynamic Type, focus order and contrast are release checks for the iOS app. The final campaign page will state what is complete in the launch version.</p></article>
+    </div>
+    <p class="docs-note"><b>The web preview is not an assistive-device claim</b><span>Peanup is a visual e-paper product. Keyboard access, text alternatives and reduced motion on this site do not imply that the physical product holds an accessibility certification.</span></p>
+  </section>
+
+  <section class="docs-section" id="checklist">
+    <header><span>09 / CHOOSE A PATH</span><h2>Start with the entry<br />that matches what you want to do.</h2></header>
+    <ol class="docs-steps">
+      <li><span>01</span><strong>Capture and send from iPhone</strong><p>Use the Peanup app for capture, preview and transfer.</p></li>
+      <li><span>02</span><strong>Automate content</strong><p>Continue to Apple Shortcuts and review permissions and triggers.</p></li>
+      <li><span>03</span><strong>Send from another device</strong><p>Use the planned WeChat entry rather than searching for a standalone Android app.</p></li>
+      <li><span>04</span><strong>Understand charging and placement</strong><p>Open Hardware & power for Qi, magnets, battery conditions and care.</p></li>
+    </ol>
+    <div class="docs-context-links">
+      <a class="docs-context-link" href="/en/docs/hardware/">Open Hardware & power <span aria-hidden="true">→</span></a>
+      <a class="docs-context-link" href="/en/docs/troubleshooting/">Connection stopped? Open setup and help <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+</DocsShell>

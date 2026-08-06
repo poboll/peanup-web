@@ -1,0 +1,121 @@
+---
+import DocsShell from '../../../../components/docs/DocsShell.astro';
+import type { DocPageConfig } from '../../../../types/docs';
+
+const toc = [
+  ['overview', 'Start here'],
+  ['display', 'Display and detail'],
+  ['update', 'Connection and update'],
+  ['placement', 'Power and placement'],
+  ['content', 'Content and automation'],
+  ['status', 'Claim language'],
+  ['faq', 'Easy to confuse'],
+];
+
+const faqs: Array<[string, string]> = [
+  ['Why is the website preview larger than a 3.68-inch physical display?', 'The stage scales with the browser so the image and motion remain legible. It is not a physical ruler. Content sent to the panel still targets 528 × 792 pixels and preserves source proportions.'],
+  ['Which is more accurate: about 258.7 PPI or 300 DPI?', 'For this panel, about 258.7 PPI is calculated from its 528 × 792 pixels and 51.84 × 77.76 mm active area. DPI is more often a print or output term, so the site does not present 300 DPI as the panel specification.'],
+  ['Does MagSafe accessory compatibility mean Apple certification?', 'No. It describes magnetic placement only. It is not an Apple MagSafe certification claim and does not mean an iPhone directly charges Peanup.'],
+  ['Will CUID NFC work with every access system?', 'No. The reader must support CUID, the administrator must authorize enrollment and local rules must allow it. Peanup cannot create, duplicate or bypass access rights.'],
+];
+
+const config: DocPageConfig = {
+  title: 'Peanup Glossary | E6, PPI, BLE, Qi and CUID',
+  description: 'Understand Peanup terms in plain language: E6, 258.7 PPI, 528 × 792 pixels, BLE, Qi, magnetic accessories, CUID NFC and crowdfunding targets.',
+  locale: 'en',
+  current: 'glossary',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'TERMS & CLAIMS',
+  revisionLabel: 'Public language guide\nUpdated 2026.07.30',
+  datePublished: '2026-07-30',
+  dateModified: '2026-07-30',
+  schemaType: 'WebPage',
+  articleClass: 'docs-glossary-page',
+  faqs,
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / TERMS & CLAIMS</span><b>01</b></div>
+    <h1><span class="glossary-title-line">Clear words first.</span><span class="glossary-title-line">Then the experience.</span></h1>
+    <p class="docs-deck">E-paper, BLE, Qi and CUID should not be barriers to understanding Peanup. This page explains what each term means here, and separates panel facts, product targets and capabilities that still need validation.</p>
+    <div class="docs-fact-strip" aria-label="Key term summary">
+      <span><b>E6</b><small>Six-color panel marker</small></span>
+      <span><b>≈258.7</b><small>Active-area PPI</small></span>
+      <span><b>BLE</b><small>Nearby update channel</small></span>
+      <span><b>TARGET</b><small>Crowdfunding goals stay labeled</small></span>
+    </div>
+    <p class="docs-status"><i></i> A public language guide, not a replacement for the engineering profile</p>
+  </section>
+
+  <section class="docs-section" id="display">
+    <header><span>02 / DISPLAY</span><h2>Understand the paper.<br />Then judge its detail.</h2></header>
+    <dl class="docs-term-list" aria-label="Display and detail terms">
+      <div><dt><span>01</span><strong>E6</strong></dt><dd>The model marker used for Peanup's 3.68-inch six-color e-paper panel. The site does not expand it into an unconfirmed brand or technology name.</dd></div>
+      <div><dt><span>02</span><strong>Six-color e-paper</strong></dt><dd>The panel combines black, paper white, red, yellow, blue and green physical colors. It is not an LCD's full-color subpixel system and does not use a backlight.</dd></div>
+      <div><dt><span>03</span><strong>Active area</strong></dt><dd>The part that actually shows content measures 51.84 × 77.76 mm. The panel module and finished enclosure are larger than that visible area.</dd></div>
+      <div><dt><span>04</span><strong>About 258.7 PPI</strong></dt><dd>The pixel density calculated from 528 × 792 pixels across the active area. PPI describes screen pixels per inch more precisely here than “300 DPI.”</dd></div>
+    </dl>
+    <p class="docs-note"><b>Reflective display</b><span>E-paper uses ambient light instead of emitting its own. Manufacturer panel conditions and outdoor behavior of the assembled Peanup are different claims; the latter still needs production-hardware validation.</span></p>
+  </section>
+
+  <section class="docs-section" id="update">
+    <header><span>03 / UPDATE</span><h2>The connection updates.<br />The image stays.</h2></header>
+    <dl class="docs-term-list" aria-label="Connection and update terms">
+      <div><dt><span>01</span><strong>BLE</strong></dt><dd>Bluetooth Low Energy. A nearby phone uses it to send one prepared frame to Peanup. It is neither a permanent internet connection nor remote cloud control.</dd></div>
+      <div><dt><span>02</span><strong>Completed frame</strong></dt><dd>The 528 × 792 target image produced after crop, composition and six-color conversion on the phone. The display receives prepared content, not necessarily the original photo.</dd></div>
+      <div><dt><span>03</span><strong>Write / refresh</strong></dt><dd>The process that moves e-paper pigments into their new positions. Brief flashes, color shifts or an old image can appear during it; this is not video playback.</dd></div>
+      <div><dt><span>04</span><strong>Bistable retention</strong></dt><dd>The panel can hold a finished image without continuous redraw. That does not make the whole device zero-power; MCU, Bluetooth, charging and other circuitry still require measurement.</dd></div>
+    </dl>
+    <a class="docs-context-link" href="/en/docs/engineering/#ble">Review the BLE state machine and hardware-validation boundary <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="placement">
+    <header><span>04 / PLACE & POWER</span><h2>It can hold and charge.<br />Every word has a boundary.</h2></header>
+    <dl class="docs-term-list" aria-label="Power and placement terms">
+      <div><dt><span>01</span><strong>Qi</strong></dt><dd>A wireless charging standard. A port-free Peanup enclosure is a product target; final input power, temperature rise, charge time and status feedback await production validation.</dd></div>
+      <div><dt><span>02</span><strong>Internal magnetic ring</strong></dt><dd>Used on sufficiently magnetic refrigerator surfaces or compatible accessories. Material, coating and thickness change holding strength, so test gently before letting go.</dd></div>
+      <div><dt><span>03</span><strong>MagSafe accessory compatible</strong></dt><dd>Peanup can be placed with relevant magnetic accessories. This is not an Apple certification claim and does not mean the phone directly powers Peanup.</dd></div>
+      <div><dt><span>04</span><strong>CUID NFC</strong></dt><dd>It may be enrolled as an access card only with compatible readers, administrator approval and local compliance. It is not a universal key and cannot bypass permissions.</dd></div>
+    </dl>
+    <a class="docs-context-link" href="/en/docs/compatibility/">Read the complete platform, charging, placement and NFC conditions <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="content">
+    <header><span>05 / CONTENT</span><h2>Prepare on the phone.<br />Contact a source only when needed.</h2></header>
+    <dl class="docs-term-list" aria-label="Content and automation terms">
+      <div><dt><span>01</span><strong>On-device processing</strong></dt><dd>Photo crop, text composition and six-color preview happen on the current device. The website's fourth scene also processes a selected photo only inside browser Canvas.</dd></div>
+      <div><dt><span>02</span><strong>Apple Shortcuts</strong></dt><dd>iOS triggers and permissions prepare content, then update a nearby Peanup. Automation does not require an all-day Bluetooth connection.</dd></div>
+      <div><dt><span>03</span><strong>WeChat Mini Program</strong></dt><dd>A transfer path planned for more devices. It follows the WeChat runtime and a separate privacy notice, and is not a promise of a released standalone Android app.</dd></div>
+      <div><dt><span>04</span><strong>Connected content source</strong></dt><dd>Changing information such as weather or online reading notes needs its own source and authorization. The network should not become a required stop for personal photo transfer.</dd></div>
+    </dl>
+    <a class="docs-context-link" href="/en/docs/content/">Continue to photos, information cards and automated content ideas <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="status">
+    <header><span>06 / CLAIM STATUS</span><h2>Before reading a number,<br />know which layer it belongs to.</h2></header>
+    <div class="docs-claim-levels" aria-label="Product claim evidence levels">
+      <article><span>PANEL</span><h3>Manufacturer panel data</h3><p>The 3.68-inch diagonal, 528 × 792 pixels, 51.84 × 77.76 mm active area and about 258.7 PPI come from Tentative Specification V0.2.</p></article>
+      <article><span>TARGET</span><h3>Crowdfunding targets</h3><p>The 3 mm profile, 28 g weight, one-month-plus battery life, Qi, port-free enclosure and related whole-device capabilities stay explicitly labeled as targets.</p></article>
+      <article><span>VALIDATE</span><h3>Whole-device validation</h3><p>Refresh time, throughput, standby current, charging temperature, magnetic hold, environmental behavior and protocol detail require final hardware and app verification.</p></article>
+    </div>
+    <div class="docs-decision glossary-decision">
+      <span>PREVIEW SCALE</span>
+      <strong>The website makes the image legible.<br />It does not turn pixels into millimeters.</strong>
+      <p>The four-scene stage scales with the browser so six-color material and motion can be inspected. It is not a physical ruler; panel output still targets 528 × 792 pixels with the correct image proportions.</p>
+    </div>
+  </section>
+
+  <section class="docs-section docs-faq" id="faq">
+    <header><span>07 / EASY TO CONFUSE</span><h2>Four questions<br />worth answering clearly.</h2></header>
+    <div class="docs-accordion">
+      {faqs.map(([question, answer], index) => (
+        <details>
+          <summary><i>{String(index + 1).padStart(2, '0')}</i><span>{question}</span></summary>
+          <p>{answer}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+</DocsShell>

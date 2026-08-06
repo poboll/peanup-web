@@ -1,0 +1,145 @@
+---
+import DocsShell from '../../../../components/docs/DocsShell.astro';
+import type { DocPageConfig } from '../../../../types/docs';
+
+const toc = [
+  ['overview', 'About this page'],
+  ['principles', 'Data path'],
+  ['website', 'Current website'],
+  ['preview', 'Live preview'],
+  ['app', 'App & device'],
+  ['services', 'Connected content'],
+  ['nfc', 'NFC & access'],
+  ['control', 'Your control'],
+];
+
+const config: DocPageConfig = {
+  title: 'Peanup Privacy | Local Photos, BLE & Device Data',
+  description: 'How Peanup handles website preferences, the live e-paper preview, local photo processing, Bluetooth transfer, Apple Shortcuts, connected content and CUID NFC.',
+  locale: 'en',
+  current: 'privacy',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'PRIVACY & DATA',
+  revisionLabel: 'Public preview\nUpdated 2026.07.30',
+  datePublished: '2026-07-29',
+  dateModified: '2026-07-30',
+  schemaType: 'WebPage',
+  articleClass: 'docs-privacy',
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / PRIVACY & DATA</span><b>01</b></div>
+    <h1>You should know at a glance<br />whether a photo leaves your device.</h1>
+    <p class="docs-deck">This page covers both the current website and the Peanup app and hardware still in development. Present behavior and product targets are labeled separately.</p>
+    <div class="docs-fact-strip" aria-label="Privacy summary">
+      <span><b>0</b><small>Third-party analytics SDKs</small></span>
+      <span><b>2</b><small>Local preference keys</small></span>
+      <span><b>LOCAL</b><small>Live photo preview</small></span>
+      <span><b>BLE</b><small>Target device channel</small></span>
+    </div>
+    <p class="docs-status"><i></i> Current website facts · Product privacy targets labeled separately</p>
+  </section>
+
+  <section class="docs-section" id="principles">
+    <header><span>02 / DATA PATH</span><h2>Say where data goes<br />before describing what it can do.</h2></header>
+    <div class="privacy-status" aria-label="Statement status">
+      <article><span>CURRENT / WEBSITE</span><h3>Verifiable now</h3><p>These statements describe the site you can open today: what the browser stores, how the live preview handles a photo and whether analytics are present.</p></article>
+      <article><span>PRODUCT / TARGET</span><h3>Validated before release</h3><p>These statements describe the intended app and hardware path. Final permissions, providers, retention and the release policy will follow the shipping build.</p></article>
+    </div>
+    <ol class="privacy-flow" aria-label="Target Peanup photo data path">
+      <li><span>01</span><strong>Choose a photo</strong><p>You explicitly select it in the browser or the system photo picker.</p></li>
+      <li><span>02</span><strong>Prepare locally</strong><p>Crop, resize and six-color conversion happen on the current device.</p></li>
+      <li><span>03</span><strong>Send nearby</strong><p>The app target is to send only the prepared frame over BLE.</p></li>
+      <li><span>04</span><strong>Hold on paper</strong><p>After the write, e-paper holds the image and the connection returns to idle.</p></li>
+    </ol>
+  </section>
+
+  <section class="docs-section" id="website">
+    <header><span>03 / CURRENT WEBSITE</span><h2>No account.<br />No behavioral profile.</h2></header>
+    <div class="docs-split">
+      <p class="docs-lead">The current site has no registration, login, payment or reservation form, and no third-party analytics SDK.</p>
+      <div class="docs-copy">
+        <p>It stores only theme and language choices in your browser so the next visit can keep the same appearance and language. Neither key is intended to identify you.</p>
+        <p>Scripts and visible assets are served from this site. Hosting or CDN infrastructure may still keep standard access logs for delivery, security and operations.</p>
+      </div>
+    </div>
+    <div class="docs-table-wrap" tabindex="0" aria-label="Current website data ledger">
+      <table class="docs-table privacy-ledger">
+        <thead><tr><th scope="col">Data</th><th scope="col">Location</th><th scope="col">Purpose</th><th scope="col">Retention</th></tr></thead>
+        <tbody>
+          <tr><th scope="row"><code>peanup.theme</code></th><td>This browser</td><td>Remember light or dark theme</td><td>Until you clear site data</td></tr>
+          <tr><th scope="row"><code>peanup.locale</code></th><td>This browser</td><td>Remember your language choice</td><td>Until you clear site data</td></tr>
+          <tr><th scope="row">Standard access logs</th><td>Hosting / CDN infrastructure</td><td>Delivery, security and debugging</td><td>Provider rules apply</td></tr>
+          <tr><th scope="row">Email content</th><td>Your and Peanup's mailboxes</td><td>Reply to a message you send</td><td>Never passes through a site form</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="docs-section" id="preview">
+    <header><span>04 / LIVE PREVIEW</span><h2>A dropped photo becomes six-color<br />inside this browser.</h2></header>
+    <p class="docs-lead docs-lead--offset">The fourth-scene demo uses browser file APIs and Canvas. It does not send the selected photo to a Peanup server or write it into site storage.</p>
+    <ol class="docs-steps privacy-preview-steps">
+      <li><span>01</span><strong>You choose</strong><p>The page reads only the file you confirm in the file picker.</p></li>
+      <li><span>02</span><strong>The browser decodes</strong><p>The current tab decodes, crops and fits the photo to the preview frame.</p></li>
+      <li><span>03</span><strong>Canvas converts</strong><p>Palette mapping and dithering run locally, without a cloud image API.</p></li>
+      <li><span>04</span><strong>Reset clears</strong><p>Reset or close the page to release the preview. The original is not stored as a preference.</p></li>
+    </ol>
+    <div class="docs-callout">
+      <span>TECHNICAL BOUNDARY</span>
+      <p>A website cannot prevent device screenshots, browser extensions or a modified client from reading rendered content. The promise here is narrower and verifiable: current Peanup site code does not actively upload the photo you drop into the preview.</p>
+    </div>
+  </section>
+
+  <section class="docs-section" id="app">
+    <header><span>05 / APP & DEVICE TARGET</span><h2>Compute on the phone.<br />Send only the finished frame.</h2></header>
+    <div class="privacy-boundaries">
+      <article><span>ON DEVICE</span><h3>Crop and six-color render</h3><p>The app target is to handle orientation, crop, palette quantization and dithering locally on iPhone or iPad. Core photo transfer should not require a Peanup cloud account.</p></article>
+      <article><span>NEARBY</span><h3>Bluetooth Low Energy</h3><p>The target is to connect to a nearby Peanup and send the panel-ready frame, transfer state and required controls, rather than giving the original photo to the hardware.</p></article>
+      <article><span>LOCAL RECORD</span><h3>Artwork and device link</h3><p>Artwork history, device naming and recent connection state are intended to remain local first. Final fields, backup behavior and deletion controls will follow the release build.</p></article>
+    </div>
+    <p class="docs-caption">This section describes product privacy targets, not a published App Store policy. Before release, Peanup will publish a policy that matches the actual permissions, SDKs and server configuration.</p>
+  </section>
+
+  <section class="docs-section" id="services">
+    <header><span>06 / CONNECTED CONTENT</span><h2>Contact a source<br />only when its content is needed.</h2></header>
+    <div class="docs-table-wrap" tabindex="0" aria-label="Connected content and permission boundaries">
+      <table class="docs-table privacy-ledger">
+        <thead><tr><th scope="col">Capability</th><th scope="col">Possible data</th><th scope="col">Controlled by</th><th scope="col">Status</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">System Photos</th><td>The photo you select</td><td>Apple photo permission</td><td>Product target</td></tr>
+          <tr><th scope="row">Calendar card</th><td>Calendar content you allow</td><td>System permission and account</td><td>Product target</td></tr>
+          <tr><th scope="row">Weather and reading</th><td>Location or text needed for a card</td><td>The relevant content service</td><td>Provider to be confirmed</td></tr>
+          <tr><th scope="row">Apple Shortcuts</th><td>Inputs selected in your automation</td><td>iOS permissions and trigger rules</td><td>Product target</td></tr>
+          <tr><th scope="row">WeChat Mini Program</th><td>Account and runtime data needed for transfer</td><td>WeChat and Mini Program policies</td><td>Separate notice before release</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="docs-note"><b>Least privilege</b><span>The release build should ask only for the permission needed for the current action. Refusing one content permission should not block unrelated local preview or nearby photo transfer.</span></p>
+  </section>
+
+  <section class="docs-section" id="nfc">
+    <header><span>07 / CUID NFC</span><h2>The access system<br />always decides whether a door opens.</h2></header>
+    <div class="docs-policy">
+      <strong>Conditional compatibility, not a universal key</strong>
+      <p>Peanup may work as an access card only where the reader supports CUID, the administrator authorizes enrollment and local rules allow it. The access operator controls identifiers, authorization and entry logs. The Peanup website cannot grant access or bypass an incompatible system.</p>
+    </div>
+  </section>
+
+  <section class="docs-section" id="control">
+    <header><span>08 / YOUR CONTROL</span><h2>You decide<br />what remains.</h2></header>
+    <div class="docs-grid docs-grid--three privacy-controls">
+      <article><span>BROWSER</span><h3>Clear site data</h3><p>Remove pean.caiths.com site data in browser settings to delete the saved theme and language preferences.</p></article>
+      <article><span>PREVIEW</span><h3>Reset the live frame</h3><p>Use Reset in the fourth scene, or close the tab, to end the current photo or text preview.</p></article>
+      <article><span>SYSTEM</span><h3>Manage permissions</h3><p>Future Photos, Bluetooth, Calendar and Shortcuts permissions can be reviewed and revoked in Apple system settings.</p></article>
+    </div>
+    <div class="docs-decision privacy-contact">
+      <span>CONTACT & UPDATES</span>
+      <strong>Questions about data handling<br />should have a direct answer.</strong>
+      <p>Email <a href="mailto:i@caiths.com">i@caiths.com</a>. This page will be updated when website behavior, app permissions, content providers or hardware paths change; the revision date remains visible at the top.</p>
+    </div>
+  </section>
+
+</DocsShell>

@@ -1,0 +1,134 @@
+---
+import DocsShell from '../../../../components/docs/DocsShell.astro';
+import type { DocPageConfig } from '../../../../types/docs';
+import '../../../../styles/docs-content.css';
+
+const toc = [
+  ['overview', 'Start with a photo'],
+  ['formats', 'Six content formats'],
+  ['rhythm', 'A quiet daily rhythm'],
+  ['composition', 'Compose for six colors'],
+  ['sources', 'Sources and network'],
+  ['automation', 'Scheduled updates'],
+  ['possibilities', 'Beyond the examples'],
+  ['faq', 'Common questions'],
+];
+
+const faqs: Array<[string, string]> = [
+  ['Is Peanup limited to photos, calendars, weather and reading notes?', 'No. Those are familiar examples that explain the product. Any content that can become a 528 × 792 six-color frame may become a Peanup display.'],
+  ['Are photos uploaded to Peanup servers?', 'The current web experience processes photos only in the browser. The product goal is also to crop and render on the phone, then send only the finished frame over Bluetooth.'],
+  ['Which content needs the internet?', 'Your own photos and text can stay entirely local. Weather, online reading notes and other third-party content need their respective services, network access or authorization.'],
+  ['Can content update automatically?', 'Apple Shortcuts is the planned primary automation path. Available triggers, background execution and final timing will follow iOS permissions and system rules.'],
+  ['How much text should a frame contain?', 'Short lines are clearest on a 3.68-inch portrait display. The app can scale and wrap text, but the strongest frames remain readable at a glance.'],
+];
+
+const config: DocPageConfig = {
+  title: 'Peanup Content Ideas | Photos, Information & Automation',
+  description: 'Explore photos, calendars, weather, reading notes, text and daily summaries for Peanup, with clear network, permission and automation boundaries.',
+  locale: 'en',
+  current: 'content',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'CONTENT GUIDE',
+  revisionLabel: 'Campaign preview\nUpdated 2026.07.30',
+  datePublished: '2026-07-29',
+  dateModified: '2026-07-30',
+  schemaType: 'WebPage',
+  articleClass: 'docs-content-guide',
+  faqs,
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / CONTENT GUIDE</span><b>02</b></div>
+    <h1>Start with a photo.<br />Keep going beyond it.</h1>
+    <p class="docs-deck">Peanup can hold a scene you just captured, then show a calendar, weather, a reading note or a line of your own when it becomes useful. The content changes. The paper stays quiet.</p>
+    <div class="docs-fact-strip" aria-label="Content formats at a glance">
+      <span><b>PHOTO</b><small>Scenes you just captured</small></span>
+      <span><b>INFO</b><small>Calendar and weather</small></span>
+      <span><b>TEXT</b><small>Reading notes and your words</small></span>
+      <span><b>AUTO</b><small>Shortcuts and scheduled updates</small></span>
+    </div>
+    <p class="docs-status"><i></i> Examples, not a display limit</p>
+  </section>
+
+  <section class="docs-section" id="formats">
+    <header><span>01 / CONTENT ATLAS</span><h2>Every kind of content<br />has its own rhythm.</h2></header>
+    <p class="docs-lead docs-lead--offset">The app shelf keeps photos, calendars, weather and reading notes in one place. They are ways to choose the next frame, not a limit on what Peanup can show.</p>
+    <a class="docs-context-link docs-lead--offset" href="/en/#ecosystem-library">Try the content shelf inside the homepage phone <span aria-hidden="true">→</span></a>
+    <div class="content-atlas" aria-label="Peanup content examples">
+      <article><span>01 / PHOTO</span><div class="content-specimen content-specimen--photo" aria-hidden="true"><i></i><i></i><i></i><b>16:24</b></div><h3>Photos</h3><p>Keep a landscape, a friend or a meal on paper moments after you capture it.</p></article>
+      <article><span>02 / CALENDAR</span><div class="content-specimen content-specimen--calendar" aria-hidden="true"><small>JUL / SUNDAY</small><b>27</b><i>3 things today</i></div><h3>Calendar</h3><p>Leave only the date and plans that deserve your attention today.</p></article>
+      <article><span>03 / WEATHER</span><div class="content-specimen content-specimen--weather" aria-hidden="true"><small>SHENZHEN</small><b>28°</b><i>Showers, then clear</i></div><h3>Weather</h3><p>One glance before leaving, without lighting up another screen.</p></article>
+      <article><span>04 / READING</span><div class="content-specimen content-specimen--quote" aria-hidden="true"><b>“</b><i>The family sits together,<br />the lamplight warm and dear.</i><small>— “Winter”</small></div><h3>Reading notes</h3><p>Let a sentence stay with you after the reading session ends.</p></article>
+      <article><span>05 / SUMMARY</span><div class="content-specimen content-specimen--summary" aria-hidden="true"><small>TODAY / 18:30</small><b>Gather today<br />onto one page.</b><i>Done · Remember · Tomorrow</i></div><h3>Daily summary</h3><p>Collect scattered moments into one quiet card at the end of the day.</p></article>
+      <article><span>06 / YOUR FRAME</span><div class="content-specimen content-specimen--open" aria-hidden="true"><b>…</b><i>Your next frame<br />starts here</i></div><h3>Custom content</h3><p>Photos, short text or future third-party sources can become new ways to draw a frame.</p></article>
+    </div>
+  </section>
+
+  <section class="docs-section" id="rhythm">
+    <header><span>02 / A QUIET DAY</span><h2>The day changes.<br />The paper follows quietly.</h2></header>
+    <div class="docs-split"><p class="docs-lead">The point is not constant refresh. It is changing the frame when the moment is useful.</p><div class="docs-copy"><p>This is one automation story, not a fixed template or a promise that the operating system will force a background update at any arbitrary time.</p></div></div>
+    <ol class="content-rhythm" aria-label="Example content updates through a day">
+      <li><time>07:30</time><span>WEATHER</span><strong>Before leaving</strong><p>Weather, temperature and the first calendar item.</p></li>
+      <li><time>12:40</time><span>PHOTO</span><strong>Just happened</strong><p>Choose one photo that deserves to stay.</p></li>
+      <li><time>18:30</time><span>SUMMARY</span><strong>Back home</strong><p>Gather the day into one short card.</p></li>
+      <li><time>22:30</time><span>READING</span><strong>Before sleep</strong><p>Keep a sentence worth seeing tomorrow.</p></li>
+    </ol>
+  </section>
+
+  <section class="docs-section" id="composition">
+    <header><span>03 / COMPOSE FOR E6</span><h2>Six physical colors.<br />One clear focal point.</h2></header>
+    <div class="docs-care content-composition">
+      <div><dt>SUBJECT</dt><dd>Make it legible</dd><small>Do not let the person or object become too small. A simpler background survives six-color rendering better.</small></div>
+      <div><dt>CONTRAST</dt><dd>Keep light and dark</dd><small>Avoid large areas of similar gray. A clear value structure reads better on e-paper.</small></div>
+      <div><dt>SAFE AREA</dt><dd>Leave breathing room</dd><small>Keep faces, dates and important words away from the edge so the crop can move safely.</small></div>
+      <div><dt>TEXT</dt><dd>One line can be enough</dd><small>Short text suits a 3.68-inch portrait frame and remains readable at a glance.</small></div>
+    </div>
+    <p class="docs-caption">The app preview maps content to the 528 × 792 E6 palette. Photos keep their proportions; text wraps and scales. Final output will continue to be calibrated against production hardware.</p>
+    <a class="docs-context-link" href="/en/docs/image-guide/">Open the six-color image guide for choosing, cropping and previewing a frame <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="sources">
+    <header><span>04 / SOURCE & NETWORK</span><h2>Some frames begin with you.<br />Others begin with the world.</h2></header>
+    <div class="docs-split"><p class="docs-lead">The network is for obtaining information that needs to change. It should not be a required stop for every personal photo.</p><div class="docs-copy"><p>Your own photos and text can be prepared locally. Weather, online reading notes and third-party services need their own data source, network access and authorization.</p><a class="docs-context-link" href="/en/docs/privacy/">Read the privacy and data boundaries <span aria-hidden="true">→</span></a></div></div>
+    <div class="docs-table-wrap content-source-table" tabindex="0" role="region" aria-label="Content sources and network boundaries">
+      <table class="docs-table">
+        <thead><tr><th scope="col">Content</th><th scope="col">Where the frame is prepared</th><th scope="col">Network</th><th scope="col">Product position</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Photos and custom text</th><td>Crop, layout and six-color rendering on the phone</td><td>Not required</td><td>Core update path</td></tr>
+          <tr><th scope="row">System calendar</th><td>Authorized events laid out locally</td><td>Depends on calendar source</td><td>Campaign target</td></tr>
+          <tr><th scope="row">Weather</th><td>Weather data becomes a card on the phone</td><td>Required</td><td>Content-service target</td></tr>
+          <tr><th scope="row">Reading notes</th><td>User-selected or authorized reading source</td><td>Depends on source</td><td>Extension target</td></tr>
+          <tr><th scope="row">Daily summary</th><td>Shortcuts combine data the user permits</td><td>Depends on sources</td><td>Automation example</td></tr>
+          <tr><th scope="row">Third-party content</th><td>A future provider supplies data for a finished frame</td><td>Provider-defined</td><td>Future extension space</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="docs-section" id="automation">
+    <header><span>05 / AUTOMATION</span><h2>Automation prepares it.<br />You decide what stays.</h2></header>
+    <ol class="docs-steps content-automation-steps">
+      <li><span>01 / TRIGGER</span><strong>Choose a moment</strong><p>A time, Focus mode or a Shortcut you run yourself.</p></li>
+      <li><span>02 / SOURCE</span><strong>Get the content</strong><p>A photo, calendar item, weather result or selected line.</p></li>
+      <li><span>03 / PREVIEW</span><strong>Prepare the frame</strong><p>Lay it out and render a finished six-color image on the phone.</p></li>
+      <li><span>04 / SEND</span><strong>Send when nearby</strong><p>Connect to Peanup, transfer and wait for the e-paper refresh.</p></li>
+    </ol>
+    <div class="docs-callout"><span>SYSTEM BOUNDARY</span><p>Background execution, permission prompts and available Shortcut triggers follow iOS rules. Peanup prepares and sends the frame when the system permits it and the device is nearby. Read the full <a class="docs-context-link" href="/en/docs/shortcuts/">Shortcuts guide <span aria-hidden="true">→</span></a></p></div>
+  </section>
+
+  <section class="docs-section" id="possibilities">
+    <header><span>06 / OPEN FRAME</span><h2>These ideas<br />are only a beginning.</h2></header>
+    <div class="docs-decision content-open-frame"><span>PHOTO · INFORMATION · TEXT · MORE</span><strong>If it can become a six-color frame,<br />it may find a place on Peanup.</strong><p>The first release focuses on photos, text, useful information and Apple automation. Future integrations will follow the same principle: update only when needed, then let the frame rest on paper.</p></div>
+  </section>
+
+  <section class="docs-section" id="faq">
+    <header><span>07 / FAQ</span><h2>Start with these<br />content questions.</h2></header>
+    <div class="docs-accordion">
+      {faqs.map(([question, answer], index) => (
+        <details open={index === 0}><summary><i>{String(index + 1).padStart(2, '0')}</i>{question}</summary><p>{answer}</p></details>
+      ))}
+    </div>
+  </section>
+</DocsShell>

@@ -1,0 +1,209 @@
+---
+import DocsShell from '../../../../components/docs/DocsShell.astro';
+import TroubleshootingGuide, { type TroubleshootingStage } from '../../../../components/docs/TroubleshootingGuide.astro';
+import type { DocPageConfig } from '../../../../types/docs';
+
+const toc = [
+  ['overview', 'Start here'],
+  ['quick-check', 'One-minute check'],
+  ['discovery', 'Device not found'],
+  ['transfer', 'Transfer paused'],
+  ['refresh', 'Refresh behavior'],
+  ['charging', 'Wireless charging'],
+  ['nfc', 'NFC access'],
+  ['support', 'Contact support'],
+  ['faq', 'FAQ'],
+];
+
+const faqs: Array<[string, string]> = [
+  ['Why does Peanup not appear in the device list?', 'Confirm that the device has power, Bluetooth is enabled and the Peanup app has Bluetooth permission. Keep both devices close, end the current scan and start one clean scan rather than tapping connect repeatedly.'],
+  ['Will an interrupted transfer erase the existing image?', 'No. E-paper keeps the last fully written frame. The app should also retain the newly prepared frame and the failed stage so you can retry without choosing the photo again.'],
+  ['Is flashing, color change or a brief old frame normal during refresh?', 'E-paper uses a visible drive sequence rather than video-style redraw. Wait until the app explicitly reports completion before moving the device or sending again. Final behavior depends on production hardware.'],
+  ['What should I do when a Qi charger does not respond?', 'Remove cases, metal plates and debris, then place Peanup flat at the center of a compatible Qi charger. Stop immediately if there is unusual heat, moisture or damage to the charger.'],
+  ['Why can CUID NFC enrollment fail?', 'It can work only when the access system supports CUID, the administrator allows enrollment and local rules permit it. Peanup cannot make an incompatible reader work or bypass authorization.'],
+];
+
+const troubleshootingStages: TroubleshootingStage[] = [
+  {
+    id: 'discovery', label: 'Discover', meta: 'DISCOVERY',
+    title: 'Make the device visible first',
+    action: 'Confirm available power, system Bluetooth and app permission, then end the old scan and start one clean scan.',
+    note: 'Keep Peanup beside the phone. Do not tap scan repeatedly.',
+    href: '#discovery', linkLabel: 'Open device discovery',
+  },
+  {
+    id: 'connection', label: 'Connect', meta: 'CONNECTION',
+    title: 'Keep one nearby connection',
+    action: 'Confirm another phone is not connected, choose the correct Peanup and remain on the current transfer screen.',
+    note: 'Do not switch devices, lock the phone or leave the flow while connecting.',
+    href: '#transfer', linkLabel: 'Open connection states',
+  },
+  {
+    id: 'transfer', label: 'Send', meta: 'TRANSFER',
+    title: 'Keep the frame and resume sending',
+    action: 'Move the phone closer and retry the current frame. There is no need to choose, crop or render the photo again.',
+    note: 'Send to one device at a time and record the block where progress stopped.',
+    href: '#transfer', linkLabel: 'Open transfer checks',
+  },
+  {
+    id: 'refresh', label: 'Write', meta: 'REFRESH',
+    title: 'After transfer, let the paper finish',
+    action: 'After transfer completes, wait for the app to confirm panel refresh before moving the device or sending again.',
+    note: 'Brief flashing, color changes or an old frame can be part of the normal drive sequence.',
+    href: '#refresh', linkLabel: 'Open refresh behavior',
+  },
+  {
+    id: 'qi', label: 'Qi', meta: 'POWER',
+    title: 'Realign from the charger center',
+    action: 'Remove metal plates, thick cases and debris, then place Peanup flat at the center of a compatible Qi charger.',
+    note: 'Stop immediately if there is moisture, odor or unusual heat.',
+    href: '#charging', linkLabel: 'Open wireless charging',
+  },
+  {
+    id: 'nfc', label: 'NFC', meta: 'ACCESS',
+    title: 'Confirm the access system first',
+    action: 'Ask the administrator whether the reader supports CUID, permits enrollment and complies with local rules.',
+    note: 'Incompatibility or missing authorization does not by itself mean the hardware is faulty.',
+    href: '#nfc', linkLabel: 'Open NFC conditions',
+  },
+];
+
+const config: DocPageConfig = {
+  title: 'Peanup Setup Guide | Bluetooth, Refresh, Qi & NFC',
+  description: 'Troubleshoot Peanup discovery, Bluetooth transfer, e-paper refresh, Qi wireless charging and conditional CUID NFC, with a clear support checklist.',
+  locale: 'en',
+  current: 'troubleshooting',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'SETUP & TROUBLESHOOTING',
+  revisionLabel: 'Crowdfunding preview guide\nUpdated 2026.07.30',
+  datePublished: '2026-07-30',
+  dateModified: '2026-07-30',
+  schemaType: 'TechArticle',
+  articleClass: 'docs-troubleshooting',
+  faqs,
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / SETUP & HELP</span><b>01</b></div>
+    <h1>Keep the frame.<br />Find the step that stopped.</h1>
+    <p class="docs-deck">One Peanup update moves through preparation, discovery, connection, transfer and refresh. Do not restart everything blindly; identify the current stage and continue from there.</p>
+    <div class="docs-fact-strip" aria-label="Troubleshooting principles">
+      <span><b>POWER</b><small>Start with available charge</small></span>
+      <span><b>NEARBY</b><small>Stay close while sending</small></span>
+      <span><b>KEEP</b><small>Retain the prepared frame</small></span>
+      <span><b>RETRY</b><small>Resume from the failed stage</small></span>
+    </div>
+    <p class="docs-status"><i></i> Crowdfunding preview path · final prompts depend on the released app and hardware</p>
+  </section>
+
+  <section class="docs-section" id="quick-check">
+    <header><span>02 / ONE-MINUTE CHECK</span><h2>Four small checks<br />before one clean retry.</h2></header>
+    <ol class="docs-steps">
+      <li><span>01 / POWER</span><strong>Add power</strong><p>Place Peanup flat at the center of a compatible Qi charger.</p></li>
+      <li><span>02 / PERMISSION</span><strong>Check Bluetooth access</strong><p>Enable system Bluetooth and allow the Peanup app to use it.</p></li>
+      <li><span>03 / DISTANCE</span><strong>Keep both devices nearby</strong><p>Leave the phone and Peanup close and steady during discovery and transfer.</p></li>
+      <li><span>04 / STAGE</span><strong>Note where it stopped</strong><p>Distinguish discovery, connection, transfer and refresh instead of repeating blindly.</p></li>
+    </ol>
+    <TroubleshootingGuide
+      ariaLabel="Choose the stage that stopped"
+      introLabel="Where did it stop?"
+      intro="Choose the state you can see now. This gives one next step without discarding the prepared frame."
+      nextLabel="Do this now"
+      noteLabel="Also check"
+      stages={troubleshootingStages}
+    />
+    <p class="docs-note"><b>Do not choose the photo again yet</b><span>A connection failure should not discard a cropped and rendered frame. Keep the preview and resume from the connection stage.</span></p>
+  </section>
+
+  <section class="docs-section" id="discovery">
+    <header><span>03 / DEVICE DISCOVERY</span><h2>No device in the list?<br />Check discovery conditions first.</h2></header>
+    <div class="docs-table-wrap docs-compatibility" tabindex="0" aria-label="Device discovery troubleshooting table">
+      <table class="docs-table">
+        <thead><tr><th scope="col">What you see</th><th scope="col">Do this first</th><th scope="col">Avoid this</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">The scan list is empty</th><td>Confirm power, the Bluetooth switch and app permission, then start one new scan.</td><td>Do not tap scan rapidly or open several transfer screens at once.</td></tr>
+          <tr><th scope="row">Several devices appear</th><td>Use the device name and recent-device record; move other units away temporarily.</td><td>Do not identify a device only by its list position.</td></tr>
+          <tr><th scope="row">The device appears, then vanishes</th><td>Stay close, confirm another phone is not connected, then discover again.</td><td>Do not start while moving the device or while charging placement is unstable.</td></tr>
+          <tr><th scope="row">Bluetooth permission is denied</th><td>Restore permission in system settings, return to the app and scan again.</td><td>Do not report denied permission as damaged hardware.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <a class="docs-context-link" href="/en/docs/compatibility/#bluetooth">Review Bluetooth conditions <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="transfer">
+    <header><span>04 / TRANSFER</span><h2>When sending stops,<br />show more than a progress bar.</h2></header>
+    <div class="docs-split">
+      <p class="docs-lead">An update has more states than “success” and “failed.” The app should distinguish discovery, connection, transfer, acknowledgement and panel refresh.</p>
+      <div class="docs-copy">
+        <p>If transfer is interrupted, retain the completed frame and known progress, move closer and retry. Cropping and rendering need to run again only when you choose a different source.</p>
+        <p>Send to one Peanup at a time. Backgrounding the app, locking the phone, leaving Bluetooth range or losing permission can interrupt the current connection.</p>
+      </div>
+    </div>
+    <div class="docs-table-wrap" tabindex="0" aria-label="Transfer states and next actions">
+      <table class="docs-table">
+        <thead><tr><th scope="col">Stage</th><th scope="col">The interface should say</th><th scope="col">Next action</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Discovery</th><td>Looking for nearby devices</td><td>Stay close and confirm permission and power.</td></tr>
+          <tr><th scope="row">Connection</th><td>Establishing a nearby connection</td><td>Do not switch devices or leave the flow.</td></tr>
+          <tr><th scope="row">Transfer</th><td>Explicit block progress and a cancel state</td><td>Retain the frame and retry from transfer after interruption.</td></tr>
+          <tr><th scope="row">Refresh</th><td>Transfer complete; the panel is updating</td><td>Wait without moving the device or sending again.</td></tr>
+          <tr><th scope="row">Complete</th><td>The new frame is written and held</td><td>The connection may return to idle.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="docs-section" id="refresh">
+    <header><span>05 / E-PAPER REFRESH</span><h2>You can see the refresh.<br />Then the paper becomes quiet.</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>NORMAL</span><h3>Brief flashing and color changes</h3><p>E-paper visibly moves pigments into place. A transition during this drive sequence does not by itself mean the image is damaged.</p></article>
+      <article><span>WAIT</span><h3>Use the app completion state</h3><p>Transfer complete is not refresh complete. Wait for explicit confirmation before moving the device or sending the next frame.</p></article>
+      <article><span>KEEP</span><h3>The image remains offline</h3><p>After a complete write, e-paper does not need an active Bluetooth connection or a backlight to keep the content.</p></article>
+    </div>
+    <div class="docs-callout"><span>STOP & CHECK</span><p>If the panel remains between frames, refreshes repeatedly or the app reports an error, stop sending again, record the stage and prepare the details in “Contact support.”</p></div>
+  </section>
+
+  <section class="docs-section" id="charging">
+    <header><span>06 / QI CHARGING</span><h2>No response on the charger?<br />Realign from the center.</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>ALIGN</span><h3>Start from the center</h3><p>Remove metal plates, thick cases and debris, then place Peanup flat at the center of a compatible Qi charger.</p></article>
+      <article><span>PAUSE</span><h3>Allow a moment for detection</h3><p>Leave it steady for recognition rather than sliding it continuously across the charging area.</p></article>
+      <article><span>HEAT</span><h3>Stop on unusual heat</h3><p>Stop using it if there is moisture, odor, unusual heat or visible charger damage, then contact support.</p></article>
+    </div>
+    <p class="docs-caption">Qi, the no-exposed-connector enclosure and final charging feedback are crowdfunding targets. Input power, charge time, temperature rise and indicators will be published after production validation.</p>
+  </section>
+
+  <section class="docs-section" id="nfc">
+    <header><span>07 / CUID NFC</span><h2>Enrollment can fail<br />without a hardware fault.</h2></header>
+    <div class="docs-policy">
+      <strong>Confirm system compatibility, then obtain administrator approval</strong>
+      <p>Peanup may act as an access card only when the reader supports CUID, the administrator permits enrollment and local rules allow it. Reader models, encryption and property policy all affect the result.</p>
+    </div>
+    <a class="docs-context-link" href="/en/docs/compatibility/#nfc">Read the complete NFC conditions <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="support">
+    <header><span>08 / USEFUL REPORT</span><h2>Share the useful context.<br />Find the problem faster.</h2></header>
+    <div class="docs-grid docs-grid--two">
+      <article><span>DEVICE</span><h3>Device and system</h3><p>Phone model, iOS or iPadOS version, Peanup app version and the device name.</p></article>
+      <article><span>STAGE</span><h3>The step that stopped</h3><p>Discovery, connection, transfer, panel refresh, Qi charging or NFC enrollment.</p></article>
+      <article><span>TIME</span><h3>Time and frequency</h3><p>Approximate time, whether it happens every time and what changed after moving closer or adding power.</p></article>
+      <article><span>PRIVACY</span><h3>Private originals are not required</h3><p>Prefer a status screenshot or exact error text. Do not email personal photos or access-card details unless specifically needed.</p></article>
+    </div>
+    <div class="docs-decision">
+      <span>CONTACT</span>
+      <strong>Still stopped?<br />Write directly to us.</strong>
+      <p>Contact <a href="mailto:i@caiths.com">i@caiths.com</a> with the four groups above. We will identify the stage first, then decide whether detailed logs are needed.</p>
+    </div>
+  </section>
+
+  <section class="docs-section docs-faq" id="faq">
+    <header><span>09 / FAQ</span><h2>The most common cases,<br />answered first.</h2></header>
+    <div class="docs-accordion">
+      {faqs.map(([question, answer], index) => <details><summary><i>{String(index + 1).padStart(2, '0')}</i>{question}</summary><p>{answer}</p></details>)}
+    </div>
+  </section>
+</DocsShell>

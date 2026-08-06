@@ -1,7 +1,7 @@
 ---
-import BaseLayout from '../../../../layouts/BaseLayout.astro';
-import ThemeToggle from '../../../../components/ThemeToggle.astro';
-import '../../../../styles/docs.css';
+import DocsShell from '../../../../components/docs/DocsShell.astro';
+import type { DocPageConfig } from '../../../../types/docs';
+import '../../../../styles/docs-engineering.css';
 
 const toc = [
   ['scope', 'Scope & evidence'],
@@ -22,61 +22,25 @@ const algorithms = [
   ['Burkes', '32', 'A two-row kernel that balances detail, memory and processing cost.'],
   ['Sierra 3 / 2 / Lite', '32 / 16 / 4', 'Three quality and cost levels for final output through responsive preview.'],
 ];
+
+const config: DocPageConfig = {
+  title: 'Peanup Engineering Notes | Local rendering and BLE',
+  description: 'Peanup engineering notes: the 3.68-inch E6 panel, local six-color image pipeline, dithering, BLE transfer states, power model and validation limits.',
+  locale: 'en',
+  current: 'engineering',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'ENGINEERING NOTES',
+  revisionLabel: 'Evidence-led working notes\nRevision 0.3 · 30 July 2026',
+  datePublished: '2026-07-28',
+  dateModified: '2026-07-30',
+  articleClass: 'docs-article--engineering',
+};
 ---
 
-<BaseLayout
-  title="Peanup Engineering Notes | Local rendering and BLE"
-  description="Peanup engineering notes: the 3.68-inch E6 panel, local six-color image pipeline, dithering, BLE transfer states, power model and validation limits."
-  locale="en"
-  htmlLang="en"
-  ogLocale="en_US"
-  canonicalPath="/en/docs/engineering/"
-  alternates={[
-    { lang: 'zh-CN', href: '/docs/engineering/' },
-    { lang: 'en', href: '/en/docs/engineering/' },
-  ]}
-  xDefaultPath="/docs/engineering/"
-  schemaType="TechArticle"
-  datePublished="2026-07-28"
-  dateModified="2026-07-28"
-  image="/assets/peanup-og.webp"
-  backTopLabel="Back to top"
->
-  <header class="docs-topbar">
-    <a class="brand" href="/en/" aria-label="Peanup home">
-      <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
-      <span>Peanup</span>
-    </a>
-    <nav class="docs-primary-nav" aria-label="Documentation">
-      <a href="/en/docs/">Product guide</a>
-      <a aria-current="page" href="/en/docs/engineering/">Engineering notes</a>
-      <a lang="zh-CN" href="/docs/engineering/" hreflang="zh-CN">简体中文</a>
-    </nav>
-    <a class="docs-product-link docs-topbar-product" href="/en/">Product <span aria-hidden="true">↗</span></a>
-    <ThemeToggle locale="en" />
-    <details class="docs-mobile-nav">
-      <summary>Menu</summary>
-      <nav aria-label="Mobile documentation">
-        <a href="/en/docs/">Product guide</a>
-        <a aria-current="page" href="/en/docs/engineering/">Engineering notes</a>
-        <a lang="zh-CN" href="/docs/engineering/" hreflang="zh-CN">简体中文</a>
-      </nav>
-    </details>
-  </header>
-
-  <main id="main-content" class="docs-layout" tabindex="-1">
-    <aside class="docs-toc" aria-label="On this page">
-      <p>ENGINEERING NOTES</p>
-      <nav>
-        {toc.map(([id, label], index) => <a href={`#${id}`}><i>{String(index + 1).padStart(2, '0')}</i>{label}</a>)}
-      </nav>
-      <small>Evidence-led working notes<br />Revision 0.2 · 28 July 2026</small>
-    </aside>
-
-    <article class="docs-article docs-article--engineering">
+<DocsShell config={config}>
       <section class="docs-hero" id="scope">
-        <div class="docs-eyebrow"><span>PEANUP / ENGINEERING</span><b>REV. 0.2</b></div>
-        <h1>From a local frame<br />to physical pigment.</h1>
+        <div class="docs-eyebrow"><span>PEANUP / ENGINEERING</span><b>REV. 0.3</b></div>
+        <h1><span>From a local frame</span>{' '}<span>to physical pigment.</span></h1>
         <p class="docs-deck">These notes separate what the legacy application proves, what can be rebuilt with standard techniques and what still requires a Peanup hardware loop. They are implementation guidance, not campaign promises.</p>
         <div class="docs-evidence" aria-label="Evidence levels">
           <span><i>E</i><strong>Evidence</strong><small>Observed in the binary, resources or recovered constants</small></span>
@@ -155,6 +119,7 @@ pixelCount = panelWidth * panelHeight  // 418,176 pixels
           <article><span>PHOTO</span><h3>Perceptual / Spectra Mix</h3><p>Palette-aware tone mapping can preserve photographic structure, but legacy special mixing behavior is not yet fully recovered.</p></article>
         </div>
         <p class="docs-note"><b>Content-aware rule</b><span>Disable or constrain cross-edge diffusion for typography, QR-like geometry and one-pixel lines. Validate photographs against a fixed reference set rather than tuning on color patches alone.</span></p>
+        <a class="docs-context-link" href="/en/docs/image-guide/">Read the public guide to choosing, cropping and previewing a six-color image <span aria-hidden="true">→</span></a>
       </section>
 
       <section class="docs-section" id="ble">
@@ -188,6 +153,12 @@ pixelCount = panelWidth * panelHeight  // 418,176 pixels
           <li><span>REFRESH</span><p>Stop unnecessary radio work while the controller drives the panel waveform.</p></li>
           <li><span>RETURN</span><p>Record completion, disconnect and restore the lowest valid power state.</p></li>
         </ol>
+        <div class="docs-measurement" aria-label="Whole-device power measurement method">
+          <article><span>01 / BASELINE</span><strong>Measure the quiet baseline</strong><p>After a refresh and disconnect, record average current, peaks and wakeups over at least 24 hours.</p></article>
+          <article><span>02 / ONE UPDATE</span><strong>Integrate one update</strong><p>Measure scan, connect, transfer, panel refresh and return-to-sleep separately. A single current sample does not represent the cycle.</p></article>
+          <article><span>03 / FREQUENCY</span><strong>Model real schedules</strong><p>Estimate daily, weekly and occasional refresh patterns while stating battery capacity, advertising policy and frame size.</p></article>
+          <article><span>04 / CONDITIONS</span><strong>Repeat across conditions</strong><p>Retest across temperature and include Qi loss, NFC, PMIC quiescent current, leakage and battery aging in the whole-device result.</p></article>
+        </div>
         <p class="docs-lead docs-lead--offset"><b>H:</b> Static e-paper retention does not establish whole-device standby current. Measure the assembled product, including MCU, BLE advertising, PMIC, charger, NFC and leakage, at multiple temperatures and refresh frequencies.</p>
       </section>
 
@@ -201,10 +172,4 @@ pixelCount = panelWidth * panelHeight  // 418,176 pixels
         <div class="docs-decision"><span>V1 ARCHITECTURE DECISION</span><strong>On-device rendering + nearby BLE transfer + e-paper retention</strong><p>Add always-on networking only if unattended or remote updates become a validated core need.</p></div>
       </section>
 
-      <div class="docs-footer">
-        <div><span>PEANUP / ENGINEERING</span><p>Working notes derived from static analysis and standard platform behavior.</p></div>
-        <a lang="zh-CN" href="/docs/engineering/" hreflang="zh-CN">阅读简体中文版 <span aria-hidden="true">→</span></a>
-      </div>
-    </article>
-  </main>
-</BaseLayout>
+</DocsShell>

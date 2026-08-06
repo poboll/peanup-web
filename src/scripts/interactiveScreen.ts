@@ -36,6 +36,14 @@ if (liveStudio) {
     count.value = `${Array.from(textInput.value).length} / ${textInput.maxLength}`;
   };
 
+  const enforceTextLimit = () => {
+    if (!textInput || textInput.maxLength < 1) return;
+    const characters = Array.from(textInput.value);
+    if (characters.length <= textInput.maxLength) return;
+    textInput.value = characters.slice(0, textInput.maxLength).join('');
+    textInput.setSelectionRange(textInput.value.length, textInput.value.length);
+  };
+
   const previewBottomInset = () => {
     if (!canvas || !toolbar) return 210;
     const renderedHeight = Math.max(1, liveStudio.getBoundingClientRect().height);
@@ -156,7 +164,11 @@ if (liveStudio) {
   };
 
   const handleFile = (file?: File) => {
-    if (!file || !file.type.startsWith('image/') || !canvas || !context) return;
+    if (!file || !canvas || !context) return;
+    if (!file.type.startsWith('image/')) {
+      if (status) status.textContent = errorText;
+      return;
+    }
     const revision = ++renderRevision;
     if (objectUrl) URL.revokeObjectURL(objectUrl);
     objectUrl = URL.createObjectURL(file);
@@ -180,6 +192,7 @@ if (liveStudio) {
   photo?.addEventListener('drop', (event) => { event.preventDefault(); photo.classList.remove('dragging'); handleFile(event.dataTransfer?.files[0]); });
   textInput?.addEventListener('input', () => {
     renderRevision += 1;
+    enforceTextLimit();
     resizeTextInput();
     updateCount();
     drawText();

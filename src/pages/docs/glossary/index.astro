@@ -1,0 +1,121 @@
+---
+import DocsShell from '../../../components/docs/DocsShell.astro';
+import type { DocPageConfig } from '../../../types/docs';
+
+const toc = [
+  ['overview', '先看这里'],
+  ['display', '屏幕与画质'],
+  ['update', '连接与更新'],
+  ['placement', '充电与摆放'],
+  ['content', '内容与自动化'],
+  ['status', '规格口径'],
+  ['faq', '容易混淆的问题'],
+];
+
+const faqs: Array<[string, string]> = [
+  ['网页里的电子纸预览为什么没有按 3.68 英寸实物大小显示？', '网页舞台为了看清画面和体验动画，会随设备尺寸放大。它不是实物比例尺。真正发送给面板的内容仍以 528 × 792 像素为输出目标，并保持原图比例。'],
+  ['约 258.7 PPI 和 300 DPI 哪一个更准确？', '对这块面板，约 258.7 PPI 是根据 528 × 792 像素与 51.84 × 77.76 mm 有效区计算出的准确表达。DPI 更常用于打印或设备输出口径，网站不再把 300 DPI 当作面板规格。'],
+  ['兼容 MagSafe 磁吸配件是否代表 Apple 认证？', '不是。这里描述的是磁吸摆放关系，不代表 Apple 的 MagSafe 认证，也不表示 iPhone 会直接给 Peanup 充电。'],
+  ['CUID NFC 是否在所有门禁上都能使用？', '不能。读卡器需要支持 CUID，管理方需要允许登记，也必须符合当地规则。Peanup 不能创建、复制或绕过门禁权限。'],
+];
+
+const config: DocPageConfig = {
+  title: 'Peanup 术语速查｜E6、PPI、BLE、Qi 与 CUID',
+  description: '用普通语言理解 Peanup：3.68 英寸 E6 六色电子纸、约 258.7 PPI、528 × 792 像素、BLE、Qi、磁吸、MagSafe 配件兼容、CUID NFC 与众筹目标。',
+  locale: 'zh-cn',
+  current: 'glossary',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'TERMS & CLAIMS',
+  revisionLabel: '公开口径指南\n更新于 2026.07.30',
+  datePublished: '2026-07-30',
+  dateModified: '2026-07-30',
+  schemaType: 'WebPage',
+  articleClass: 'docs-glossary-page',
+  faqs,
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / TERMS & CLAIMS</span><b>01</b></div>
+    <h1><span class="glossary-title-line">先把词说清楚，</span><span class="glossary-title-line">再谈体验。</span></h1>
+    <p class="docs-deck">电子纸、BLE、Qi 和 CUID 不该成为理解产品的门槛。这一页只回答它们在 Peanup 里具体是什么意思，以及哪些是面板事实、产品目标或仍需验证的能力。</p>
+    <div class="docs-fact-strip" aria-label="关键术语摘要">
+      <span><b>E6</b><small>六色面板型号标记</small></span>
+      <span><b>≈258.7</b><small>有效区像素密度 PPI</small></span>
+      <span><b>BLE</b><small>附近设备更新通道</small></span>
+      <span><b>TARGET</b><small>众筹目标会明确标注</small></span>
+    </div>
+    <p class="docs-status"><i></i> 面向普通读者的公开口径，不替代工程 Profile</p>
+  </section>
+
+  <section class="docs-section" id="display">
+    <header><span>02 / DISPLAY</span><h2>先理解这张纸，<br />再判断它的画质。</h2></header>
+    <dl class="docs-term-list" aria-label="屏幕与画质术语">
+      <div><dt><span>01</span><strong>E6</strong></dt><dd>Peanup 所用 3.68 英寸六色电子纸的型号标记。网站不擅自把它扩写成未经厂家确认的品牌名或技术全称。</dd></div>
+      <div><dt><span>02</span><strong>六色电子纸</strong></dt><dd>面板以墨、纸、朱、黄、蓝、绿六种实体颜色组合画面。它不是普通 LCD 的全彩子像素，也不靠背光发亮。</dd></div>
+      <div><dt><span>03</span><strong>有效显示区</strong></dt><dd>真正呈现内容的区域为 51.84 × 77.76 mm。面板模组和最终产品外壳会比有效区更大。</dd></div>
+      <div><dt><span>04</span><strong>约 258.7 PPI</strong></dt><dd>由 528 × 792 像素与有效显示区计算出的像素密度。PPI 描述屏幕每英寸像素数，比“300 DPI”更适合这块面板。</dd></div>
+    </dl>
+    <p class="docs-note"><b>反射式显示</b><span>电子纸借环境光呈现，不主动发光。厂家面板条件与 Peanup 整机户外表现是两件事，后者仍需在量产硬件上验证。</span></p>
+  </section>
+
+  <section class="docs-section" id="update">
+    <header><span>03 / UPDATE</span><h2>连接只负责更新，<br />画面自己留下。</h2></header>
+    <dl class="docs-term-list" aria-label="连接与更新术语">
+      <div><dt><span>01</span><strong>BLE</strong></dt><dd>Bluetooth Low Energy。手机靠近 Peanup 时，用它发送一幅准备好的画面；它不是持续联网，也不是远程云连接。</dd></div>
+      <div><dt><span>02</span><strong>完成帧</strong></dt><dd>手机完成裁切、六色转换和排版后得到的 528 × 792 目标画面。发送的是处理后的内容，不必把原始照片交给显示设备。</dd></div>
+      <div><dt><span>03</span><strong>写屏 / 刷新</strong></dt><dd>电子纸把颜料移动到新位置的过程。期间可能短暂闪烁、变色或出现旧画面，这与视频屏幕逐帧播放不同。</dd></div>
+      <div><dt><span>04</span><strong>双稳态保持</strong></dt><dd>刷新完成后，面板无需持续重绘也能保留画面。它不等于整机完全零功耗，MCU、蓝牙、充电和其他电路仍需测量。</dd></div>
+    </dl>
+    <a class="docs-context-link" href="/docs/engineering/#ble">查看 BLE 状态机与仍需真机验证的协议边界 <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="placement">
+    <header><span>04 / PLACE & POWER</span><h2>能吸住、能充电，<br />每个词都有边界。</h2></header>
+    <dl class="docs-term-list" aria-label="充电与摆放术语">
+      <div><dt><span>01</span><strong>Qi</strong></dt><dd>无线充电标准。Peanup 以无外露充电口为产品目标，最终输入功率、温升、充电时间与状态提示以量产验证为准。</dd></div>
+      <div><dt><span>02</span><strong>内置磁环</strong></dt><dd>用于吸附在有足够磁性的冰箱表面或兼容配件上。不同材质、涂层和厚度会改变吸力，正式摆放前应先轻触测试。</dd></div>
+      <div><dt><span>03</span><strong>MagSafe 配件兼容</strong></dt><dd>表示可以搭配相应磁吸配件摆放，不代表 Apple 认证，也不表示手机会通过磁吸直接给 Peanup 供电。</dd></div>
+      <div><dt><span>04</span><strong>CUID NFC</strong></dt><dd>在读卡器支持、管理方授权且符合当地规则时，可能登记为门禁卡。它不是通用钥匙，也不能绕过门禁权限。</dd></div>
+    </dl>
+    <a class="docs-context-link" href="/docs/compatibility/">查看平台、充电、磁吸与 NFC 的完整使用条件 <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="content">
+    <header><span>05 / CONTENT</span><h2>内容在手机上准备，<br />需要时才联系来源。</h2></header>
+    <dl class="docs-term-list" aria-label="内容与自动化术语">
+      <div><dt><span>01</span><strong>本地处理</strong></dt><dd>照片裁切、文字排版和六色预览在当前设备完成。网页第四幕也只在浏览器 Canvas 中处理用户选择的照片。</dd></div>
+      <div><dt><span>02</span><strong>快捷指令</strong></dt><dd>由 iOS 的触发条件与权限准备内容，再在 Peanup 靠近时更新。它不代表设备需要保持全天蓝牙连接。</dd></div>
+      <div><dt><span>03</span><strong>微信小程序</strong></dt><dd>为其他设备保留的传图路径。它遵循微信运行环境与独立隐私说明，不等同于已经承诺一款独立 Android App。</dd></div>
+      <div><dt><span>04</span><strong>外部内容来源</strong></dt><dd>天气、在线书摘等会变化的信息需要自己的数据来源和授权。网络只为取得对应内容，不应成为个人照片传图的必经站。</dd></div>
+    </dl>
+    <a class="docs-context-link" href="/docs/content/">继续阅读照片、信息卡片和自动更新的内容玩法 <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="status">
+    <header><span>06 / CLAIM STATUS</span><h2>同一句规格，<br />先看它属于哪一层。</h2></header>
+    <div class="docs-claim-levels" aria-label="产品规格证据层级">
+      <article><span>PANEL</span><h3>厂家面板数据</h3><p>3.68 英寸、528 × 792 像素、51.84 × 77.76 mm 有效区和约 258.7 PPI 来自厂家 Tentative Specification V0.2。</p></article>
+      <article><span>TARGET</span><h3>众筹目标规格</h3><p>3 mm、28 g、一个月以上续航、Qi、无外露接口和相关整机能力在网站中明确写作目标，不伪装成已量产事实。</p></article>
+      <article><span>VALIDATE</span><h3>仍需整机验证</h3><p>刷新时间、吞吐、待机电流、充电温升、磁吸强度、环境表现和协议细节需要在最终硬件与 App 上完成闭环。</p></article>
+    </div>
+    <div class="docs-decision glossary-decision">
+      <span>PREVIEW SCALE</span>
+      <strong>网页负责让画面看清楚，<br />不是把毫米搬到屏幕上。</strong>
+      <p>四幕舞台会根据浏览器尺寸放大，方便观察六色质感与动画。它不作为实物比例尺；写屏输出仍以 528 × 792 像素和正确图像比例为准。</p>
+    </div>
+  </section>
+
+  <section class="docs-section docs-faq" id="faq">
+    <header><span>07 / EASY TO CONFUSE</span><h2>四个容易混淆的问题。</h2></header>
+    <div class="docs-accordion">
+      {faqs.map(([question, answer], index) => (
+        <details>
+          <summary><i>{String(index + 1).padStart(2, '0')}</i><span>{question}</span></summary>
+          <p>{answer}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+</DocsShell>

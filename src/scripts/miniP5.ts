@@ -131,11 +131,14 @@ export default class MiniP5 {
   }
 
   private async boot() {
+    this.mount.dataset.canvasLifecycle = 'booting';
     this.preload?.();
     await Promise.allSettled(this.pendingLoads);
     this.startedAt = performance.now();
+    this.mount.dataset.canvasLifecycle = 'setup';
     this.setup?.();
     this.ready = true;
+    this.mount.dataset.canvasLifecycle = 'ready';
     if (this.redrawPending) this.scheduleFrame();
     this.scheduleFrame();
   }
@@ -154,8 +157,18 @@ export default class MiniP5 {
       const elapsed = this.lastDrawAt ? timestamp - this.lastDrawAt : interval;
       this.lastDrawAt = timestamp - (elapsed % interval);
       this.frameCount += 1;
+      if (this.frameCount === 1) this.mount.dataset.canvasLifecycle = 'drawing';
       this.redrawPending = false;
-      this.draw?.();
+      try {
+        this.draw?.();
+      } catch (error) {
+        // Keep the static first frame visible instead of leaving a blank
+        // stage when an embedded WebView lacks a Canvas 2D feature.
+        this.looping = false;
+        const message = error instanceof Error ? error.message : String(error);
+        this.mount.dataset.canvasError = message.slice(0, 160);
+        console.error('[Peanup canvas]', error);
+      }
     }
 
     this.scheduleFrame();
@@ -281,7 +294,11 @@ export default class MiniP5 {
           if (!visible && this.animationFrame) cancelAnimationFrame(this.animationFrame);
           this.animationFrame = 0;
           this.lastDrawAt = 0;
-          if (visible) this.scheduleFrame();
+          if (visible) {
+            this.looping = true;
+            this.redrawPending = true;
+            this.scheduleFrame();
+          }
         }, { rootMargin: '200px' });
         this.viewportObserver.observe(this.canvas);
       }
@@ -317,6 +334,36 @@ export default class MiniP5 {
   redraw() {
     this.redrawPending = true;
     this.scheduleFrame();
+  }
+
+  /**
+   * Re-check visibility after an anchor jump. Some embedded WebViews promote
+   * a lazy section without sending a second IntersectionObserver callback.
+   * The caller already runs on scroll, so this remains a cheap geometry read.
+   */
+  wake() {
+    if (!this.canvas) return;
+    const rect = this.canvas.getBoundingClientRect();
+    const visible = rect.bottom >= -200 && rect.top <= window.innerHeight + 200;
+    if (visible === this.canvasVisible) {
+      if (visible) {
+        // A completed still frame may have called noLoop(); an anchor jump
+        // still needs one paint pass to hand the fallback frame to Canvas.
+        this.looping = true;
+        this.redrawPending = true;
+        this.scheduleFrame();
+      }
+      return;
+    }
+    this.canvasVisible = visible;
+    if (!visible && this.animationFrame) cancelAnimationFrame(this.animationFrame);
+    this.animationFrame = 0;
+    this.lastDrawAt = 0;
+    if (visible) {
+      this.looping = true;
+      this.redrawPending = true;
+      this.scheduleFrame();
+    }
   }
 
   millis() {

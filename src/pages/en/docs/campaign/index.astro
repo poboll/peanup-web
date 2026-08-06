@@ -1,0 +1,140 @@
+---
+import DocsShell from '../../../../components/docs/DocsShell.astro';
+import CampaignDecisionGuide from '../../../../components/docs/CampaignDecisionGuide.astro';
+import type { DocPageConfig } from '../../../../types/docs';
+
+const toc = [
+  ['overview', 'At a glance'],
+  ['confirmed', 'What is defined'],
+  ['targets', 'Campaign targets'],
+  ['before-pledge', 'Before pledges open'],
+  ['scope', 'Product scope'],
+  ['follow', 'Follow the project'],
+  ['faq', 'FAQ'],
+];
+
+const faqs: Array<[string, string]> = [
+  ['When will Peanup launch on Kickstarter?', 'A date has not been announced. It will be published before pledges open, once core hardware tests, production planning and the campaign page are ready.'],
+  ['Are 3 mm, 28 g and one-month-plus battery life final?', 'No. They are Kickstarter targets. The 3.68-inch E6 panel, 528 × 792 pixels and active area come from the manufacturer specification; complete-device dimensions, weight and battery life still require final hardware validation.'],
+  ['Is the refresh speed shown on this website the real device speed?', 'No. The web animation explains the write-and-hold behavior of e-paper; it is not a timer. Measured refresh time will be published from real hardware before production.'],
+  ['Will the iOS app, Shortcuts and WeChat Mini Program all ship at launch?', 'They are current crowdfunding targets. The final campaign page will separate launch scope, platform conditions and features planned for later updates.'],
+  ['What will Peanup cost and where will it ship?', 'Price, shipping fees, regions and delivery estimates have not been announced. They will be presented together on Kickstarter before pledges open.'],
+  ['Will CUID NFC always work as an access card?', 'No. It can only be used where the access system supports CUID, the operator authorizes enrollment and local rules allow it. Peanup cannot grant or bypass access permissions.'],
+  ['Will warranty, returns and repair terms be published before the campaign?', 'Yes. Warranty scope, return conditions, arrival-damage handling, repair routes, regional limits and the software-support period will be published together before pledges open. The current boundary is documented under Support & service.'],
+];
+
+const specificationSummary = `Peanup
+Display: 3.68-inch E6 six-color e-paper
+Resolution: 528 × 792 pixels
+Active area: 51.84 × 77.76 mm
+Pixel density: approximately 258.7 PPI, calculated from the active area
+Transfer: Bluetooth Low Energy
+Crowdfunding targets: 3 mm, 28 g, one-month-plus battery life, Qi, magnetic placement, iOS and Shortcuts, WeChat Mini Program and conditional CUID NFC
+Status: Preparing for Kickstarter; final specifications, price, regions and delivery information will be published before pledges open
+https://pean.caiths.com/en/`;
+
+const config: DocPageConfig = {
+  title: 'Peanup Campaign Status | Specs & Kickstarter Targets',
+  description: "See Peanup's confirmed E6 panel specifications, Kickstarter targets, launch checks, and the price and delivery details still to be announced.",
+  locale: 'en',
+  current: 'campaign',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'CAMPAIGN STATUS',
+  revisionLabel: 'Crowdfunding preview\nUpdated 2026.07.31',
+  datePublished: '2026-07-30',
+  dateModified: '2026-07-31',
+  schemaType: 'WebPage',
+  articleClass: 'docs-campaign',
+  faqs,
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / CAMPAIGN STATUS</span><b>01</b></div>
+    <h1><span>Be clear about what is known.</span><span>Prove each target on the product.</span></h1>
+    <p class="docs-deck">Peanup is being prepared for Kickstarter. This page separates manufacturer panel facts, the current product direction and crowdfunding targets, then lists the real results that should be public before anyone pledges.</p>
+    <div class="docs-fact-strip" aria-label="Campaign status summary">
+      <span><b>3.68” E6</b><small>MANUFACTURER PANEL</small></span>
+      <span><b>528 × 792</b><small>ACTIVE PIXEL MATRIX</small></span>
+      <span><b>≈258.7 PPI</b><small>FROM ACTIVE AREA</small></span>
+      <span><b>PREVIEW</b><small>KICKSTARTER PREPARATION</small></span>
+    </div>
+    <p class="docs-status"><i></i> No preorder is open · Price, shipping and delivery dates are not yet announced</p>
+  </section>
+
+  <section class="docs-section" id="confirmed">
+    <header><span>02 / WHAT IS DEFINED</span><h2>Known facts<br />have a visible source.</h2></header>
+    <div class="docs-claim-levels">
+      <article><span>PANEL SPECIFICATION</span><h3>The display panel</h3><p>A 3.68-inch E6 six-color e-paper panel with 528 × 792 pixels and a 51.84 × 77.76 mm active area, or about 258.7 PPI. Reflectivity, contrast, module dimensions and operating range come from the manufacturer sheet.</p></article>
+      <article><span>CURRENT PRODUCT DIRECTION</span><h3>The physical object</h3><p>The real prototype is being refined around an instant-print form, nearby Bluetooth transfer, no exposed port, Qi charging and magnetic placement. The final campaign page will define the production form and specifications.</p></article>
+      <article><span>PUBLIC WEB PREVIEW</span><h3>What you can try now</h3><p>The four-frame stage, six-color algorithm selector and photo preview run locally in the browser. A photo dropped into the stage is not uploaded or written into website storage.</p></article>
+    </div>
+    <div class="docs-context-links">
+      <a class="docs-context-link" href="/en/#motion">Try the four-scene e-paper stage <span aria-hidden="true">→</span></a>
+      <a class="docs-context-link" href="/en/docs/hardware/#targets">Review panel facts and complete-device target evidence <span aria-hidden="true">→</span></a>
+      <button class="docs-context-link" type="button" data-doc-copy-text={specificationSummary} data-doc-copy-label="Copy the specification summary" data-doc-copy-success="Specification summary copied" data-doc-copy-failed="Copy failed. Try again."><span data-doc-copy-status aria-live="polite">Copy the specification summary</span></button>
+    </div>
+  </section>
+
+  <section class="docs-section" id="targets">
+    <header><span>03 / KICKSTARTER TARGETS</span><h2>Targets are not decorative numbers.<br />Each one returns to the physical product.</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>FORM</span><h3>3 mm · 28 g · no exposed port</h3><p>Thickness, target weight and port-free construction must be confirmed with the final structure, strength and assembly plan.</p></article>
+      <article><span>POWER & PLACEMENT</span><h3>Qi · magnetic ring · one month plus</h3><p>Battery life depends on refresh frequency. Charging heat, alignment tolerance, magnetic stability and battery performance will be measured on final hardware.</p></article>
+      <article><span>SOFTWARE & ACCESS</span><h3>iOS · Shortcuts · WeChat · CUID</h3><p>Launch software depends on the final app, platform permissions and hardware integration. CUID NFC also depends on access-system support and operator approval.</p></article>
+    </div>
+    <p class="docs-note"><b>What “target” means</b><span>A target is the result the current design and development work aims to reach. It is not a claim of mass production or certification. The final campaign will separate launch scope from later plans.</span></p>
+  </section>
+
+  <section class="docs-section" id="before-pledge">
+    <header><span>04 / BEFORE YOU PLEDGE</span><h2>These answers should be public<br />before support opens.</h2></header>
+    <CampaignDecisionGuide locale="en" />
+    <ol class="docs-steps">
+      <li><span>01 / PHYSICAL</span><strong>Final size and weight</strong><p>Complete-device thickness, weight, enclosure dimensions and production appearance.</p></li>
+      <li><span>02 / BATTERY</span><strong>Battery test conditions</strong><p>Battery capacity, refresh frequency, environment and measured result.</p></li>
+      <li><span>03 / UPDATE</span><strong>Transfer and refresh</strong><p>Typical frame-transfer time, visible refresh behavior and recovery from failure.</p></li>
+      <li><span>04 / DELIVERY</span><strong>Price and delivery scope</strong><p>Pledge tiers, shipping fees, regions, estimated timing and project risks.</p></li>
+    </ol>
+    <p class="docs-caption">Certifications, compliance marks and sales regions will follow completed work. “Compatible” will not be used as a substitute for certification.</p>
+  </section>
+
+  <section class="docs-section" id="scope">
+    <header><span>05 / PRODUCT SCOPE</span><h2>State the capability.<br />Keep its conditions beside it.</h2></header>
+    <div class="docs-table-wrap" tabindex="0" aria-label="Peanup crowdfunding feature status">
+      <table class="docs-table">
+        <thead><tr><th scope="col">Capability</th><th scope="col">Current position</th><th scope="col">To define before pledges</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Six-color e-paper</th><td>3.68-inch E6 · 528 × 792</td><td>Complete-device color samples, refresh time and final form</td></tr>
+          <tr><th scope="row">Bluetooth transfer</th><td>Nearby Bluetooth Low Energy update target</td><td>Supported devices, typical timing and recovery</td></tr>
+          <tr><th scope="row">iOS and Shortcuts</th><td>Primary product experience</td><td>Launch actions, system versions and permission conditions</td></tr>
+          <tr><th scope="row">WeChat Mini Program</th><td>Image-transfer path for more devices</td><td>Platform limits and launch feature scope</td></tr>
+          <tr><th scope="row">Qi and magnets</th><td>Port-free charging and magnetic placement targets</td><td>Charging parameters, heat, alignment and accessory boundaries</td></tr>
+          <tr><th scope="row">CUID NFC</th><td>Conditional compatibility</td><td>System support, authorization and local rules</td></tr>
+          <tr><th scope="row">Support & service</th><td>Public self-help guides and contact email</td><td>Warranty, returns, repairs, arrival damage and software-support period</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="docs-section" id="follow">
+    <header><span>06 / FOLLOW THE PROJECT</span><h2>No pressure to order.<br />Keep the facts in one place first.</h2></header>
+    <div class="docs-policy">
+      <strong>This is a public preview, not a preorder page.</strong>
+      <p>Specifications, image processing, platform compatibility, privacy, troubleshooting and support documentation will continue to evolve. For a specific capability, start with its guide. To contact the project directly, email <a href="mailto:i@caiths.com">i@caiths.com</a>.</p>
+    </div>
+    <div class="docs-callout">
+      <span>KEEP READING</span>
+      <div><p>Use the product guide for the complete experience. For long-term ownership, contact routes and the service terms required before launch, continue to Support & service.</p><a class="docs-context-link" href="/en/docs/">Open the product guide <span aria-hidden="true">→</span></a><a class="docs-context-link" href="/en/docs/support/">Open Support & service <span aria-hidden="true">→</span></a></div>
+    </div>
+  </section>
+
+  <section class="docs-section docs-faq" id="faq">
+    <header><span>07 / FAQ</span><h2>Questions to answer<br />before support opens.</h2></header>
+    <div class="docs-accordion">
+      {faqs.map(([question, answer], index) => (
+        <details><summary><i>{String(index + 1).padStart(2, '0')}</i><span>{question}</span></summary><p>{answer}</p></details>
+      ))}
+    </div>
+  </section>
+</DocsShell>

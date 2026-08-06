@@ -1,0 +1,144 @@
+---
+export interface TroubleshootingStage {
+  id: string;
+  label: string;
+  meta: string;
+  title: string;
+  action: string;
+  note: string;
+  href: string;
+  linkLabel: string;
+}
+
+interface Props {
+  ariaLabel: string;
+  introLabel: string;
+  intro: string;
+  nextLabel: string;
+  noteLabel: string;
+  stages: TroubleshootingStage[];
+}
+
+const { ariaLabel, introLabel, intro, nextLabel, noteLabel, stages } = Astro.props;
+const firstStage = stages[0];
+const resultId = 'troubleshooting-stage-result';
+---
+
+<div class="troubleshoot-guide" data-troubleshoot-guide>
+  <header class="troubleshoot-guide-head">
+    <span>{introLabel}</span>
+    <p>{intro}</p>
+  </header>
+
+  <div class="troubleshoot-stage-picker" role="group" aria-label={ariaLabel} data-troubleshoot-picker>
+    {stages.map((stage, index) => (
+      <button
+        type="button"
+        aria-controls={resultId}
+        aria-pressed={index === 0 ? 'true' : 'false'}
+        tabindex={index === 0 ? 0 : -1}
+        data-troubleshoot-stage={stage.id}
+        data-stage-title={stage.title}
+        data-stage-action={stage.action}
+        data-stage-note={stage.note}
+        data-stage-href={stage.href}
+        data-stage-link={stage.linkLabel}
+      >
+        <i>{String(index + 1).padStart(2, '0')}</i>
+        <strong>{stage.label}</strong>
+        <small>{stage.meta}</small>
+      </button>
+    ))}
+  </div>
+
+  <div class="troubleshoot-stage-result" id={resultId} data-troubleshoot-result aria-live="polite" aria-atomic="true">
+    <div class="troubleshoot-stage-action">
+      <span>{nextLabel}</span>
+      <strong data-troubleshoot-title>{firstStage.title}</strong>
+      <p data-troubleshoot-action>{firstStage.action}</p>
+    </div>
+    <aside>
+      <span>{noteLabel}</span>
+      <p data-troubleshoot-note>{firstStage.note}</p>
+      <a href={firstStage.href} data-troubleshoot-link>
+        <span>{firstStage.linkLabel}</span>
+        <i aria-hidden="true">→</i>
+      </a>
+    </aside>
+  </div>
+</div>
+
+<style is:global>
+  .troubleshoot-guide { margin-top: clamp(54px, 7vw, 86px); border-top: 1px solid var(--ink); border-bottom: 1px solid var(--line); }
+  .troubleshoot-guide-head { min-height: 112px; padding: 23px 0 28px; display: grid; grid-template-columns: .42fr 1fr; gap: clamp(32px, 5vw, 76px); align-items: start; }
+  .troubleshoot-guide-head > span,
+  .troubleshoot-stage-action > span,
+  .troubleshoot-stage-result aside > span { color: var(--blue); font: 10px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .troubleshoot-guide-head p { max-width: 660px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.8; }
+  .troubleshoot-stage-picker { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .troubleshoot-stage-picker button { position: relative; min-width: 0; min-height: 126px; padding: 19px 18px 18px; display: flex; flex-direction: column; align-items: flex-start; border: 0; border-right: 1px solid var(--line); border-radius: 0; color: var(--muted); background: transparent; font: inherit; text-align: left; cursor: pointer; transition: color .22s ease, background-color .22s ease; }
+  .troubleshoot-stage-picker button:last-child { border-right: 0; }
+  .troubleshoot-stage-picker button::before { content: ""; position: absolute; top: -1px; left: 18px; right: 18px; height: 2px; background: var(--blue); transform: scaleX(0); transform-origin: left center; transition: transform .28s var(--ease); }
+  .troubleshoot-stage-picker button:hover,
+  .troubleshoot-stage-picker button:focus-visible { color: var(--ink); background: var(--surface-hover); }
+  .troubleshoot-stage-picker button:focus-visible { outline: 2px solid var(--blue); outline-offset: -3px; }
+  .troubleshoot-stage-picker button[aria-pressed="true"] { color: var(--ink); }
+  .troubleshoot-stage-picker button[aria-pressed="true"]::before { transform: scaleX(1); }
+  .troubleshoot-stage-picker i { color: var(--blue); font: normal 10px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .troubleshoot-stage-picker strong { margin-top: auto; padding-top: 26px; font-family: "Iowan Old Style", "Songti SC", Georgia, serif; font-size: clamp(17px, 1.5vw, 21px); font-weight: 400; line-height: 1.15; }
+  .troubleshoot-stage-picker small { margin-top: 8px; color: #92928b; font: 10px/1.25 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .troubleshoot-stage-result { min-height: 258px; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(250px, .65fr); border-top: 1px solid var(--line); }
+  .troubleshoot-stage-action { padding: 31px clamp(32px, 5vw, 72px) 34px 0; display: flex; flex-direction: column; }
+  .troubleshoot-stage-action strong { max-width: 660px; margin-top: 42px; font-family: "Iowan Old Style", "Songti SC", Georgia, serif; font-size: clamp(28px, 3vw, 42px); font-weight: 400; line-height: 1.16; text-wrap: balance; }
+  .troubleshoot-stage-action p { max-width: 680px; margin: 18px 0 0; color: var(--muted); font-size: 13px; line-height: 1.8; }
+  .troubleshoot-stage-result aside { padding: 31px 0 32px clamp(28px, 4vw, 56px); display: flex; flex-direction: column; border-left: 1px solid var(--line); }
+  .troubleshoot-stage-result aside p { margin: 40px 0 0; color: var(--muted); font-size: 13px; line-height: 1.75; }
+  .troubleshoot-stage-result aside a { min-height: 44px; margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 18px; color: var(--ink); font-size: 13px; }
+  .troubleshoot-stage-result aside a i { flex: 0 0 auto; font-style: normal; transition: transform .25s var(--ease); }
+  .troubleshoot-stage-result aside a:hover i,
+  .troubleshoot-stage-result aside a:focus-visible i { transform: translateX(4px); }
+  .troubleshoot-stage-result.is-updating > * { animation: troubleshoot-result-in .32s var(--ease) both; }
+  @keyframes troubleshoot-result-in { from { opacity: .28; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media (max-width: 820px) {
+    .troubleshoot-guide-head { grid-template-columns: 1fr; gap: 20px; }
+    .troubleshoot-stage-picker { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .troubleshoot-stage-picker button { min-height: 116px; padding: 18px 16px; border-right: 1px solid var(--line); border-top: 1px solid var(--line); }
+    .troubleshoot-stage-picker button:nth-child(-n + 3) { border-top: 0; }
+    .troubleshoot-stage-picker button:nth-child(3n) { border-right: 0; }
+    .troubleshoot-stage-picker button::before { left: 16px; right: 16px; }
+    .troubleshoot-stage-result { grid-template-columns: 1fr; }
+    .troubleshoot-stage-action { min-height: 230px; padding-right: 0; }
+    .troubleshoot-stage-result aside { min-height: 190px; padding: 28px 0 24px; border-top: 1px solid var(--line); border-left: 0; }
+    .troubleshoot-stage-result aside p { max-width: 560px; margin-top: 28px; }
+  }
+
+  @media (max-width: 560px) {
+    .troubleshoot-guide { margin-top: 50px; }
+    .troubleshoot-guide-head { min-height: 0; padding: 21px 0 25px; }
+    .troubleshoot-guide-head p { font-size: 12px; }
+    .troubleshoot-stage-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .troubleshoot-stage-picker button { min-height: 108px; padding: 16px 14px; border-top: 1px solid var(--line); border-right: 1px solid var(--line); }
+    .troubleshoot-stage-picker button:nth-child(-n + 2) { border-top: 0; }
+    .troubleshoot-stage-picker button:nth-child(n + 3) { border-top: 1px solid var(--line); }
+    .troubleshoot-stage-picker button:nth-child(odd) { border-right: 1px solid var(--line); }
+    .troubleshoot-stage-picker button:nth-child(even) { border-right: 0; }
+    .troubleshoot-stage-picker button::before { left: 14px; right: 14px; }
+    .troubleshoot-stage-picker strong { font-size: 20px; }
+    .troubleshoot-stage-action { min-height: 250px; padding: 27px 0 30px; }
+    .troubleshoot-stage-action strong { margin-top: 34px; font-size: 31px; }
+    .troubleshoot-stage-action p { font-size: 13px; }
+    .troubleshoot-stage-result aside { min-height: 172px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .troubleshoot-stage-picker button,
+    .troubleshoot-stage-picker button::before,
+    .troubleshoot-stage-result aside a i { transition: none; }
+    .troubleshoot-stage-result.is-updating > * { animation: none; }
+  }
+
+  @media print {
+    .troubleshoot-guide { display: none !important; }
+  }
+</style>

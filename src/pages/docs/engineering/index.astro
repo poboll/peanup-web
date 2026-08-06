@@ -1,7 +1,7 @@
 ---
-import BaseLayout from '../../../layouts/BaseLayout.astro';
-import ThemeToggle from '../../../components/ThemeToggle.astro';
-import '../../../styles/docs.css';
+import DocsShell from '../../../components/docs/DocsShell.astro';
+import type { DocPageConfig } from '../../../types/docs';
+import '../../../styles/docs-engineering.css';
 
 const toc = [
   ['scope', '范围与证据'],
@@ -22,61 +22,28 @@ const algorithms = [
   ['Burkes', '32', '两行扩散，在细节、内存与计算量之间折中。'],
   ['Sierra 3 / 2 / Lite', '32 / 16 / 4', '从最终高质量输出到响应式预览的三个复杂度层级。'],
 ];
+
+const config: DocPageConfig = {
+  title: 'Peanup 工程文档｜本地图像处理与 BLE',
+  description: 'Peanup 工程文档：3.68 英寸 E6 六色墨水屏、528 × 792 面板 Profile、图像链路、抖动算法、BLE 传输状态机、本地优先架构与硬件验证边界。',
+  locale: 'zh-cn',
+  current: 'engineering',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'ENGINEERING NOTES',
+  revisionLabel: '证据驱动的工作文档\nRevision 0.3 · 2026.07.30',
+  datePublished: '2026-07-28',
+  dateModified: '2026-07-30',
+  articleClass: 'docs-article--engineering',
+};
 ---
 
-<BaseLayout
-  title="Peanup 工程文档｜本地图像处理与 BLE"
-  description="Peanup 工程文档：3.68 英寸 E6 六色墨水屏、528 × 792 面板 Profile、图像链路、抖动算法、BLE 传输状态机、本地优先架构与硬件验证边界。"
-  locale="zh-cn"
-  htmlLang="zh-CN"
-  ogLocale="zh_CN"
-  canonicalPath="/docs/engineering/"
-  alternates={[
-    { lang: 'zh-CN', href: '/docs/engineering/' },
-    { lang: 'en', href: '/en/docs/engineering/' },
-  ]}
-  xDefaultPath="/docs/engineering/"
-  schemaType="TechArticle"
-  datePublished="2026-07-28"
-  dateModified="2026-07-28"
-  image="/assets/peanup-og.webp"
-  backTopLabel="返回顶部"
->
-  <header class="docs-topbar">
-    <a class="brand" href="/" aria-label="返回 Peanup 中文首页">
-      <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
-      <span>花生片 <b>Peanup</b></span>
-    </a>
-    <nav class="docs-primary-nav" aria-label="文档导航">
-      <a href="/docs/">产品指南</a>
-      <a aria-current="page" href="/docs/engineering/">工程文档</a>
-      <a lang="en" href="/en/docs/engineering/" hreflang="en">English</a>
-    </nav>
-    <a class="docs-product-link docs-topbar-product" href="/">产品页 <span aria-hidden="true">↗</span></a>
-    <ThemeToggle locale="zh-cn" />
-    <details class="docs-mobile-nav">
-      <summary>目录</summary>
-      <nav aria-label="移动端文档导航">
-        <a href="/docs/">产品指南</a>
-        <a aria-current="page" href="/docs/engineering/">工程文档</a>
-        <a lang="en" href="/en/docs/engineering/" hreflang="en">English</a>
-      </nav>
-    </details>
-  </header>
-
-  <main id="main-content" class="docs-layout" tabindex="-1">
-    <aside class="docs-toc" aria-label="本页目录">
-      <p>ENGINEERING NOTES</p>
-      <nav>
-        {toc.map(([id, label], index) => <a href={`#${id}`}><i>{String(index + 1).padStart(2, '0')}</i>{label}</a>)}
-      </nav>
-      <small>证据驱动的工作文档<br />Revision 0.2 · 2026.07.28</small>
-    </aside>
-
-    <article class="docs-article docs-article--engineering">
+<DocsShell config={config}>
       <section class="docs-hero" id="scope">
-        <div class="docs-eyebrow"><span>PEANUP / ENGINEERING</span><b>REV. 0.2</b></div>
-        <h1>从手机上的一帧，<br />到屏幕里的真实颜料。</h1>
+        <div class="docs-eyebrow"><span>PEANUP / ENGINEERING</span><b>REV. 0.3</b></div>
+        <h1 class="engineering-hero-title">
+          <span>从手机上的一帧，</span>
+          <span>到屏幕里的<wbr />真实颜料。</span>
+        </h1>
         <p class="docs-deck">这份文档明确区分旧版应用已经证明的事实、可以按标准路径重建的能力，以及仍需 Peanup 真机闭环验证的部分。它是工程依据，不是众筹宣传承诺。</p>
         <div class="docs-evidence" aria-label="证据等级">
           <span><i>E</i><strong>Evidence</strong><small>二进制、资源或已恢复常量中的直接证据</small></span>
@@ -104,7 +71,7 @@ const algorithms = [
 
       <section class="docs-section" id="panel">
         <header><span>03 / PANEL PROFILE</span><h2>先锁定几何，<br />再接入控制器。</h2></header>
-        <p class="docs-lead docs-lead--offset">厂家 Tentative Specification V0.2 将 <code>SE0368NW34-CNG-A0</code> 定义为 3.68 英寸 AM EPD：528 × 792 pixels，有效区 51.84 × 77.76 mm，面板模组 56.24 × 86.54 × 0.87 mm。</p>
+        <p class="docs-lead docs-lead--offset">厂家 Tentative Specification V0.2 将 <code>SE0368NW34-CNG-A0</code> 定义为 3.68 英寸 AM EPD：528 × 792 像素，有效区 51.84 × 77.76 mm，面板模组 56.24 × 86.54 × 0.87 mm。</p>
         <dl class="docs-panel-profile" aria-label="厂家面板工程参数">
           <div><dt>MATRIX</dt><dd>528 × 792</dd><small>竖向像素矩阵</small></div>
           <div><dt>ACTIVE AREA</dt><dd>51.84 × 77.76 mm</dd><small>有效显示区</small></div>
@@ -120,13 +87,13 @@ const algorithms = [
         </div>
         <div class="docs-callout docs-callout--warning">
           <span>SPEC CONSISTENCY</span>
-          <p>规格表同时写有 <code>94 μm</code> pixel pitch 和 <code>DPI 259</code>，但 51.84 mm / 528 pixels 与 77.76 mm / 792 pixels 均约为 98.18 μm，即约 258.7 PPI。工程实现与产品页统一以像素矩阵和有效区的计算结果为准。</p>
+          <p>规格表同时写有 <code>94 μm</code> pixel pitch 和 <code>DPI 259</code>，但用 51.84 mm / 528 像素与 77.76 mm / 792 像素计算，像素间距均约为 98.18 μm，即约 258.7 PPI。工程实现与产品页统一以像素矩阵和有效区的计算结果为准。</p>
         </div>
       </section>
 
       <section class="docs-section" id="pipeline">
         <header><span>04 / IMAGE PIPELINE</span><h2>一张构图，<br />六种物理色码。</h2></header>
-        <p class="docs-lead docs-lead--offset">渲染目标固定为 528 × 792 pixels。全链路保持原始比例，并按选定的硬件 profile 裁切与渲染，禁止为了铺满而拉伸图片。</p>
+        <p class="docs-lead docs-lead--offset">渲染目标固定为 528 × 792 像素。全链路保持原始比例，并按选定的硬件 profile 裁切与渲染，禁止为了铺满而拉伸图片。</p>
         <div class="docs-pipeline">
           <article><span>01 / GEOMETRY</span><h3>方向与裁切</h3><p>规范 EXIF 方向，按有效面板 profile 裁切，并用高质量滤镜缩放。</p></article>
           <article><span>02 / TONE</span><h3>整理画面</h3><p>在分配色板前处理黑白点、局部对比度与饱和度。</p></article>
@@ -155,6 +122,7 @@ pixelCount = panelWidth * panelHeight  // 418,176 pixels
           <article><span>PHOTO</span><h3>感知量化 / Spectra Mix</h3><p>面向色板的色调映射可以保护照片结构，但旧版特殊混色行为尚未完整恢复。</p></article>
         </div>
         <p class="docs-note"><b>内容感知规则</b><span>文字、二维码式几何和单像素细线应关闭或约束跨边缘扩散。照片参数必须通过固定参考图集验证，不能只对色块调优。</span></p>
+        <a class="docs-context-link" href="/docs/image-guide/">查看面向普通用户的选图、裁切与六色预览说明 <span aria-hidden="true">→</span></a>
       </section>
 
       <section class="docs-section" id="ble">
@@ -188,6 +156,12 @@ pixelCount = panelWidth * panelHeight  // 418,176 pixels
           <li><span>REFRESH</span><p>控制器驱动屏幕波形时，停止无意义的无线吞吐。</p></li>
           <li><span>RETURN</span><p>记录完成状态、断开并返回最低有效功耗状态。</p></li>
         </ol>
+        <div class="docs-measurement" aria-label="整机功耗测量方法">
+          <article><span>01 / BASELINE</span><strong>先测静态基线</strong><p>设备完成刷新并断开后，记录至少 24 小时的平均电流、峰值和唤醒次数。</p></article>
+          <article><span>02 / ONE UPDATE</span><strong>拆开一次更新</strong><p>分别积分扫描、连接、传输、刷屏和回到休眠的能量，不用单一瞬时电流代表整次过程。</p></article>
+          <article><span>03 / FREQUENCY</span><strong>按刷新频率建模</strong><p>用每日、每周和偶尔刷新三种场景估算续航，并明确电池容量、广播策略与内容大小。</p></article>
+          <article><span>04 / CONDITIONS</span><strong>复测温度与充电</strong><p>在工作温度范围内复测，并把 Qi 损耗、NFC、PMIC 静态电流和电池老化计入整机结果。</p></article>
+        </div>
         <p class="docs-lead docs-lead--offset"><b>H：</b>电子纸断电保持并不能直接得到整机待机电流。必须在不同温度与刷新频率下测量 MCU、BLE 广播、PMIC、充电、NFC 和漏电共同构成的整机功耗。</p>
       </section>
 
@@ -201,10 +175,4 @@ pixelCount = panelWidth * panelHeight  // 418,176 pixels
         <div class="docs-decision"><span>V1 ARCHITECTURE DECISION</span><strong>手机本地渲染 + BLE 近场传输 + 电子纸断电保持</strong><p>只有无人值守或远程更新被验证为核心需求后，才增加常驻网络能力。</p></div>
       </section>
 
-      <div class="docs-footer">
-        <div><span>PEANUP / ENGINEERING</span><p>基于静态分析和标准平台行为整理的工作文档。</p></div>
-        <a lang="en" href="/en/docs/engineering/" hreflang="en">Read in English <span aria-hidden="true">→</span></a>
-      </div>
-    </article>
-  </main>
-</BaseLayout>
+</DocsShell>

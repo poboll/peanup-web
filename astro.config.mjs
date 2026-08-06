@@ -3,6 +3,9 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
   output: 'static',
   site: 'https://pean.caiths.com',
+  devToolbar: {
+    enabled: false,
+  },
   server: {
     host: '127.0.0.1',
     port: 4321,

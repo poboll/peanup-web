@@ -9,10 +9,86 @@ interface Props { copy: ProductCopy }
 
 const { copy } = Astro.props;
 const currentLocale = localeMeta[copy.locale];
+const isChineseLocale = copy.locale === 'zh-cn' || copy.locale === 'zh-tw';
+const heroBrandPrimary = isChineseLocale ? '花生片' : 'Peanup';
+const heroBrandSecondary = isChineseLocale ? 'Peanup' : '';
 const docsPath = copy.locale === 'zh-cn' || copy.locale === 'zh-tw' ? '/docs/' : '/en/docs/';
+const contentPath = copy.locale === 'zh-cn' || copy.locale === 'zh-tw' ? '/docs/content/' : '/en/docs/content/';
+const hardwarePath = copy.locale === 'zh-cn' || copy.locale === 'zh-tw' ? '/docs/hardware/' : '/en/docs/hardware/';
+const troubleshootingPath = copy.locale === 'zh-cn' || copy.locale === 'zh-tw' ? '/docs/troubleshooting/' : '/en/docs/troubleshooting/';
+const supportPath = copy.locale === 'zh-cn' || copy.locale === 'zh-tw' ? '/docs/support/' : '/en/docs/support/';
+const campaignPath = copy.locale === 'zh-cn' || copy.locale === 'zh-tw' ? '/docs/campaign/' : '/en/docs/campaign/';
+const engineeringPath = copy.locale === 'zh-cn' || copy.locale === 'zh-tw' ? '/docs/engineering/' : '/en/docs/engineering/';
+const privacyPath = copy.locale === 'zh-cn' || copy.locale === 'zh-tw' ? '/docs/privacy/' : '/en/docs/privacy/';
+const shortcutsPath = copy.locale === 'zh-cn' || copy.locale === 'zh-tw' ? '/docs/shortcuts/' : '/en/docs/shortcuts/';
+const specificationEvidencePaths = [`${docsPath}#specifications`, `${campaignPath}#targets`, `${campaignPath}#before-pledge`];
 const detectLocale = Astro.url.pathname === '/';
+const isLegacyLocaleAlias = Astro.url.pathname === '/zh-cn/';
 const hardwareIcons = ['bluetooth', 'nfc', 'battery', 'magnet'] as const;
 const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#668468'];
+const phoneStates = [
+  { id: 'compose', label: '01 / LOCAL', feature: copy.ecosystem.features[2] },
+  { id: 'library', label: '02 / CONTENT', feature: { title: copy.content.modesLabel, body: copy.content.body } },
+  { id: 'automate', label: '03 / SHORTCUTS', feature: copy.ecosystem.features[0] },
+  { id: 'transfer', label: '04 / TRANSFER', feature: copy.ecosystem.features[1] },
+] as const;
+const phoneMobileTitles = {
+  'zh-cn': ['本地处理', '内容模式', '快捷指令', '传输进度'],
+  'zh-tw': ['本機處理', '內容模式', '捷徑', '傳輸進度'],
+  en: ['On device', 'Content', 'Shortcuts', 'Transfer'],
+  ja: ['端末内処理', 'コンテンツ', 'ショートカット', '転送'],
+  de: ['Lokal', 'Inhalte', 'Kurzbefehle', 'Transfer'],
+  fr: ['Sur appareil', 'Contenus', 'Raccourcis', 'Transfert'],
+}[copy.locale];
+const playNavLabel = {
+  'zh-cn': '玩法',
+  'zh-tw': '玩法',
+  en: 'Ideas',
+  ja: '使い方',
+  de: 'Inhalte',
+  fr: 'Usages',
+}[copy.locale];
+const platformFeatures = copy.ecosystem.features.slice(3);
+const troubleshootingLabel = {
+  'zh-cn': '使用帮助',
+  'zh-tw': '使用說明',
+  en: 'Help',
+  ja: 'サポート',
+  de: 'Hilfe',
+  fr: 'Aide',
+}[copy.locale];
+const mobileDocsLabel = {
+  'zh-cn': '文档',
+  'zh-tw': '文件',
+  en: 'Docs',
+  ja: '文書',
+  de: 'Docs',
+  fr: 'Docs',
+}[copy.locale];
+const mobileLocaleLabel = {
+  'zh-cn': '中文',
+  'zh-tw': '繁中',
+  en: 'EN',
+  ja: '日本語',
+  de: 'DE',
+  fr: 'FR',
+}[copy.locale];
+const specificationDocLabel = {
+  'zh-cn': '查看完整规格与证据口径',
+  'zh-tw': '查看完整規格與證據口徑',
+  en: 'Read full specifications and evidence',
+  ja: '仕様と根拠を詳しく見る',
+  de: 'Vollständige Spezifikationen und Nachweise',
+  fr: 'Voir les spécifications et leurs sources',
+}[copy.locale];
+const technologyChapters = {
+  'zh-cn': ['图像处理', '六色算法', '硬件能力', '目标规格'],
+  'zh-tw': ['圖像處理', '六色演算法', '硬體能力', '目標規格'],
+  en: ['Image path', 'Six-color rendering', 'Hardware', 'Specifications'],
+  ja: ['画像処理', '6色レンダリング', 'ハードウェア', '仕様'],
+  de: ['Bildpfad', 'Sechsfarb-Rendering', 'Hardware', 'Spezifikationen'],
+  fr: ['Traitement', 'Rendu six couleurs', 'Matériel', 'Caractéristiques'],
+}[copy.locale];
 ---
 
 <BaseLayout
@@ -24,7 +100,7 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
   canonicalPath={currentLocale.path}
   alternates={getLocaleAlternates()}
   schemaType="Product"
-  robots="index,follow,noimageindex,max-image-preview:none"
+  robots={isLegacyLocaleAlias ? 'noindex,follow,noimageindex,max-image-preview:none' : 'index,follow,noimageindex,max-image-preview:none'}
   backTopLabel={copy.footer.backTop}
 >
   {detectLocale && (
@@ -106,19 +182,26 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
   <header class="site-header" aria-label={copy.nav.product}>
     <a class="brand" href={`${currentLocale.path}#top`} aria-label="Peanup">
       <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
-      <span>花生片 <b>Peanup</b></span>
+      <span>{copy.locale === 'zh-cn' || copy.locale === 'zh-tw' ? <>花生片 <b>Peanup</b></> : 'Peanup'}</span>
     </a>
     <nav aria-label={copy.nav.product}>
-      <a href="#product">{copy.nav.product}</a>
-      <a href="#motion">{copy.nav.experience}</a>
-      <a href="#ecosystem">{copy.nav.ecosystem}</a>
-      <a href="#technology">{copy.nav.technology}</a>
-      <a href="#design">{copy.nav.design}</a>
+      <a href="#product" data-chapter-link="product">{copy.nav.product}</a>
+      <a href="#motion" data-chapter-link="motion">{copy.nav.experience}</a>
+      <a href="#ecosystem" data-chapter-link="ecosystem">{copy.nav.ecosystem}</a>
+      <a href="#play" data-chapter-link="play">{playNavLabel}</a>
+      <a href="#technology" data-chapter-link="technology">{copy.nav.technology}</a>
+      <a href="#design" data-chapter-link="design">{copy.nav.design}</a>
     </nav>
     <div class="header-actions">
-      <a class="header-link" href={docsPath}>{copy.nav.docs}</a>
+      <a class="header-link" href={docsPath} aria-label={copy.nav.docs}>
+        <span class="header-action-label header-action-label--full">{copy.nav.docs}</span>
+        <span class="header-action-label header-action-label--short" aria-hidden="true">{mobileDocsLabel}</span>
+      </a>
       <details class="language-menu">
-        <summary aria-label={copy.nav.language}>{currentLocale.name}</summary>
+        <summary aria-label={copy.nav.language} title={currentLocale.name}>
+          <span class="header-action-label header-action-label--full">{currentLocale.name}</span>
+          <span class="header-action-label header-action-label--short" aria-hidden="true">{mobileLocaleLabel}</span>
+        </summary>
         <div>
           {localeOrder.map((locale) => (
             <a href={localeMeta[locale].path} lang={localeMeta[locale].htmlLang} data-locale-choice={locale} aria-current={locale === copy.locale ? 'page' : undefined}>{localeMeta[locale].name}</a>
@@ -129,23 +212,28 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
     </div>
   </header>
 
-  <main id="main-content" tabindex="-1">
+  <main id="main-content" class="product-main" tabindex="-1">
     <section id="top" class="hero" aria-labelledby="hero-title">
       <div class="hero-copy">
-        <h1 id="hero-title"><span>花生片</span><b>Peanup</b></h1>
+        <h1 id="hero-title"><span>{heroBrandPrimary}</span>{heroBrandSecondary && <b>{heroBrandSecondary}</b>}</h1>
         <p class="hero-statement">{copy.hero.headline[0]}<br />{copy.hero.headline[1]}</p>
         <p class="hero-lede">{copy.hero.body}</p>
-        <span class="kickstarter-status"><i aria-hidden="true"></i>{copy.hero.status}</span>
+        <div class="hero-cta-row">
+          <a class="kickstarter-status" href={campaignPath}><i aria-hidden="true"></i><span>{copy.hero.status}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5" /></svg></a>
+          <a class="hero-experience-link" href="#motion" data-smooth-anchor><span>{copy.scenes.start}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v15m0 0-5-5m5 5 5-5" /></svg></a>
+        </div>
       </div>
 
       <figure class="hero-product protected-media" aria-label={copy.hero.imageAlt}>
-        <picture class="hero-product-image hero-product-image--light" aria-hidden="true">
+        <img class="hero-product-preview hero-product-preview--light" src="/assets/peanup-product-preview-light.webp" alt="" width="120" height="182" fetchpriority="high" decoding="sync" draggable="false" />
+        <img class="hero-product-preview hero-product-preview--dark" src="/assets/peanup-product-preview-dark.webp" alt="" width="120" height="182" fetchpriority="high" decoding="sync" draggable="false" />
+        <picture class="hero-product-image hero-product-image--light" data-progressive-image aria-hidden="true">
           <source srcset="/assets/peanup-product.avif" type="image/avif" />
           <img src="/assets/peanup-product.webp" alt="" width="740" height="1120" fetchpriority="high" decoding="async" draggable="false" />
         </picture>
-        <picture class="hero-product-image hero-product-image--dark" aria-hidden="true">
-          <source srcset="/assets/peanup-product-cutout.avif" type="image/avif" />
-          <img src="/assets/peanup-product-cutout.webp" alt="" width="768" height="1152" fetchpriority="high" decoding="auto" draggable="false" />
+        <picture class="hero-product-image hero-product-image--dark" data-progressive-image aria-hidden="true">
+          <source data-srcset="/assets/peanup-product-cutout.avif" type="image/avif" />
+          <img data-src="/assets/peanup-product-cutout.webp" alt="" width="740" height="1120" draggable="false" />
         </picture>
       </figure>
 
@@ -160,7 +248,11 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
       </div>
 
       <div class="hero-spec-rail" aria-label={copy.hero.specsLabel}>
-        {copy.specRail.map((spec) => <div><strong>{spec.value}</strong><span>{spec.label}</span></div>)}
+        {copy.specRail.map((spec, index) => (
+          <a href={index === 4 ? '#hardware' : '#specifications'} data-smooth-anchor aria-label={`${spec.value} ${spec.label}`}>
+            <strong>{spec.value}</strong><span>{spec.label}</span>
+          </a>
+        ))}
       </div>
 
       <a class="scroll-cue" href="#product" aria-label={copy.nav.product}>
@@ -176,7 +268,12 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
       </div>
       <div class="palette" aria-label={copy.paper.paletteLabel}>
         {copy.paper.pigments.map((pigment, index) => (
-          <span style={`--pigment:${paletteValues[index]}`}><canvas data-pigment={['black', 'white', 'red', 'yellow', 'blue', 'green'][index]} aria-hidden="true"></canvas><i>{String(index + 1).padStart(2, '0')}</i><b>{pigment}</b><small>{['BLACK', 'PAPER', 'RED', 'YELLOW', 'BLUE', 'GREEN'][index]}</small></span>
+          <span style={`--pigment:${paletteValues[index]}`}><canvas width="1" height="1" data-pigment={['black', 'white', 'red', 'yellow', 'blue', 'green'][index]} aria-hidden="true"></canvas><i>{String(index + 1).padStart(2, '0')}</i><b>{pigment}</b><small>{['BLACK', 'PAPER', 'RED', 'YELLOW', 'BLUE', 'GREEN'][index]}</small></span>
+        ))}
+      </div>
+      <div class="paper-proof" role="list" aria-label={copy.paper.kicker}>
+        {copy.paper.proofs.map((proof) => (
+          <article role="listitem"><span>{proof.label}</span><h3>{proof.title}</h3><p>{proof.body}</p></article>
         ))}
       </div>
     </section>
@@ -187,14 +284,17 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
           <span>{copy.scenes.kicker}</span>
           <h2>{copy.scenes.title[0]}<br />{copy.scenes.title[1]}</h2>
           <p>{copy.scenes.body}</p>
-          <ol aria-label={copy.scenes.tabsLabel}>
+          <ol role="tablist" aria-label={copy.scenes.tabsLabel}>
             {copy.scenes.items.map((scene) => (
               <li
-                class:list={{ 'ink-more': scene.id === 'experience' }}
+                role="presentation"
+                class:list={{ 'ink-more': scene.id === 'experience', active: scene.id === 'rain' }}
               >
                 <button
-                  class="ink-scene-trigger"
+                  id={`ink-scene-tab-${scene.id}`}
+                  class:list={['ink-scene-trigger', { active: scene.id === 'rain' }]}
                   type="button"
+                  role="tab"
                   data-ink-label={scene.id}
                   data-canvas-heading={scene.canvasHeading}
                   data-canvas-title={scene.canvasTitle}
@@ -204,7 +304,9 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
                   data-canvas-weather={scene.weather}
                   data-canvas-quote={scene.quote}
                   data-canvas-quote-source={scene.quoteSource}
-                  aria-current={scene.id === 'rain' ? 'true' : undefined}
+                  aria-controls="ink-stage-panel"
+                  aria-selected={scene.id === 'rain' ? 'true' : 'false'}
+                  tabindex={scene.id === 'rain' ? 0 : -1}
                 >
                   <i></i><span>{scene.number}</span><strong>{scene.title}</strong><small>{scene.detail}</small>
                 </button>
@@ -216,8 +318,19 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
 
         <div class="ink-product" aria-label={copy.hero.imageAlt}>
           <div class="ink-device-shell">
-            <div class="ink-device-screen">
-              <div id="nature-canvas" class="nature-canvas" aria-hidden="true"></div>
+            <div id="ink-stage-panel" class="ink-device-screen" role="tabpanel" aria-labelledby="ink-scene-tab-rain">
+              <div id="nature-canvas" class="nature-canvas" aria-hidden="true">
+                <div class="ink-canvas-fallback">
+                  <div class="ink-fallback-copy">
+                    <strong>{copy.scenes.items[0].canvasHeading}</strong>
+                    <small>{copy.scenes.items[0].canvasMeta}</small>
+                  </div>
+                  <div class="ink-fallback-clouds">
+                    {paletteValues.map((color) => <i style={`--cloud-color:${color}`}></i>)}
+                  </div>
+                  <span class="ink-fallback-grain"></span>
+                </div>
+              </div>
               <span class="ink-screen-material" aria-hidden="true"></span>
               <span class="ink-refresh-line" aria-hidden="true"></span>
               <span class="ink-screen-caption"><b>{copy.scenes.items[0].title} / {copy.scenes.items[0].canvasTitle}</b><i>01 / 04</i></span>
@@ -239,7 +352,7 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
                   </div>
                   <div class="ink-live-footer">
                     <p data-live-status aria-live="polite">{copy.scenes.live.privacy}</p>
-                    <output data-live-count aria-live="polite">0 / 120</output>
+                    <output data-live-count aria-live="polite">{[...copy.scenes.live.defaultText].length} / 120</output>
                     <button type="button" class="ink-live-reset" data-live-reset title={copy.scenes.live.reset} aria-label={copy.scenes.live.reset}>
                       <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
                       <span>{copy.scenes.live.reset}</span>
@@ -255,7 +368,7 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
       </div>
     </section>
 
-    <section class="photo-band protected-media" aria-label={copy.life.caption}>
+    <section class="photo-band protected-media" data-image-warmup aria-label={copy.life.caption}>
       <picture>
         <source srcset="/assets/peanup-lifestyle.avif" type="image/avif" />
         <img src="/assets/peanup-lifestyle.webp" alt={copy.life.imageAlt} width="1260" height="1674" loading="lazy" decoding="async" draggable="false" />
@@ -264,6 +377,7 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
       <span>{copy.life.caption}</span>
     </section>
 
+    <div class="content-ecosystem-chapter">
     <section id="play" class="playground section-pad">
       <div class="section-index"><span>{copy.content.index}</span><span>{copy.content.kicker}</span></div>
       <div class="play-intro">
@@ -282,40 +396,244 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
           {copy.content.workflow.map((step, index) => <li><span>{String(index + 1).padStart(2, '0')}</span><strong>{step.title}</strong><p>{step.body}</p></li>)}
         </ol>
       </div>
+      <div class="mode-open-note">
+        <span aria-hidden="true">…</span>
+        <div><strong>{copy.content.more.title}</strong><p>{copy.content.more.body}</p></div>
+      </div>
+      <a class="content-guide-link" href={contentPath}>{copy.content.guideCta}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5" /></svg></a>
     </section>
 
     <section id="ecosystem" class="apple-ecosystem section-pad">
+      <span id="ecosystem-library" class="apple-anchor" aria-hidden="true"></span>
       <div class="section-index"><span>{copy.ecosystem.index}</span><span>{copy.ecosystem.kicker}</span></div>
-      <div class="apple-head"><div><span>PEANUP / iOS</span><h2>{copy.ecosystem.title[0]}<br />{copy.ecosystem.title[1]}</h2></div><p>{copy.ecosystem.body}</p></div>
-      <div class="apple-stage">
-        <div class="shortcut-phone" role="img" aria-label={`${copy.ecosystem.kicker}. ${copy.ecosystem.title.join(' ')}`}>
-          <div class="iphone-device">
-            <i class="iphone-button iphone-button-action" aria-hidden="true"></i>
-            <i class="iphone-button iphone-button-volume-up" aria-hidden="true"></i>
-            <i class="iphone-button iphone-button-volume-down" aria-hidden="true"></i>
-            <i class="iphone-button iphone-button-power" aria-hidden="true"></i>
+      <div class="apple-head"><div><span>PEANUP / iOS</span><h2><span>{copy.ecosystem.title[0]}</span>{' '}<span>{copy.ecosystem.title[1]}</span></h2></div><p>{copy.ecosystem.body}</p></div>
+      <div class="apple-stage" data-image-warmup>
+        <div class="shortcut-phone" data-phone-gesture aria-label={`${copy.ecosystem.kicker}. ${copy.ecosystem.title.join(' ')}`}>
+          <div
+            class="iphone-device iphone-17-pro iphone-17-pro--black"
+            data-phone-device
+            data-state="compose"
+            data-device-size="71.9x150.0x8.75mm"
+            data-frame-ratio="71.9/150"
+            data-frame-asset-ratio="662/1380"
+            data-frame-asset="iphone-17-pro-frame.png"
+            data-display-ratio="1206/2622"
+            data-display-points="402x874"
+            data-display-ppi="460"
+            data-status-bar-points="402x62"
+            data-status-bar-height="0.070938"
+            data-status-frame="0x0x402x62"
+            data-status-visible-bounds="193x66x880x40"
+            data-screen-frame="28x35x606x1310"
+            data-island-frame="138x14x126x37"
+            role="img"
+            aria-label="Black iPhone 17 Pro app preview, proportioned to the 71.9 by 150 by 8.75 millimetre body with a calibrated display opening"
+          >
             <div class="iphone-glass">
-              <div class="iphone-status" aria-hidden="true"><span>9:41</span><b>68%</b></div>
-              <div class="dynamic-island" aria-hidden="true"><i></i></div>
-              <div class="shortcut-screen"><span>PEANUP / SHORTCUTS</span><h3>{copy.ecosystem.title[0]}<br />{copy.ecosystem.title[1]}</h3><div class="shortcut-flow">{copy.ecosystem.flow.map((item, index) => <><i>{item}</i>{index < copy.ecosystem.flow.length - 1 && <b></b>}</>)}</div></div>
+              <div
+                class="iphone-statusbar"
+                data-status-source="iphone-17-pro-status-png"
+                aria-hidden="true"
+              >
+                <img
+                  class="iphone-status-image protected-media"
+                  src="/assets/iphone-17-pro-status.png"
+                  width="1056"
+                  height="163"
+                  loading="eager"
+                  decoding="sync"
+                  fetchpriority="high"
+                  draggable="false"
+                  alt=""
+                />
+                <span class="iphone-status-fallback" aria-hidden="true">
+                  <time>9:41</time>
+                </span>
+              </div>
+              <div class="shortcut-screen" data-phone-screen data-state="compose">
+                <header class="peanup-app-header">
+                  <span class="phone-ui-button" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                  </span>
+                  <strong class="peanup-app-title">PEANUP</strong>
+                  <div class="peanup-app-actions">
+                    <small data-phone-status aria-live="polite">{phoneStates[0].feature.title}</small>
+                    <span class="phone-ui-button" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.35-5.65L4 8.7M4 4v4.7h4.7" /><path d="M12 8v4l2.8 1.7" /></svg>
+                    </span>
+                    <span class="phone-ui-button" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.2 1.8 2.2.5.3 2.2 1.8 1.2-.8 2.1.8 2.1-1.8 1.2-.3 2.2-2.2.5L12 21l-1.2-1.8-2.2-.5-.3-2.2-1.8-1.2.8-2.1-.8-2.1 1.8-1.2.3-2.2 2.2-.5L12 3Z" /><circle cx="12" cy="12" r="2.6" /></svg>
+                    </span>
+                  </div>
+                </header>
+                <div class="phone-view-stack">
+                  <section id="phone-view-compose" class="phone-view phone-compose is-active" data-phone-view="compose" role="tabpanel" aria-labelledby="phone-state-compose" aria-hidden="false">
+                    <header class="phone-view-title"><span>ON DEVICE</span><strong>{copy.ecosystem.features[2].title}</strong></header>
+                    <div class="phone-compose-card">
+                      <div class="phone-compose-art" aria-hidden="true"><i></i><i></i><i></i><i></i><span>{copy.content.modes[0].meta}</span></div>
+                      <strong>{copy.content.modes[0].title}</strong>
+                      <div class="phone-pigment-track" aria-hidden="true">{paletteValues.map((color) => <i style={`--phone-pigment:${color}`}></i>)}</div>
+                    </div>
+                    <div class="phone-source-list" aria-label={copy.content.modesLabel}>
+                      {copy.content.modes.map((mode, index) => <span class:list={{ active: index === 0 }}><i>{String(index + 1).padStart(2, '0')}</i>{mode.label}</span>)}
+                    </div>
+                  </section>
+
+                  <section id="phone-view-library" class="phone-view phone-library" data-phone-view="library" role="tabpanel" aria-labelledby="phone-state-library" aria-hidden="true">
+                    <header class="phone-view-title"><span>CONTENT</span><strong>{copy.content.modesLabel}</strong></header>
+                    <div class="phone-library-grid">
+                      {copy.content.modes.map((mode, index) => (
+                        <article class={`phone-library-card phone-library-card--${mode.id}`}>
+                          <div class="phone-library-art" aria-hidden="true"><i></i></div>
+                          <span>{String(index + 1).padStart(2, '0')} / {mode.label}</span>
+                          <strong>{mode.title}</strong>
+                        </article>
+                      ))}
+                    </div>
+                  </section>
+
+                  <section id="phone-view-automate" class="phone-view phone-automate" data-phone-view="automate" role="tabpanel" aria-labelledby="phone-state-automate" aria-hidden="true">
+                    <header class="phone-view-title"><span>SHORTCUTS</span><strong>{copy.ecosystem.features[0].title}</strong></header>
+                    <section class="peanup-shortcut-card">
+                      <header><span>AUTOMATION</span><strong>{copy.ecosystem.features[0].title}</strong></header>
+                      <ol>
+                        {copy.ecosystem.flow.map((item, index) => (
+                          <li class:list={{ 'is-done': index < 2, 'is-current': index === 2 }}>
+                            <i>{String(index + 1).padStart(2, '0')}</i><span>{item}</span><b aria-hidden="true"></b>
+                          </li>
+                        ))}
+                      </ol>
+                    </section>
+                    <div class="peanup-next-update">
+                      <div><span>NEXT FRAME</span><strong data-automation-frame-title>{copy.ecosystem.automation.moments[0].title}</strong></div>
+                      <b data-automation-frame-time>{copy.ecosystem.automation.moments[0].time}</b>
+                      <div class="peanup-frame-queue" aria-hidden="true"><i></i><i></i><i></i></div>
+                    </div>
+                  </section>
+
+                  <section id="phone-view-transfer" class="phone-view phone-transfer" data-phone-view="transfer" role="tabpanel" aria-labelledby="phone-state-transfer" aria-hidden="true">
+                    <header class="phone-view-title"><span>NEARBY UPDATE</span><strong>{copy.ecosystem.features[1].title}</strong></header>
+                    <section class="peanup-live-activity">
+                      <div class="peanup-live-head"><span>LIVE ACTIVITY</span><b>68%</b></div>
+                      <div class="peanup-live-body">
+                        <div class="peanup-live-preview" aria-hidden="true"><i></i><b></b><span></span></div>
+                        <div class="peanup-live-copy">
+                          <small>E-PAPER UPDATE</small>
+                          <strong>{copy.ecosystem.features[1].title}</strong>
+                          <span class="peanup-live-progress"><i></i></span>
+                        </div>
+                      </div>
+                    </section>
+                    <ol class="peanup-transfer-list">
+                      {copy.content.workflow.map((step, index) => (
+                        <li class:list={{ 'is-done': index < 2, 'is-current': index === 2 }}><i>{String(index + 1).padStart(2, '0')}</i><span><strong>{step.title}</strong><small>{step.body}</small></span><b aria-hidden="true"></b></li>
+                      ))}
+                    </ol>
+                    <div class="peanup-nearby-device" aria-hidden="true">
+                      <div><i></i><span>PEANUP</span></div><b>FRAME 068 / 100</b><small>BLE · NEARBY</small>
+                    </div>
+                  </section>
+                </div>
+                <div class="peanup-app-footer"><span>LOCAL PROCESSING</span><b>E6 / SIX COLOR</b></div>
+              </div>
               <i class="home-indicator" aria-hidden="true"></i>
+            </div>
+            <img
+              class="iphone-frame protected-media"
+              src="/assets/iphone-17-pro-frame.png"
+              width="662"
+              height="1380"
+              loading="lazy"
+              decoding="async"
+              fetchpriority="low"
+              draggable="false"
+              alt=""
+              aria-hidden="true"
+            />
+            <i class="iphone-camera-control" aria-hidden="true"></i>
+            <div class="dynamic-island" aria-hidden="true">
+              <span class="dynamic-island-progress"><b></b><small>68%</small></span>
+              <i class="dynamic-island-camera"></i>
+              <i class="dynamic-island-sensor"></i>
             </div>
           </div>
         </div>
-        <div class="apple-features">{copy.ecosystem.features.map((feature) => <article><span>{feature.label}</span><h3>{feature.title}</h3><p>{feature.body}</p></article>)}</div>
+        <div class="apple-journey" role="tablist" aria-label={copy.ecosystem.kicker}>
+          {phoneStates.map((state, index) => (
+            <button
+              id={`phone-state-${state.id}`}
+              type="button"
+              role="tab"
+              data-phone-state={state.id}
+              data-phone-title={state.feature.title}
+              aria-label={`${String(index + 1).padStart(2, '0')} ${state.feature.title}`}
+              aria-controls={`phone-view-${state.id}`}
+              aria-selected={index === 0 ? 'true' : 'false'}
+              tabindex={index === 0 ? 0 : -1}
+              class:list={{ active: index === 0 }}
+            >
+              <span aria-hidden="true" data-phone-step={String(index + 1).padStart(2, '0')}>{state.label}</span><strong aria-hidden="true" data-phone-mobile-title={phoneMobileTitles[index]}>{state.feature.title}</strong><small aria-hidden="true">{state.feature.body}</small>
+            </button>
+          ))}
+        </div>
+        <div class="apple-platforms">
+          {platformFeatures.map((feature) => <article><span>{feature.label}</span><h3>{feature.title}</h3><p>{feature.body}</p></article>)}
+        </div>
       </div>
-    </section>
 
-    <section id="technology" class="technology">
+      <section id="automation" class="automation-story" aria-labelledby="automation-title">
+        <div class="automation-story-head">
+          <span>{copy.ecosystem.automation.label}</span>
+          <h3 id="automation-title">{copy.ecosystem.automation.title[0]}<br />{copy.ecosystem.automation.title[1]}</h3>
+          <p>{copy.ecosystem.automation.body}</p>
+        </div>
+        <ol class="automation-timeline" aria-label={copy.ecosystem.automation.momentsLabel}>
+          {copy.ecosystem.automation.moments.map((moment, index) => (
+            <li>
+              <button
+                type="button"
+                class:list={{ active: index === 0 }}
+                data-automation-example
+                data-automation-time={moment.time}
+                data-automation-title={moment.title}
+                aria-pressed={index === 0 ? 'true' : 'false'}
+              >
+                <time>{moment.time}</time>
+                <span>{moment.label}</span>
+                <strong>{moment.title}</strong>
+                <small>{moment.body}</small>
+              </button>
+            </li>
+          ))}
+        </ol>
+        <div class="automation-story-foot">
+          <p>{copy.ecosystem.automation.note}</p>
+          <a href={shortcutsPath}>
+            <span>{copy.ecosystem.automation.cta}</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5" /></svg>
+          </a>
+        </div>
+      </section>
+    </section>
+    </div>
+
+    <section id="technology" class="technology" data-image-warmup>
       <div class="tech-inner">
         <div class="section-index"><span>{copy.technology.index}</span><span>{copy.technology.kicker}</span></div>
         <div class="tech-head"><h2>{copy.technology.title[0]}<br />{copy.technology.title[1]}</h2><p>{copy.technology.body}</p></div>
+        <nav class="tech-chapter-nav" aria-label={copy.technology.kicker}>
+          {technologyChapters.map((label, index) => (
+            <a href={['#technology', '#dithering', '#hardware', '#specifications'][index]}>
+              <i>{String(index + 1).padStart(2, '0')}</i><span>{label}</span>
+            </a>
+          ))}
+        </nav>
         <ol class="image-pipeline" data-epaper-pipeline>
           {copy.technology.pipeline.map((step, index) => (
             <li>
               <span>{step.label}</span>
               {index === 0 && <div class="pipeline-visual pipeline-source protected-media"><picture><source srcset="/assets/peanup-anime-source.avif" type="image/avif" /><source srcset="/assets/peanup-anime-source.webp" type="image/webp" /><img src="/assets/peanup-anime-source.jpg" alt={copy.technology.pipeline[0].title} width="500" height="500" loading="lazy" decoding="async" draggable="false" /></picture></div>}
-              {index === 1 && <div class="pipeline-visual pipeline-canvas"><canvas data-epaper-preview aria-label={copy.technology.pipeline[1].title}></canvas><i>FLOYD–STEINBERG</i></div>}
+              {index === 1 && <div class="pipeline-visual pipeline-canvas" data-epaper-output><picture class="pipeline-canvas-fallback protected-media" aria-hidden="true"><source srcset="/assets/peanup-anime-source.avif" type="image/avif" /><source srcset="/assets/peanup-anime-source.webp" type="image/webp" /><img src="/assets/peanup-anime-source.jpg" alt="" width="500" height="500" loading="lazy" decoding="async" draggable="false" /></picture><canvas id="epaper-preview" data-epaper-preview aria-label={copy.technology.pipeline[1].title}></canvas><i data-epaper-mode-label aria-live="polite">FLOYD–STEINBERG</i></div>}
               {index === 2 && <div class="pipeline-visual pipeline-transfer" aria-hidden="true"><div class="transfer-rail"><i></i><i></i><i></i><i></i><i></i><i></i></div><b>FRAME.P6</b><small>PACKET 068 / 100</small></div>}
               {index === 3 && <div class="pipeline-visual pipeline-device"><div class="protected-media"><picture><source srcset="/assets/peanup-lifestyle.avif" type="image/avif" /><img src="/assets/peanup-lifestyle.webp" alt={copy.life.imageAlt} width="1260" height="1674" loading="lazy" decoding="async" draggable="false" /></picture><i></i></div><b>PEANUP</b></div>}
               <h3>{step.title}</h3><p>{step.body}</p>
@@ -323,47 +641,67 @@ const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#
           ))}
         </ol>
 
-        <section class="dither-studio">
+        <section id="dithering" class="dither-studio">
           <div class="dither-intro"><span>RENDER ENGINE / SIX COLOR</span><h3>{copy.technology.ditherTitle[0]}<br />{copy.technology.ditherTitle[1]}</h3><p>{copy.technology.ditherBody}</p></div>
-          <div class="dither-presets">{copy.technology.ditherModes.map((mode, index) => <article><span>{mode.label}</span><strong>{mode.title}</strong><p>{mode.body}</p><canvas class="dither-sample" data-dither-demo={['ordered', 'diffusion', 'spectra'][index]} aria-label={mode.title}></canvas></article>)}</div>
-          <div class="algorithm-index"><span>Floyd–Steinberg</span><span>Atkinson</span><span>Jarvis–Judice–Ninke</span><span>Stucki</span><span>Burkes</span><span>Sierra 3</span><span>Sierra 2</span><span>Sierra Lite</span><span>Ordered 4×4</span><span>Ordered 8×8</span><span>Quantization</span></div>
+          <div class="dither-presets">{copy.technology.ditherModes.map((mode, index) => <article class:list={{ 'is-active': index === 1 }} data-dither-preset={['ordered', 'diffusion', 'spectra'][index]}><button type="button" class="dither-preset-action" data-dither-select={['ordered', 'diffusion', 'spectra'][index]} aria-label={`${mode.title}. ${mode.body}`} aria-pressed={index === 1 ? 'true' : 'false'} aria-controls="epaper-preview"></button><span>{mode.label}</span><strong>{mode.title}</strong><p>{mode.body}</p><canvas width="320" height="120" class="dither-sample" data-dither-demo={['ordered', 'diffusion', 'spectra'][index]} aria-label={mode.title}></canvas></article>)}</div>
+          <a class="dither-doc-link" href={`${engineeringPath}#dithering`}>
+            <span>{copy.technology.engineering.label}</span>
+            <strong>{copy.technology.engineering.title}</strong>
+            <p>{copy.technology.engineering.body}</p>
+            <i>{copy.technology.engineering.cta}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5" /></svg></i>
+          </a>
         </section>
 
-        <section class="hardware-path">
+        <section id="hardware" class="hardware-path">
           <div class="hardware-head"><span>{copy.hardware.kicker}</span><h3>{copy.hardware.title[0]}<br />{copy.hardware.title[1]}</h3><p>{copy.hardware.body}</p></div>
           <div class="hardware-grid">
             {copy.hardware.items.map((item, index) => <article tabindex="0" role="button" aria-pressed="false" aria-label={`${item.title}: ${item.short}`} data-label-front={`${item.title}: ${item.short}`} data-label-detail={`${item.title}: ${item.body}`} data-hardware-cube><div class="hardware-cube"><div class="hardware-face hardware-front"><span>{item.label}</span><HardwareIcon name={hardwareIcons[index]} class="hardware-symbol" /><h4>{item.title}</h4><small>{item.short}</small></div><div class="hardware-face hardware-detail"><span>{item.short}</span><strong>{item.body}</strong><b>{item.label}</b></div></div></article>)}
+          </div>
+          <a class="content-guide-link" href={hardwarePath}>{copy.specifications.compatibility}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5" /></svg></a>
+        </section>
+        <section id="specifications" class="specifications specifications--attached">
+          <div class="section-index"><span>{copy.specifications.index}</span><span>{copy.specifications.kicker}</span></div>
+          <div class="specifications-head">
+            <h2><span>{copy.specifications.title[0]}</span><span>{copy.specifications.title[1]}</span></h2>
+            <p>{copy.specifications.body}</p>
+          </div>
+          <dl class="specification-list">{copy.specifications.items.map((spec) => <div><dt>{spec.label}</dt><dd>{spec.value}</dd>{spec.note && <small>{spec.note}</small>}</div>)}</dl>
+          <div class="specification-evidence" aria-label={copy.specifications.kicker}>
+            {copy.specifications.evidence.map((item, index) => (
+              <a href={specificationEvidencePaths[index]}>
+                <span>{item.label}</span>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5" /></svg>
+              </a>
+            ))}
+          </div>
+          <div class="specification-foot">
+            <a href={`${docsPath}#specifications`}>{specificationDocLabel}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5" /></svg></a>
+            <a href={campaignPath}>{copy.story.actions.campaign}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5" /></svg></a>
           </div>
         </section>
       </div>
     </section>
 
-    <section class="specifications section-pad">
-      <div class="section-index"><span>{copy.specifications.index}</span><span>{copy.specifications.kicker}</span></div>
-      <div class="specifications-head">
-        <h2><span>{copy.specifications.title[0]}</span><span>{copy.specifications.title[1]}</span></h2>
-        <p>{copy.specifications.body}</p>
-      </div>
-      <dl class="specification-list">{copy.specifications.items.map((spec) => <div><dt>{spec.label}</dt><dd>{spec.value}</dd>{spec.note && <small>{spec.note}</small>}</div>)}</dl>
-      <p class="specification-note">{copy.specifications.targetNote}</p>
-    </section>
-
-    <section id="design" class="details section-pad">
+    <div class="brand-chapter">
+    <section id="design" class="details section-pad" data-image-warmup>
       <div class="section-index"><span>{copy.design.index}</span><span>{copy.design.kicker}</span></div>
       <div class="details-head"><h2>{copy.design.title[0]}<br />{copy.design.title[1]}</h2><p>{copy.design.body}</p></div>
-      <figure class="detail-photo detail-phone protected-media"><picture><source srcset="/assets/peanup-phone.avif" type="image/avif" /><img src="/assets/peanup-phone.webp" alt={copy.design.phoneAlt} width="1122" height="1402" loading="lazy" decoding="async" draggable="false" /></picture><figcaption>{copy.design.thin}</figcaption></figure>
-      <figure class="detail-photo detail-hand protected-media"><picture><source srcset="/assets/peanup-hand.avif" type="image/avif" /><img src="/assets/peanup-hand.webp" alt={copy.design.handAlt} width="1122" height="1402" loading="lazy" decoding="async" draggable="false" /></picture><figcaption>{copy.design.light}</figcaption></figure>
+      <figure class="detail-photo detail-phone protected-media"><img class="detail-photo-preview" src="/assets/peanup-phone-preview.webp" alt="" width="180" height="225" loading="eager" decoding="sync" fetchpriority="low" draggable="false" aria-hidden="true" /><picture data-progressive-image><source data-srcset="/assets/peanup-phone.avif" type="image/avif" /><img data-src="/assets/peanup-phone.webp" alt={copy.design.phoneAlt} width="1122" height="1402" loading="lazy" decoding="async" fetchpriority="low" draggable="false" /></picture><figcaption>{copy.design.thin}</figcaption></figure>
+      <figure class="detail-photo detail-hand protected-media"><img class="detail-photo-preview" src="/assets/peanup-hand-preview.webp" alt="" width="180" height="225" loading="eager" decoding="sync" fetchpriority="low" draggable="false" aria-hidden="true" /><picture data-progressive-image><source data-srcset="/assets/peanup-hand.avif" type="image/avif" /><img data-src="/assets/peanup-hand.webp" alt={copy.design.handAlt} width="1122" height="1402" loading="lazy" decoding="async" fetchpriority="low" draggable="false" /></picture><figcaption>{copy.design.light}</figcaption></figure>
     </section>
 
     <section id="story" class="story section-pad">
       <div class="wordmark" aria-hidden="true">PEANUP</div>
-      <div class="story-grid"><h2>{copy.story.title[0]}<br />{copy.story.title[1]}</h2><div><p>{copy.story.body}</p><span>{copy.story.status}</span></div></div>
+      <div class="story-grid"><h2>{copy.story.title[0]}<br />{copy.story.title[1]}</h2><div><p>{copy.story.body}</p><span>{copy.story.status}</span><nav class="story-actions" aria-label={copy.story.status}><a href={docsPath}><span>{copy.story.actions.docs}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5" /></svg></a><a href={campaignPath}><span>{copy.story.actions.campaign}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5" /></svg></a><a href="mailto:i@caiths.com"><span>{copy.story.actions.contact}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5" /></svg></a></nav></div></div>
     </section>
+    </div>
   </main>
 
   <footer>
-    <a class="brand footer-brand" href="#top"><span class="brand-mark" aria-hidden="true"><i></i><i></i></span><span>花生片 <b>Peanup</b></span></a>
-    <div class="footer-links"><a href="mailto:i@caiths.com">i@caiths.com</a><a href="https://github.com/poboll/peanup-web" target="_blank" rel="noreferrer">GitHub</a><a href={docsPath}>{copy.footer.docs}</a></div>
+    <a class="brand footer-brand" href="#top"><span class="brand-mark" aria-hidden="true"><i></i><i></i></span><span>{isChineseLocale ? <>花生片 <b>Peanup</b></> : 'Peanup'}</span></a>
+    <div class="footer-links"><a href="mailto:i@caiths.com">i@caiths.com</a><a href="https://github.com/poboll/peanup-web" target="_blank" rel="noreferrer">GitHub</a><a href={docsPath}>{copy.footer.docs}</a><a href={troubleshootingPath}>{troubleshootingLabel}</a><a href={supportPath}>{copy.footer.support}</a><a href={privacyPath}>{copy.footer.privacy}</a></div>
     <span>© 2026 PEANUP</span>
   </footer>
 

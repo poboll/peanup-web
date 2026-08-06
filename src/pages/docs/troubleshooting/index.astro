@@ -1,0 +1,209 @@
+---
+import DocsShell from '../../../components/docs/DocsShell.astro';
+import TroubleshootingGuide, { type TroubleshootingStage } from '../../../components/docs/TroubleshootingGuide.astro';
+import type { DocPageConfig } from '../../../types/docs';
+
+const toc = [
+  ['overview', '先看这里'],
+  ['quick-check', '一分钟检查'],
+  ['discovery', '找不到设备'],
+  ['transfer', '传输停住'],
+  ['refresh', '刷屏过程'],
+  ['charging', '无线充电'],
+  ['nfc', 'NFC 门禁'],
+  ['support', '联系支持'],
+  ['faq', '常见问题'],
+];
+
+const faqs: Array<[string, string]> = [
+  ['为什么列表里看不到 Peanup？', '先确认设备有电、手机蓝牙已打开、系统已允许 Peanup App 使用蓝牙，并让两台设备保持在手边。仍未出现时，结束本次扫描再重新开始；不要连续快速点击连接。'],
+  ['传输中断后，原来的画面会消失吗？', '电子纸会保留上一次完整写入的画面。App 应保留已经准备好的新画面和失败阶段，让你可以重新发送，而不是要求重新选图。'],
+  ['刷新时闪烁、变色或短暂出现旧画面正常吗？', '电子纸更新会经过可见的驱动过程，这与视频屏幕不同。等待 App 明确显示完成后再移动或再次发送；最终刷新表现以量产硬件为准。'],
+  ['Qi 充电器没有反应怎么办？', '移除手机壳、金属片和异物，把 Peanup 平放在兼容 Qi 充电器中央，等待短暂识别。若明显发热、受潮或充电器损坏，请立即停止使用。'],
+  ['CUID NFC 为什么无法录入？', '只有门禁系统支持 CUID、管理方允许录入并符合当地规则时才可能使用。Peanup 不能让不兼容的读卡器工作，也不能绕过管理方授权。'],
+];
+
+const troubleshootingStages: TroubleshootingStage[] = [
+  {
+    id: 'discovery', label: '发现', meta: 'DISCOVERY',
+    title: '先让设备出现在列表里',
+    action: '确认设备有电、系统蓝牙与 App 权限都已开启，然后结束旧扫描并重新开始一次。',
+    note: '让 Peanup 留在手机旁边；不要连续快速点击扫描。',
+    href: '#discovery', linkLabel: '查看设备发现',
+  },
+  {
+    id: 'connection', label: '连接', meta: 'CONNECTION',
+    title: '只保留一条近场连接',
+    action: '确认没有另一台手机正在连接，选择正确的 Peanup 后停留在当前传图页面。',
+    note: '连接时不要切换设备、锁屏或离开传图流程。',
+    href: '#transfer', linkLabel: '查看连接状态',
+  },
+  {
+    id: 'transfer', label: '发送', meta: 'TRANSFER',
+    title: '保留画面，从发送阶段继续',
+    action: '移近手机并重试当前帧，不必重新选图、裁切或再次做六色转换。',
+    note: '一次只向一台设备发送；失败后记录停住的块进度。',
+    href: '#transfer', linkLabel: '查看传输排查',
+  },
+  {
+    id: 'refresh', label: '写屏', meta: 'REFRESH',
+    title: '传完以后，等纸面写完',
+    action: '看到传输完成后继续等待 App 的写屏完成提示，再移动设备或发送下一张。',
+    note: '短暂闪烁、变色或出现旧画面可能是正常驱动过程。',
+    href: '#refresh', linkLabel: '查看写屏过程',
+  },
+  {
+    id: 'qi', label: 'Qi', meta: 'POWER',
+    title: '从充电器中心重新对齐',
+    action: '移除金属片、厚壳和异物，把 Peanup 平放在兼容 Qi 充电器中央。',
+    note: '如有受潮、异味或异常发热，立即停止使用。',
+    href: '#charging', linkLabel: '查看无线充电',
+  },
+  {
+    id: 'nfc', label: 'NFC', meta: 'ACCESS',
+    title: '先确认门禁系统是否支持',
+    action: '向管理方确认读卡器支持 CUID、允许录入并符合当地规则，再尝试登记。',
+    note: '不兼容或未授权并不代表 Peanup 硬件故障。',
+    href: '#nfc', linkLabel: '查看 NFC 条件',
+  },
+];
+
+const config: DocPageConfig = {
+  title: 'Peanup 连接与排查｜蓝牙、刷屏、Qi 与 NFC',
+  description: 'Peanup 连接与排查指南：首次发现设备、蓝牙传输、电子纸刷新、Qi 无线充电、CUID NFC 条件和联系支持前的检查清单。',
+  locale: 'zh-cn',
+  current: 'troubleshooting',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'SETUP & TROUBLESHOOTING',
+  revisionLabel: '众筹预览指南\n更新于 2026.07.30',
+  datePublished: '2026-07-30',
+  dateModified: '2026-07-30',
+  schemaType: 'TechArticle',
+  articleClass: 'docs-troubleshooting',
+  faqs,
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / SETUP & HELP</span><b>01</b></div>
+    <h1>先留住画面，<br />再找到哪一步。</h1>
+    <p class="docs-deck">Peanup 的一次更新分成准备、发现、连接、发送和刷屏。不要从头反复尝试；先确认停在哪一步，再继续。</p>
+    <div class="docs-fact-strip" aria-label="排查原则">
+      <span><b>POWER</b><small>先确认设备有电</small></span>
+      <span><b>NEARBY</b><small>发送时保持靠近</small></span>
+      <span><b>KEEP</b><small>保留已准备的画面</small></span>
+      <span><b>RETRY</b><small>从失败阶段继续</small></span>
+    </div>
+    <p class="docs-status"><i></i> 众筹预览排查路径 · 最终提示以发布版 App 与硬件为准</p>
+  </section>
+
+  <section class="docs-section" id="quick-check">
+    <header><span>02 / ONE-MINUTE CHECK</span><h2>先做四件小事，<br />再开始重试。</h2></header>
+    <ol class="docs-steps">
+      <li><span>01 / POWER</span><strong>补充电量</strong><p>把 Peanup 平放在兼容的 Qi 充电器中央。</p></li>
+      <li><span>02 / PERMISSION</span><strong>检查蓝牙权限</strong><p>确认系统蓝牙已打开，Peanup App 也获得蓝牙权限。</p></li>
+      <li><span>03 / DISTANCE</span><strong>保持在手边</strong><p>发现和发送期间，让手机与设备靠近并保持稳定。</p></li>
+      <li><span>04 / STAGE</span><strong>记住停住的位置</strong><p>看清是发现、连接、发送还是刷屏阶段，不盲目重复。</p></li>
+    </ol>
+    <TroubleshootingGuide
+      ariaLabel="选择当前停住的阶段"
+      introLabel="停在哪一步？"
+      intro="选择现在看到的状态。这里只给下一步，不会清除已经准备好的画面。"
+      nextLabel="现在先做"
+      noteLabel="同时留意"
+      stages={troubleshootingStages}
+    />
+    <p class="docs-note"><b>先别重新选图</b><span>连接失败不应该让已经裁切和转换好的画面消失。保留当前预览，再从连接步骤继续。</span></p>
+  </section>
+
+  <section class="docs-section" id="discovery">
+    <header><span>03 / DEVICE DISCOVERY</span><h2>列表里没有设备，<br />先检查发现条件。</h2></header>
+    <div class="docs-table-wrap docs-compatibility" tabindex="0" aria-label="设备发现排查表">
+      <table class="docs-table">
+        <thead><tr><th scope="col">看到的情况</th><th scope="col">先做什么</th><th scope="col">不要做什么</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">扫描列表为空</th><td>确认电量、蓝牙开关和 App 权限，再重新开始一次扫描。</td><td>不要连续快速点击扫描或同时打开多个传图页面。</td></tr>
+          <tr><th scope="row">出现多个设备</th><td>按设备名称和最近使用记录确认目标，让其他设备暂时远离。</td><td>不要只凭列表顺序判断目标设备。</td></tr>
+          <tr><th scope="row">设备出现后又消失</th><td>保持靠近，确认没有另一台手机正在连接，然后重新发现。</td><td>不要在设备移动或充电位置不稳时开始发送。</td></tr>
+          <tr><th scope="row">系统拒绝蓝牙</th><td>前往系统设置恢复权限，再返回 App 重新扫描。</td><td>不要把权限被拒绝误写成“设备损坏”。</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <a class="docs-context-link" href="/docs/compatibility/#bluetooth">查看蓝牙使用条件 <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="transfer">
+    <header><span>04 / TRANSFER</span><h2>发送停住时，<br />让状态比进度条更清楚。</h2></header>
+    <div class="docs-split">
+      <p class="docs-lead">一次更新不只有“成功”和“失败”。App 应该告诉你当前正在发现、连接、发送、确认还是写屏。</p>
+      <div class="docs-copy">
+        <p>如果发送被打断，先保留完成帧和已知进度，再靠近设备重试。只有重新选择照片时，才需要重新做裁切和六色转换。</p>
+        <p>同一时间只向一台 Peanup 发送。切到后台、锁屏、离开蓝牙范围或系统收回权限，都可能中断当前连接。</p>
+      </div>
+    </div>
+    <div class="docs-table-wrap" tabindex="0" aria-label="传输状态与下一步">
+      <table class="docs-table">
+        <thead><tr><th scope="col">阶段</th><th scope="col">页面应该显示</th><th scope="col">下一步</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">发现</th><td>正在查找附近设备</td><td>保持靠近，确认权限与电量。</td></tr>
+          <tr><th scope="row">连接</th><td>正在建立安全的近场连接</td><td>不要切换目标设备或离开页面。</td></tr>
+          <tr><th scope="row">发送</th><td>明确的块进度与可取消状态</td><td>中断后保留完成帧，从发送阶段重试。</td></tr>
+          <tr><th scope="row">写屏</th><td>传输结束，设备正在刷新</td><td>等待完成，不移动、不再次发送。</td></tr>
+          <tr><th scope="row">完成</th><td>新画面已经写入并保持</td><td>连接可以回到空闲。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="docs-section" id="refresh">
+    <header><span>05 / E-PAPER REFRESH</span><h2>刷屏会被看见，<br />完成后才会安静。</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>NORMAL</span><h3>短暂闪烁与颜色变化</h3><p>电子纸驱动不同颜料到目标位置时，会出现可见的过渡，不等于画面损坏。</p></article>
+      <article><span>WAIT</span><h3>以 App 的完成状态为准</h3><p>传输结束不等于写屏结束。等到 App 明确确认完成，再移动设备或发下一帧。</p></article>
+      <article><span>KEEP</span><h3>断开后仍保留画面</h3><p>完成写屏后，电子纸不需要持续蓝牙连接，也不需要背光来维持内容。</p></article>
+    </div>
+    <div class="docs-callout"><span>STOP & CHECK</span><p>如果画面长时间停在中间状态、反复刷新或 App 已报错，请先停止再次发送，记录停住的阶段，再按本页“联系支持”准备信息。</p></div>
+  </section>
+
+  <section class="docs-section" id="charging">
+    <header><span>06 / QI CHARGING</span><h2>放上没有反应，<br />先重新找准位置。</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>ALIGN</span><h3>从中央开始对位</h3><p>移除夹在中间的金属片、厚壳和异物，让 Peanup 平放在兼容 Qi 充电器中央。</p></article>
+      <article><span>PAUSE</span><h3>给识别留一点时间</h3><p>放稳后等待短暂识别，不要在充电区域上持续来回滑动设备。</p></article>
+      <article><span>HEAT</span><h3>异常发热立即停止</h3><p>潮湿、异味、明显发热或充电器损坏时停止使用，并联系支持确认。</p></article>
+    </div>
+    <p class="docs-caption">Qi、无外露接口和最终充电提示是众筹目标。输入功率、充电时间、温升与状态指示会在量产硬件验证后公布。</p>
+  </section>
+
+  <section class="docs-section" id="nfc">
+    <header><span>07 / CUID NFC</span><h2>无法录入门禁，<br />不一定是设备故障。</h2></header>
+    <div class="docs-policy">
+      <strong>先确认系统兼容，再取得管理方授权</strong>
+      <p>Peanup 只有在门禁读卡器支持 CUID、管理方允许录入并符合当地规则时，才可能作为门禁卡。读卡器型号、加密方式和物业策略不同，都会影响结果。</p>
+    </div>
+    <a class="docs-context-link" href="/docs/compatibility/#nfc">阅读完整 NFC 兼容条件 <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="support">
+    <header><span>08 / USEFUL REPORT</span><h2>把关键情况说清楚，<br />问题会更快被找到。</h2></header>
+    <div class="docs-grid docs-grid--two">
+      <article><span>DEVICE</span><h3>设备与系统</h3><p>手机型号、iOS 或 iPadOS 版本、Peanup App 版本，以及设备名称。</p></article>
+      <article><span>STAGE</span><h3>停住的步骤</h3><p>说明停在发现、连接、发送、写屏、Qi 充电还是 NFC 录入。</p></article>
+      <article><span>TIME</span><h3>发生时间与次数</h3><p>记录大致时间、是否每次发生，以及重新靠近或补充电量后是否变化。</p></article>
+      <article><span>PRIVACY</span><h3>不必发送私人原图</h3><p>优先发送状态截图或错误文字。除非确有需要，不要通过邮件附上私人照片或门禁信息。</p></article>
+    </div>
+    <div class="docs-decision">
+      <span>CONTACT</span>
+      <strong>仍然停住，<br />直接写给我们。</strong>
+      <p>请联系 <a href="mailto:i@caiths.com">i@caiths.com</a>。带上上面的四类信息；我们会先定位步骤，再决定是否需要更详细的日志。</p>
+    </div>
+  </section>
+
+  <section class="docs-section docs-faq" id="faq">
+    <header><span>09 / FAQ</span><h2>先回答最常见的几种情况。</h2></header>
+    <div class="docs-accordion">
+      {faqs.map(([question, answer], index) => <details><summary><i>{String(index + 1).padStart(2, '0')}</i>{question}</summary><p>{answer}</p></details>)}
+    </div>
+  </section>
+</DocsShell>

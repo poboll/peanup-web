@@ -1,0 +1,140 @@
+---
+import DocsShell from '../../../components/docs/DocsShell.astro';
+import CampaignDecisionGuide from '../../../components/docs/CampaignDecisionGuide.astro';
+import type { DocPageConfig } from '../../../types/docs';
+
+const toc = [
+  ['overview', '快速理解'],
+  ['confirmed', '已经明确'],
+  ['targets', '众筹目标'],
+  ['before-pledge', '支持前公开'],
+  ['scope', '功能边界'],
+  ['follow', '后续更新'],
+  ['faq', '常见问题'],
+];
+
+const faqs: Array<[string, string]> = [
+  ['Peanup 什么时候登陆 Kickstarter？', '具体日期尚未公布。核心整机测试、生产计划与众筹页面准备就绪后，会在正式开放支持前公布。'],
+  ['3 mm、28 g 和一个月以上续航已经确定了吗？', '还没有。这三项是 Kickstarter 目标。3.68 英寸 E6 面板、528 × 792 像素和有效显示区来自厂家规格书；整机尺寸、重量与续航仍要用最终硬件验证。'],
+  ['现在网页里看到的刷新速度就是实物速度吗？', '不是。网页动画用于解释电子纸从写入到保持的过程，不是实物计时器。最终刷新时间会在量产前按真实硬件测试公布。'],
+  ['iOS App、快捷指令和微信小程序都会在首发提供吗？', '它们属于当前众筹目标能力。正式众筹页会列出首发范围、平台条件与仍需后续更新的部分。'],
+  ['价格、发货地区和预计交付时间是多少？', '当前预览站不提前填写未经确认的价格、运费或交付日期。正式支持前会在 Kickstarter 页面集中公布。'],
+  ['CUID NFC 一定能当门禁卡吗？', '不一定。只有门禁系统支持 CUID、管理方允许登记并符合当地规则时才可能使用。Peanup 不能授予或绕过门禁权限。'],
+  ['众筹前会公布保修、退换和维修规则吗？', '会。保修范围、退换条件、到货损坏处理、维修路径、地区限制和软件支持周期，会在开放支持前集中公布。当前边界可在“支持与服务”文档查看。'],
+];
+
+const specificationSummary = `Peanup 花生片
+屏幕：3.68 英寸 E6 六色电子纸
+分辨率：528 × 792 像素
+有效显示区：51.84 × 77.76 mm
+像素密度：约 258.7 PPI（按有效区计算）
+传输：Bluetooth Low Energy
+众筹目标：3 mm、28 g、1 个月以上续航、Qi、磁吸、iOS 与快捷指令、微信小程序、CUID NFC（受兼容、授权与当地规则限制）
+状态：Kickstarter 准备中；最终规格、价格、地区与交付信息将在开放支持前公布
+https://pean.caiths.com/`;
+
+const config: DocPageConfig = {
+  title: 'Peanup 众筹状态｜已明确规格、Kickstarter 目标与发布前验证',
+  description: '查看 Peanup 当前已经明确的 3.68 英寸 E6 面板规格、Kickstarter 目标、发布前验证项目，以及价格、交付、平台和 CUID NFC 的公开边界。',
+  locale: 'zh-cn',
+  current: 'campaign',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'CAMPAIGN STATUS',
+  revisionLabel: '众筹预览版\n更新于 2026.07.31',
+  datePublished: '2026-07-30',
+  dateModified: '2026-07-31',
+  schemaType: 'WebPage',
+  articleClass: 'docs-campaign',
+  faqs,
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / CAMPAIGN STATUS</span><b>01</b></div>
+    <h1><span>先把确定的说清楚，</span><span>再把每项目标做实。</span></h1>
+    <p class="docs-deck">Peanup 正在为 Kickstarter 做准备。这一页把厂家面板事实、当前产品方向和众筹目标分开写清，也说明支持前还会公布哪些真实测试结果。</p>
+    <div class="docs-fact-strip" aria-label="众筹状态摘要">
+      <span><b>3.68” E6</b><small>厂家面板规格</small></span>
+      <span><b>528 × 792</b><small>有效像素矩阵</small></span>
+      <span><b>≈258.7 PPI</b><small>按有效区计算</small></span>
+      <span><b>PREVIEW</b><small>Kickstarter 准备中</small></span>
+    </div>
+    <p class="docs-status"><i></i> 当前没有预售入口 · 价格、运费与交付日期尚未公布</p>
+  </section>
+
+  <section class="docs-section" id="confirmed">
+    <header><span>02 / WHAT IS DEFINED</span><h2>已经知道的，<br />有清楚的来源。</h2></header>
+    <div class="docs-claim-levels">
+      <article><span>PANEL SPECIFICATION</span><h3>面板规格</h3><p>3.68 英寸 E6 六色电子纸，528 × 792 像素，有效显示区 51.84 × 77.76 mm，按有效区计算约 258.7 PPI。反射率、对比度、模组尺寸与工作范围来自厂家规格书。</p></article>
+      <article><span>CURRENT PRODUCT DIRECTION</span><h3>产品方向</h3><p>真实原型围绕即时相纸式外观、蓝牙近场传图、无外露接口、Qi 补能和磁吸摆放继续打磨。最终整机外观和参数会以众筹页为准。</p></article>
+      <article><span>PUBLIC WEB PREVIEW</span><h3>现在可以体验的网页</h3><p>四幕舞台、六色算法切换和照片预览都在浏览器本地运行。拖入舞台的照片不会上传，也不会写入网站存储。</p></article>
+    </div>
+    <div class="docs-context-links">
+      <a class="docs-context-link" href="/#motion">回到产品页体验四幕电子纸舞台 <span aria-hidden="true">→</span></a>
+      <a class="docs-context-link" href="/docs/hardware/#targets">查看面板事实与整机目标的证据层级 <span aria-hidden="true">→</span></a>
+      <button class="docs-context-link" type="button" data-doc-copy-text={specificationSummary} data-doc-copy-label="复制规格摘要" data-doc-copy-success="规格摘要已复制" data-doc-copy-failed="复制失败，请稍后重试"><span data-doc-copy-status aria-live="polite">复制规格摘要</span></button>
+    </div>
+  </section>
+
+  <section class="docs-section" id="targets">
+    <header><span>03 / KICKSTARTER TARGETS</span><h2>目标不是装饰数字，<br />每一项都要回到实物。</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>FORM</span><h3>3 mm · 28 g · 无外露接口</h3><p>轻薄机身、目标重量和端口设计都要在最终结构、强度与装配方案中确认。</p></article>
+      <article><span>POWER & PLACEMENT</span><h3>Qi · 磁环 · 一个月以上</h3><p>续航取决于刷新频率。充电温升、对位容差、磁吸稳定性和电池表现会在最终硬件上测试。</p></article>
+      <article><span>SOFTWARE & ACCESS</span><h3>iOS · 快捷指令 · 微信 · CUID</h3><p>首发软件范围取决于最终 App、平台权限和硬件联调。CUID NFC 还取决于门禁系统兼容与管理方授权。</p></article>
+    </div>
+    <p class="docs-note"><b>“目标”是什么意思</b><span>目标是当前设计与开发要达到的结果，不是已经量产或取得认证的声明。正式众筹页会把最终首发范围与后续计划分开列出。</span></p>
+  </section>
+
+  <section class="docs-section" id="before-pledge">
+    <header><span>04 / BEFORE YOU PLEDGE</span><h2>在开放支持以前，<br />这些答案应该先出现。</h2></header>
+    <CampaignDecisionGuide locale="zh-cn" />
+    <ol class="docs-steps">
+      <li><span>01 / PHYSICAL</span><strong>最终尺寸与重量</strong><p>公布整机厚度、重量、外壳尺寸和量产外观。</p></li>
+      <li><span>02 / BATTERY</span><strong>续航测试条件</strong><p>说明电池容量、刷新频率、测试环境和实测结果。</p></li>
+      <li><span>03 / UPDATE</span><strong>传输与刷新表现</strong><p>公布典型画面传输时间、刷新过程和失败恢复方式。</p></li>
+      <li><span>04 / DELIVERY</span><strong>价格与交付范围</strong><p>在 Kickstarter 集中说明档位、运费、地区、预计时间和风险。</p></li>
+    </ol>
+    <p class="docs-caption">认证、合规标识与可销售地区会按实际完成情况公布，不会用“兼容”替代认证声明。</p>
+  </section>
+
+  <section class="docs-section" id="scope">
+    <header><span>05 / PRODUCT SCOPE</span><h2>能做什么，<br />也把条件写在旁边。</h2></header>
+    <div class="docs-table-wrap" tabindex="0" aria-label="Peanup 众筹功能状态">
+      <table class="docs-table">
+        <thead><tr><th scope="col">能力</th><th scope="col">当前口径</th><th scope="col">开放支持前需要明确</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">六色电子纸</th><td>3.68 英寸 E6 · 528 × 792</td><td>整机色样、刷新时间与最终外观</td></tr>
+          <tr><th scope="row">蓝牙传图</th><td>Bluetooth Low Energy 近场更新目标</td><td>兼容机型、典型时间与失败恢复</td></tr>
+          <tr><th scope="row">iOS 与快捷指令</th><td>首要产品体验</td><td>首发动作、系统版本与权限条件</td></tr>
+          <tr><th scope="row">微信小程序</th><td>更多设备的传图路径</td><td>平台限制与首发功能范围</td></tr>
+          <tr><th scope="row">Qi 与磁吸</th><td>无外露接口、磁吸摆放目标</td><td>充电参数、温升、对位与配件边界</td></tr>
+          <tr><th scope="row">CUID NFC</th><td>有条件兼容</td><td>门禁系统支持、授权与当地规则</td></tr>
+          <tr><th scope="row">支持与服务</th><td>公开自助指南与联系邮箱</td><td>保修、退换、维修、到货损坏与软件支持期限</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="docs-section" id="follow">
+    <header><span>06 / FOLLOW THE PROJECT</span><h2>不急着让你下单，<br />先把信息留在这里。</h2></header>
+    <div class="docs-policy">
+      <strong>当前是公开预览，不是预售页。</strong>
+      <p>产品规格、图像处理、平台兼容、隐私、排查和支持文档会继续更新。需要确认某一项能力，可以先阅读对应文档；需要直接联系项目，请发送邮件到 <a href="mailto:i@caiths.com">i@caiths.com</a>。</p>
+    </div>
+    <div class="docs-callout">
+      <span>继续了解</span>
+      <div><p>想看产品怎样工作，回到产品指南；想了解长期使用、联系支持与发布前必须公布的服务规则，阅读支持与服务。</p><a class="docs-context-link" href="/docs/">打开产品指南 <span aria-hidden="true">→</span></a><a class="docs-context-link" href="/docs/support/">打开支持与服务 <span aria-hidden="true">→</span></a></div>
+    </div>
+  </section>
+
+  <section class="docs-section docs-faq" id="faq">
+    <header><span>07 / FAQ</span><h2>支持以前，<br />最先需要确认的问题。</h2></header>
+    <div class="docs-accordion">
+      {faqs.map(([question, answer], index) => (
+        <details><summary><i>{String(index + 1).padStart(2, '0')}</i><span>{question}</span></summary><p>{answer}</p></details>
+      ))}
+    </div>
+  </section>
+</DocsShell>

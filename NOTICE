@@ -15,3 +15,20 @@ https://github.com/paperlesspaper/epdoptimize
 
 Four interface icons are derived from Lucide, licensed under the ISC License:
 https://lucide.dev/
+
+The local iPhone preview frame and status-bar geometry are based on Apple
+Design Resources and the Mockify device-layering reference. The Mockify React
+package is distributed under the MIT License:
+https://github.com/Mecury-Labs/mockify
+
+The local status-bar overlay follows the iOS 26.2 iPhone 17 Pro Simulator
+reference on Apple's 402 x 62 point status-bar coordinate system. It is a
+small local transparent PNG so the fixed 9:41 time, cellular, Wi-Fi and
+battery indicators stay aligned at every CSS size; a CSS-only fallback is used
+only if that local asset fails to load. The interactive Dynamic Island remains
+a separate local interface layer. The overlay is a visual reference, not an
+Apple system asset.
+
+Apple, iPhone, MagSafe and related marks are trademarks of Apple Inc. The
+included preview assets remain subject to their respective owners' terms and
+are not covered by the Peanup Apache-2.0 code license.

@@ -1,0 +1,137 @@
+---
+import DocsShell from '../../../../components/docs/DocsShell.astro';
+import type { DocPageConfig } from '../../../../types/docs';
+
+const toc = [
+  ['overview', 'At a glance'],
+  ['display', 'E6 panel'],
+  ['refresh', 'One refresh'],
+  ['battery', 'Battery conditions'],
+  ['charging', 'Qi charging'],
+  ['placement', 'Magnetic placement'],
+  ['care', 'Use and care'],
+  ['targets', 'Evidence'],
+];
+
+const faqs: Array<[string, string]> = [
+  ['Does holding an image continuously use power?', 'E-paper does not need continuous redrawing to retain a frame. The complete device still has controller and standby consumption, but its main energy events are wake, transfer and refresh.'],
+  ['Is one-month-plus battery life final?', 'No. It is a Kickstarter target. Actual battery life will depend on refresh frequency, temperature, wireless behavior and final hardware parameters.'],
+  ['Can a phone charge Peanup from its back?', 'Magnetic placement and wireless charging are separate. Compatibility with MagSafe magnetic accessories does not mean the phone powers Peanup. Use a compatible Qi charger.'],
+  ['Why is there no exposed charging port?', 'A port-free enclosure is the current product target, with everyday charging handled by Qi. Final power, temperature rise and status feedback depend on production-hardware validation.'],
+  ['Can I use it in rain or a bathroom?', 'No whole-device water-resistance claim is made. Keep Peanup away from rain, moisture and condensation, and do not bend or press the display area.'],
+];
+
+const config: DocPageConfig = {
+  title: 'Peanup Hardware | E6 E-paper, Qi, Magnets & Battery',
+  description: "Learn how Peanup's 3.68-inch E6 panel holds a frame, where one update uses power, and how Qi, magnets, care and battery targets work.",
+  locale: 'en',
+  current: 'hardware',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'HARDWARE & POWER',
+  revisionLabel: 'Crowdfunding preview\nUpdated 2026.07.30',
+  datePublished: '2026-07-30',
+  dateModified: '2026-07-30',
+  schemaType: 'TechArticle',
+  articleClass: 'docs-hardware-page',
+  faqs,
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / HARDWARE & POWER</span><b>01</b></div>
+    <h1><span>Power is for change.</span><span>The frame does not spend it waiting.</span></h1>
+    <p class="docs-deck">Peanup’s E6 e-paper keeps a frame after refresh. The phone does the computation, Bluetooth carries it nearby, and energy is reserved mainly for waking, transfer and writing the display.</p>
+    <div class="docs-fact-strip" aria-label="Hardware summary">
+      <span><b>3.68” E6</b><small>Six-color e-paper</small></span>
+      <span><b>528 × 792</b><small>Panel pixel matrix</small></span>
+      <span><b>QI</b><small>Wireless charging target</small></span>
+      <span><b>BISTABLE</b><small>Hold after refresh</small></span>
+    </div>
+    <p class="docs-status"><i></i> Panel values follow the manufacturer specification · complete-device behavior awaits production validation</p>
+  </section>
+
+  <section class="docs-section" id="display">
+    <header><span>02 / E6 DISPLAY</span><h2>Six physical colors.<br />One frame without a backlight.</h2></header>
+    <div class="docs-split">
+      <p class="docs-lead">The panel is viewed with ambient light rather than a phone-like backlight. A photograph becomes black, paper white, red, yellow, blue and green before it is written to e-paper.</p>
+      <div class="docs-copy">
+        <p>The manufacturer specifies a 51.84 × 77.76 mm active area and a 528 × 792 pixel matrix. That active area works out to approximately 258.7 PPI.</p>
+        <p>Paper texture, dithering and refresh motion on this website explain the visual character. They are not a physical color calibration or a refresh-time promise.</p>
+      </div>
+    </div>
+    <dl class="docs-panel-profile" aria-label="E6 panel profile">
+      <div><dt>DISPLAY</dt><dd>3.68” E6</dd><small>Six-color e-paper</small></div>
+      <div><dt>RESOLUTION</dt><dd>528 × 792</dd><small>Portrait pixel matrix</small></div>
+      <div><dt>ACTIVE AREA</dt><dd>51.84 × 77.76 mm</dd><small>Visible display area</small></div>
+      <div><dt>DENSITY</dt><dd>≈258.7 PPI</dd><small>Calculated from active area</small></div>
+      <div><dt>REFLECTIVITY</dt><dd>35% typ.</dd><small>Manufacturer panel value</small></div>
+      <div><dt>CONTRAST</dt><dd>10:1 typ.</dd><small>Manufacturer panel value</small></div>
+    </dl>
+    <a class="docs-context-link" href="/en/docs/image-guide/">See how a photograph becomes a six-color frame <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="refresh">
+    <header><span>03 / ONE REFRESH</span><h2>One frame refreshes<br />only when it changes.</h2></header>
+    <ol class="hardware-cycle" aria-label="Energy path of one e-paper update">
+      <li><span>01 / PREPARE</span><strong>The phone computes</strong><p>Crop, layout and six-color conversion finish on the phone.</p></li>
+      <li><span>02 / WAKE</span><strong>The device wakes briefly</strong><p>Peanup prepares to receive a completed frame.</p></li>
+      <li><span>03 / TRANSFER</span><strong>BLE sends nearby</strong><p>Bluetooth carries only the processed image.</p></li>
+      <li><span>04 / REFRESH</span><strong>E6 writes the frame</strong><p>The panel completes a visible refresh.</p></li>
+      <li class="is-passive"><span>05 / HOLD</span><strong>Disconnect and hold</strong><p>The link returns to idle while e-paper keeps the frame.</p></li>
+    </ol>
+    <p class="docs-note"><b>Why static content fits</b><span>Photos, calendars, weather and reading notes do not need to change every second. Peanup spends energy on real updates, not on continuously lighting the display.</span></p>
+  </section>
+
+  <section class="docs-section" id="battery">
+    <header><span>04 / BATTERY LIFE</span><h2>One month or more<br />is a target that still needs proof.</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>REFRESH RATE</span><h3>Fewer updates last longer</h3><p>Writing the display is one of the main energy events. Daily refresh count directly affects runtime.</p></article>
+      <article><span>WIRELESS</span><h3>Disconnect after sending</h3><p>Bluetooth is not kept active to retain a frame. Retries and unusually long sessions still add consumption.</p></article>
+      <article><span>ENVIRONMENT</span><h3>Temperature affects the cell</h3><p>Cold, heat and final cell parameters all influence usable capacity and charging behavior.</p></article>
+    </div>
+    <p class="docs-caption">“One month or more” is a Kickstarter target, not a fixed guarantee for every refresh pattern. Test conditions, refresh frequency and measurement method will be published before production.</p>
+  </section>
+
+  <section class="docs-section" id="charging">
+    <header><span>05 / QI CHARGING</span><h2>No exposed port.<br />Set it down to add power.</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>01 / CENTER</span><h3>Align the charging area</h3><p>Place Peanup flat near the center of a compatible Qi charger.</p></article>
+      <article><span>02 / CLEAR</span><h3>Keep the surface clear</h3><p>Remove coins, keys and other metal objects. Do not charge on a damp surface.</p></article>
+      <article><span>03 / COOL</span><h3>Pause unusual heat</h3><p>Remove it if temperature or status appears abnormal, then resume after conditions return to normal.</p></article>
+    </div>
+    <p class="docs-caption">Final input power, charge time, temperature rise, alignment tolerance and status feedback remain subject to production-hardware validation.</p>
+  </section>
+
+  <section class="docs-section" id="placement">
+    <header><span>06 / MAGNETIC PLACEMENT</span><h2>Let it hold gently.<br />First make sure the surface can.</h2></header>
+    <div class="hardware-placement-grid">
+      <article><span>FRIDGE</span><i class="hardware-placement-mark" aria-hidden="true"></i><h3>Fridges and magnetic surfaces</h3><p>Support it by hand while testing the hold. Not every stainless-steel surface is magnetic enough.</p></article>
+      <article><span>DESK</span><i class="hardware-placement-mark" aria-hidden="true"></i><h3>Desktop magnetic accessories</h3><p>Choose a stable, flat stand and avoid concentrated pressure on the display.</p></article>
+      <article><span>MAGSAFE ACCESSORY</span><i class="hardware-placement-mark" aria-hidden="true"></i><h3>Compatible magnetic accessories</h3><p>This describes mechanical placement, not Apple certification or reverse charging from a phone.</p></article>
+    </div>
+    <a class="docs-context-link" href="/en/docs/compatibility/#nfc">Review platform, accessory and CUID NFC compatibility <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="care">
+    <header><span>07 / CARE</span><h2>Treat it like paper.<br />Treat it like electronics.</h2></header>
+    <dl class="docs-care" aria-label="Use and care">
+      <div><dt>0–50°C</dt><dd>Panel operating range</dd><small>A panel condition, not a complete-device certification.</small></div>
+      <div><dt>DRY</dt><dd>Avoid rain and condensation</dd><small>No whole-device water-resistance claim is made.</small></div>
+      <div><dt>GENTLE</dt><dd>Do not bend or press</dd><small>Avoid concentrated force on the display area.</small></div>
+      <div><dt>CLEAN</dt><dd>Use a soft dry cloth</dd><small>Stop charging before gently cleaning the surface.</small></div>
+    </dl>
+  </section>
+
+  <section class="docs-section" id="targets">
+    <header><span>08 / EVIDENCE</span><h2>What comes from the panel sheet.<br />What remains a crowdfunding target.</h2></header>
+    <div class="hardware-proof">
+      <div><span>CONFIRMED PANEL</span><h3>The panel is defined</h3><p>3.68-inch E6, 528 × 792 pixels, a 51.84 × 77.76 mm active area, a 0.87 mm panel module, plus manufacturer reflectivity, contrast and operating conditions.</p></div>
+      <div><span>KICKSTARTER TARGET</span><h3>The complete product is still being refined</h3><p>A 3 mm body, 28 g weight, one-month-plus battery life, no exposed port, Qi charging, integrated magnetic ring, iOS app, Shortcuts, WeChat Mini Program and CUID NFC all require final hardware and software validation.</p></div>
+    </div>
+    <div class="docs-callout">
+      <span>NEED HELP?</span>
+      <div><p>If charging, discovery, transfer or refresh stops at one stage, continue from that state rather than repeatedly starting over.</p><a class="docs-context-link" href="/en/docs/troubleshooting/">Open setup and troubleshooting <span aria-hidden="true">→</span></a></div>
+    </div>
+  </section>
+</DocsShell>

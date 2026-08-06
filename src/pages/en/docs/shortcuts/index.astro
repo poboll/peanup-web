@@ -1,0 +1,182 @@
+---
+import DocsShell from '../../../../components/docs/DocsShell.astro';
+import ShortcutPlanner, { type ShortcutPlannerGroup } from '../../../../components/docs/ShortcutPlanner.astro';
+import type { DocPageConfig } from '../../../../types/docs';
+
+const toc = [
+  ['overview', 'At a glance'],
+  ['model', 'One update'],
+  ['recipes', 'Daily examples'],
+  ['builder', 'Build a routine'],
+  ['actions', 'Action draft'],
+  ['conditions', 'Conditions & errors'],
+  ['privacy', 'Privacy boundary'],
+  ['faq', 'FAQ'],
+];
+
+const plannerGroups: ShortcutPlannerGroup[] = [
+  {
+    id: 'trigger', label: 'TRIGGER', title: 'What starts the routine?',
+    options: [
+      { id: 'time', label: 'Fixed time', phrase: 'At 7:30 each day, ', note: 'Whether a time automation needs confirmation follows iOS rules.' },
+      { id: 'manual', label: 'Run manually', phrase: 'When you run the Shortcut, ', note: 'Manual runs suit first-time setup and one-off updates.' },
+      { id: 'focus', label: 'Focus mode', phrase: 'When the chosen Focus mode begins, ', note: 'Focus triggers must first be authorized in system automation.' },
+      { id: 'share', label: 'Share sheet', phrase: 'When you start from the photo share sheet, ', note: 'The share sheet uses only content you deliberately choose.' },
+    ],
+  },
+  {
+    id: 'content', label: 'CONTENT', title: 'Where does the frame begin?',
+    options: [
+      { id: 'photo', label: 'One photo', phrase: 'prepare one photo on the phone, ', note: 'The target photo path crops and renders locally on the device.' },
+      { id: 'weather', label: 'Weather & calendar', phrase: 'combine weather and the first calendar event, ', note: 'Weather needs a network source; calendars need system permission.' },
+      { id: 'reading', label: 'Reading note', phrase: 'lay out one selected reading note, ', note: 'Network use for a reading note depends on its content source.' },
+      { id: 'summary', label: 'Daily summary', phrase: 'make a short daily summary, ', note: 'A summary uses only data you authorize for the Shortcut.' },
+    ],
+  },
+  {
+    id: 'delivery', label: 'DELIVERY', title: 'When does the paper update?',
+    options: [
+      { id: 'preview', label: 'Preview, then send', phrase: 'then preview six colors before you confirm sending.', note: 'This is the safest default flow.' },
+      { id: 'nearby', label: 'Send when nearby', phrase: 'then attempt to send when a nearby Peanup is available.', note: 'The device still needs power, Bluetooth range and an available connection.' },
+      { id: 'prepare', label: 'Prepare only', phrase: 'then save the finished frame and send later when the device is nearby.', note: 'Preparing a frame does not keep Peanup connected.' },
+      { id: 'confirm', label: 'Ask every time', phrase: 'then ask for your confirmation before every update.', note: 'This suits personal photos or sensitive information.' },
+    ],
+  },
+];
+
+const faqs: Array<[string, string]> = [
+  ['Do Shortcuts keep Peanup connected all day?', 'No. The target flow prepares the frame on the phone and opens a nearby connection only when an update is sent.'],
+  ['Can every automation refresh without interaction?', 'That depends on the iOS trigger, permissions, device proximity and final app capabilities. Some flows may still require confirmation.'],
+  ['Does a photo have to be uploaded?', 'The core photo path is intended to crop and render on iPhone or iPad, then send only the finished frame to a nearby Peanup over BLE.'],
+  ['Are these Shortcut actions already shipping?', 'No. This page documents a crowdfunding-preview interface draft. Names, inputs and background behavior may change with app and hardware validation.'],
+];
+
+const config: DocPageConfig = {
+  title: 'Peanup Apple Shortcuts & Automation Guide',
+  description: 'Peanup Apple Shortcuts and automation guide covering triggers, six-color preview, Bluetooth transfer, daily recipes, permissions, errors and local privacy.',
+  locale: 'en',
+  current: 'shortcuts',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'SHORTCUTS & AUTOMATION',
+  revisionLabel: 'Crowdfunding interface draft\nUpdated 2026.07.30',
+  datePublished: '2026-07-29',
+  dateModified: '2026-07-30',
+  schemaType: 'TechArticle',
+  articleClass: 'docs-shortcuts',
+  faqs,
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / SHORTCUTS</span><b>01</b></div>
+    <h1>Update at the useful moment,<br />without adding another alert.</h1>
+    <p class="docs-deck">Shortcuts choose the trigger and content. The Peanup app prepares a six-color frame on the phone, then connects to a nearby device only when it is time to send.</p>
+    <div class="docs-fact-strip" aria-label="Shortcut capability summary">
+      <span><b>SIRI</b><small>Voice and system entry</small></span>
+      <span><b>WIDGET</b><small>Prepare with one tap</small></span>
+      <span><b>AUTO</b><small>Time and personal automation</small></span>
+      <span><b>LOCAL</b><small>Photo processing on device</small></span>
+    </div>
+    <p class="docs-status"><i></i> Product interface draft · Final behavior depends on app and hardware validation</p>
+  </section>
+
+  <section class="docs-section" id="model">
+    <header><span>02 / ONE UPDATE</span><h2>One update,<br />four explicit actions.</h2></header>
+    <ol class="docs-steps">
+      <li><span>01 / TRIGGER</span><strong>Choose a trigger</strong><p>Time, Siri, widget, share sheet or a deliberate tap.</p></li>
+      <li><span>02 / PREPARE</span><strong>Prepare content</strong><p>Use a photo, calendar, weather, reading note or template card.</p></li>
+      <li><span>03 / PREVIEW</span><strong>Check six colors</strong><p>Crop, map the palette and apply the suitable dither on the phone.</p></li>
+      <li><span>04 / SEND</span><strong>Send nearby</strong><p>Connect to Peanup, show progress and disconnect after the write.</p></li>
+    </ol>
+    <p class="docs-note"><b>Quiet by default</b><span>Automation does not mean a permanent connection. A frame can be prepared first; Bluetooth is used only for the update.</span></p>
+    <a class="docs-context-link" href="/en/#automation">Try the daily moments on the product page <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="recipes">
+    <header><span>03 / DAILY RECIPES</span><h2>Four daily moments.<br />Only a starting point.</h2></header>
+    <div class="docs-grid docs-grid--two shortcut-recipes">
+      <article><span>07:30 / WEATHER</span><h3>Weather before leaving</h3><p>Combine forecast, temperature and the first calendar item. One calm morning update is enough.</p></article>
+      <article><span>12:40 / PHOTO</span><h3>One photograph from today</h3><p>Choose from the share sheet, inspect the six-color preview, then decide whether to send.</p></article>
+    </div>
+    <div class="docs-grid docs-grid--two shortcut-recipes shortcut-recipes--continued">
+      <article><span>18:30 / SUMMARY</span><h3>The day on one card</h3><p>Turn a calendar, habit or short daily summary into a quiet information frame.</p></article>
+      <article><span>22:30 / READING</span><h3>A line worth keeping</h3><p>Choose a reading note and keep it visible into the next day.</p></article>
+    </div>
+    <div class="docs-callout">
+      <span>NOT A LIMIT</span>
+      <p>Photos, weather, calendars and reading notes explain the content path; they are not four limits. Anything that can become a finished 528 × 792 frame on the phone can become display content.</p>
+    </div>
+  </section>
+
+  <section class="docs-section" id="builder">
+    <header><span>04 / BUILD A ROUTINE</span><h2>Build the flow first.<br />Then decide what should run automatically.</h2></header>
+    <div class="docs-split">
+      <p class="docs-lead">Choose a starting moment, a content source and a write condition to see how one complete update fits together.</p>
+      <div class="docs-copy"><p>This does not create a system Shortcut or connect to hardware. It turns the interface draft into a workflow that is easy to understand and discuss.</p></div>
+    </div>
+    <ShortcutPlanner
+      ariaLabel="Build a Shortcut routine"
+      summaryLabel="Your routine"
+      noteLabel="Conditions"
+      linkLabel="Review the action draft"
+      groups={plannerGroups}
+    />
+    <p class="docs-caption">The planner does not mean these actions are already shipping. Final behavior still depends on iOS permissions, background execution, the BLE protocol and the released app.</p>
+  </section>
+
+  <section class="docs-section" id="actions">
+    <header><span>05 / ACTION DRAFT</span><h2>Short names.<br />Obvious inputs and results.</h2></header>
+    <div class="docs-table-wrap" tabindex="0" aria-label="Shortcut action draft">
+      <table class="docs-table docs-shortcut-actions">
+        <thead><tr><th scope="col">Draft action</th><th scope="col">Input</th><th scope="col">Result</th><th scope="col">Status</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Prepare Peanup Photo</th><td>Photo and crop</td><td>Six-color frame</td><td>Campaign target</td></tr>
+          <tr><th scope="row">Make Information Card</th><td>Template, text and date</td><td>Preview frame</td><td>Campaign target</td></tr>
+          <tr><th scope="row">Send to Peanup</th><td>Finished frame and device</td><td>Transfer and write state</td><td>Hardware validation</td></tr>
+          <tr><th scope="row">Read Recent Status</th><td>Target device</td><td>Connection, progress or error</td><td>Interface draft</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="docs-caption">This is not a published API list. Names, parameters, background execution and callback results will be refined around iOS limits, the BLE protocol and final interaction design.</p>
+  </section>
+
+  <section class="docs-section" id="conditions">
+    <header><span>06 / CONDITIONS</span><h2>Automation still depends<br />on the conditions at that moment.</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>NEARBY</span><h3>The device must be nearby</h3><p>At send time, the target Peanup must be within Bluetooth range and available to connect.</p></article>
+      <article><span>PERMISSION</span><h3>You choose permissions</h3><p>Photos, calendars, location and Bluetooth should be requested only for the action that needs them.</p></article>
+      <article><span>CONFIRMATION</span><h3>iOS may ask first</h3><p>Some personal automations or sensitive permissions may require unlock, confirmation or the app in front.</p></article>
+    </div>
+    <div class="docs-table-wrap docs-compatibility" tabindex="0" aria-label="Automation failure handling">
+      <table class="docs-table">
+        <thead><tr><th scope="col">Situation</th><th scope="col">Expected response</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Device not found</th><td>Keep the prepared frame and offer retry when the device is closer.</td></tr>
+          <tr><th scope="row">Transfer interrupted</th><td>Show actual progress and a retry state. Never label an incomplete write as done.</td></tr>
+          <tr><th scope="row">Content permission denied</th><td>Disable only that source. Local photos and manual transfer should remain available.</td></tr>
+          <tr><th scope="row">Background execution unavailable</th><td>Explain when confirmation or foreground use is required instead of promising silent execution iOS does not allow.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="docs-section" id="privacy">
+    <header><span>07 / PRIVACY</span><h2>Use the network for needed content.<br />Keep photos on the phone where possible.</h2></header>
+    <div class="docs-split">
+      <p class="docs-lead">The local photo path and connected-content path are separate. Weather needs a weather source; that does not mean a photo must be uploaded.</p>
+      <div class="docs-copy">
+        <p><b>Photos:</b> the target is to crop, resize, quantize and dither on iPhone or iPad.</p>
+        <p><b>Connected content:</b> request only the data needed for that card from the selected source. Final providers will be identified before release.</p>
+        <a class="docs-context-link" href="/en/docs/privacy/">Read the complete privacy and data notes <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="docs-section" id="faq">
+    <header><span>08 / FAQ</span><h2>Make the boundaries explicit.</h2></header>
+    <div class="docs-accordion">
+      {faqs.map(([question, answer], index) => <details><summary><i>{String(index + 1).padStart(2, '0')}</i>{question}</summary><p>{answer}</p></details>)}
+    </div>
+  </section>
+</DocsShell>

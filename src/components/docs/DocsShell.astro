@@ -1,0 +1,455 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ThemeToggle from '../ThemeToggle.astro';
+import type { DocPageConfig } from '../../types/docs';
+import '../../styles/docs.css';
+
+interface Props { config: DocPageConfig }
+
+const { config } = Astro.props;
+const isChinese = config.locale === 'zh-cn';
+const productPath = isChinese ? '/docs/' : '/en/docs/';
+const contentPath = isChinese ? '/docs/content/' : '/en/docs/content/';
+const imagePath = isChinese ? '/docs/image-guide/' : '/en/docs/image-guide/';
+const hardwarePath = isChinese ? '/docs/hardware/' : '/en/docs/hardware/';
+const compatibilityPath = isChinese ? '/docs/compatibility/' : '/en/docs/compatibility/';
+const troubleshootingPath = isChinese ? '/docs/troubleshooting/' : '/en/docs/troubleshooting/';
+const supportPath = isChinese ? '/docs/support/' : '/en/docs/support/';
+const shortcutsPath = isChinese ? '/docs/shortcuts/' : '/en/docs/shortcuts/';
+const glossaryPath = isChinese ? '/docs/glossary/' : '/en/docs/glossary/';
+const campaignPath = isChinese ? '/docs/campaign/' : '/en/docs/campaign/';
+const engineeringPath = isChinese ? '/docs/engineering/' : '/en/docs/engineering/';
+const privacyPath = isChinese ? '/docs/privacy/' : '/en/docs/privacy/';
+const updatesPath = isChinese ? '/docs/updates/' : '/en/docs/updates/';
+const homePath = isChinese ? '/' : '/en/';
+const alternateProductPath = isChinese ? '/en/docs/' : '/docs/';
+const alternateContentPath = isChinese ? '/en/docs/content/' : '/docs/content/';
+const alternateImagePath = isChinese ? '/en/docs/image-guide/' : '/docs/image-guide/';
+const alternateHardwarePath = isChinese ? '/en/docs/hardware/' : '/docs/hardware/';
+const alternateCompatibilityPath = isChinese ? '/en/docs/compatibility/' : '/docs/compatibility/';
+const alternateTroubleshootingPath = isChinese ? '/en/docs/troubleshooting/' : '/docs/troubleshooting/';
+const alternateSupportPath = isChinese ? '/en/docs/support/' : '/docs/support/';
+const alternateShortcutsPath = isChinese ? '/en/docs/shortcuts/' : '/docs/shortcuts/';
+const alternateGlossaryPath = isChinese ? '/en/docs/glossary/' : '/docs/glossary/';
+const alternateCampaignPath = isChinese ? '/en/docs/campaign/' : '/docs/campaign/';
+const alternateEngineeringPath = isChinese ? '/en/docs/engineering/' : '/docs/engineering/';
+const alternatePrivacyPath = isChinese ? '/en/docs/privacy/' : '/docs/privacy/';
+const alternateUpdatesPath = isChinese ? '/en/docs/updates/' : '/docs/updates/';
+const pagePaths = {
+  product: [productPath, alternateProductPath],
+  content: [contentPath, alternateContentPath],
+  image: [imagePath, alternateImagePath],
+  hardware: [hardwarePath, alternateHardwarePath],
+  compatibility: [compatibilityPath, alternateCompatibilityPath],
+  troubleshooting: [troubleshootingPath, alternateTroubleshootingPath],
+  support: [supportPath, alternateSupportPath],
+  shortcuts: [shortcutsPath, alternateShortcutsPath],
+  glossary: [glossaryPath, alternateGlossaryPath],
+  campaign: [campaignPath, alternateCampaignPath],
+  engineering: [engineeringPath, alternateEngineeringPath],
+  privacy: [privacyPath, alternatePrivacyPath],
+  updates: [updatesPath, alternateUpdatesPath],
+} as const;
+const [canonicalPath, alternatePath] = pagePaths[config.current];
+const labels = isChinese
+  ? {
+      htmlLang: 'zh-CN',
+      ogLocale: 'zh_CN',
+      brand: '花生片',
+      home: '返回 Peanup 中文首页',
+      nav: '文档导航',
+      mobileNav: '移动端文档导航',
+      productGuide: '使用指南',
+      content: '内容玩法',
+      image: '六色画面',
+      hardware: '硬件与电源',
+      compatibility: '兼容与平台',
+      troubleshooting: '连接与排查',
+      support: '支持与服务',
+      shortcuts: '快捷指令',
+      glossary: '术语速查',
+      campaign: '众筹状态',
+      engineering: '工程文档',
+      privacy: '隐私与数据',
+      updates: '项目进展',
+      alternate: 'English',
+      alternateLang: 'en',
+      product: '产品页',
+      more: '全部文档',
+      documentIndex: '文档索引',
+      documentIndexHint: '从玩法、设置到工程细节，按问题找到答案。',
+      menu: '目录',
+      print: '打印 / 保存 PDF',
+      toc: '本页目录',
+      backTop: '返回顶部',
+      continue: '继续阅读',
+      previous: '上一篇',
+      next: '下一篇',
+      returnProduct: '返回产品页',
+      copySection: '复制本节链接',
+      copyingSection: '正在复制…',
+      copiedSection: '链接已复制',
+      copySectionFailed: '请从地址栏复制链接',
+      footerNav: '文档页脚',
+      startGroup: '核心指南',
+      useGroup: '使用与连接',
+      referenceGroup: '规格与公开',
+    }
+  : {
+      htmlLang: 'en',
+      ogLocale: 'en_US',
+      brand: 'Peanup',
+      home: 'Peanup home',
+      nav: 'Documentation',
+      mobileNav: 'Mobile documentation',
+      productGuide: 'Guide',
+      content: 'Content ideas',
+      image: 'Six-color images',
+      hardware: 'Hardware & power',
+      compatibility: 'Platforms',
+      troubleshooting: 'Setup & help',
+      support: 'Support & service',
+      shortcuts: 'Shortcuts',
+      glossary: 'Glossary',
+      campaign: 'Campaign status',
+      engineering: 'Engineering notes',
+      privacy: 'Privacy & data',
+      updates: 'Project updates',
+      alternate: '简体中文',
+      alternateLang: 'zh-CN',
+      product: 'Product',
+      more: 'All docs',
+      documentIndex: 'Documentation index',
+      documentIndexHint: 'Find ideas, setup guidance and engineering detail by task.',
+      menu: 'Menu',
+      print: 'Print / save PDF',
+      toc: 'On this page',
+      backTop: 'Back to top',
+      continue: 'Continue reading',
+      previous: 'Previous',
+      next: 'Next',
+      returnProduct: 'Return to product',
+      copySection: 'Copy section link',
+      copyingSection: 'Copying…',
+      copiedSection: 'Link copied',
+      copySectionFailed: 'Copy the link from the address bar',
+      footerNav: 'Documentation footer',
+      startGroup: 'Core guides',
+      useGroup: 'Use & setup',
+      referenceGroup: 'Specs & policy',
+    };
+
+const docItems = isChinese
+  ? [
+      { id: 'product', href: productPath, label: labels.productGuide, description: '规格、更新流程与常见问题' },
+      { id: 'content', href: contentPath, label: labels.content, description: '照片、信息、文字与自动更新方式' },
+      { id: 'image', href: imagePath, label: labels.image, description: '选图、裁切、六色渲染与实物观看' },
+      { id: 'hardware', href: hardwarePath, label: labels.hardware, description: 'E6 面板、一次刷新、Qi、磁吸与保养' },
+      { id: 'compatibility', href: compatibilityPath, label: labels.compatibility, description: 'iPhone、微信、网页、BLE 与 NFC 条件' },
+      { id: 'troubleshooting', href: troubleshootingPath, label: labels.troubleshooting, description: '首次连接、传输、刷屏与充电排查' },
+      { id: 'shortcuts', href: shortcutsPath, label: labels.shortcuts, description: 'Apple 自动化与日常更新' },
+      { id: 'support', href: supportPath, label: labels.support, description: '长期使用、联系支持与服务规则' },
+      { id: 'privacy', href: privacyPath, label: labels.privacy, description: '照片、本地处理与数据边界' },
+      { id: 'glossary', href: glossaryPath, label: labels.glossary, description: 'E6、PPI、BLE、Qi 与规格口径' },
+      { id: 'campaign', href: campaignPath, label: labels.campaign, description: '已明确规格、众筹目标与发布前验证' },
+      { id: 'engineering', href: engineeringPath, label: labels.engineering, description: '六色渲染、BLE 与验证边界' },
+      { id: 'updates', href: updatesPath, label: labels.updates, description: '已公开进展、验证节点与下一步' },
+    ] as const
+  : [
+      { id: 'product', href: productPath, label: labels.productGuide, description: 'Specifications, updates and common questions' },
+      { id: 'content', href: contentPath, label: labels.content, description: 'Photos, information, text and scheduled updates' },
+      { id: 'image', href: imagePath, label: labels.image, description: 'Choosing, cropping, rendering and viewing a frame' },
+      { id: 'hardware', href: hardwarePath, label: labels.hardware, description: 'E6 panel, one refresh, Qi, magnets and care' },
+      { id: 'compatibility', href: compatibilityPath, label: labels.compatibility, description: 'iPhone, WeChat, web, BLE and NFC conditions' },
+      { id: 'troubleshooting', href: troubleshootingPath, label: labels.troubleshooting, description: 'First connection, transfer, refresh and charging' },
+      { id: 'shortcuts', href: shortcutsPath, label: labels.shortcuts, description: 'Apple automation and everyday updates' },
+      { id: 'support', href: supportPath, label: labels.support, description: 'Long-term use, useful reports and service terms' },
+      { id: 'privacy', href: privacyPath, label: labels.privacy, description: 'Photos, local processing and data boundaries' },
+      { id: 'glossary', href: glossaryPath, label: labels.glossary, description: 'E6, PPI, BLE, Qi and specification language' },
+      { id: 'campaign', href: campaignPath, label: labels.campaign, description: 'Confirmed facts, crowdfunding targets and launch checks' },
+      { id: 'engineering', href: engineeringPath, label: labels.engineering, description: 'Six-color rendering, BLE and validation' },
+      { id: 'updates', href: updatesPath, label: labels.updates, description: 'Published progress, validation gates and what comes next' },
+    ] as const;
+const currentDocIndex = docItems.findIndex((item) => item.id === config.current);
+const currentDoc = currentDocIndex >= 0 ? docItems[currentDocIndex] : docItems[0];
+const previousDoc = currentDocIndex > 0 ? docItems[currentDocIndex - 1] : null;
+const nextDoc = currentDocIndex >= 0 && currentDocIndex < docItems.length - 1 ? docItems[currentDocIndex + 1] : null;
+const chineseSeriesLabels: Record<string, string> = {
+  'PRODUCT GUIDE': '产品指南',
+  'CONTENT GUIDE': '内容玩法',
+  'SIX-COLOR IMAGE GUIDE': '六色画面',
+  'HARDWARE & POWER': '硬件与电源',
+  'PLATFORMS & COMPATIBILITY': '平台与兼容',
+  'SETUP & TROUBLESHOOTING': '连接与排查',
+  'SHORTCUTS & AUTOMATION': '快捷指令与自动化',
+  'SUPPORT & LONG-TERM USE': '支持与长期使用',
+  'PRIVACY & DATA': '隐私与数据',
+  'TERMS & CLAIMS': '术语与口径',
+  'CAMPAIGN STATUS': '众筹状态',
+  'ENGINEERING NOTES': '工程文档',
+  'PROJECT UPDATES': '项目进展',
+};
+const seriesLabel = isChinese ? chineseSeriesLabels[config.seriesLabel] ?? config.seriesLabel : config.seriesLabel;
+const docGroupIds = {
+  start: new Set(['product', 'content', 'image', 'hardware']),
+  use: new Set(['compatibility', 'troubleshooting', 'shortcuts', 'support']),
+  reference: new Set(['privacy', 'glossary', 'campaign', 'engineering', 'updates']),
+};
+const docGroups = [
+  { id: 'start', label: labels.startGroup, items: docItems.filter((item) => docGroupIds.start.has(item.id)) },
+  { id: 'use', label: labels.useGroup, items: docItems.filter((item) => docGroupIds.use.has(item.id)) },
+  { id: 'reference', label: labels.referenceGroup, items: docItems.filter((item) => docGroupIds.reference.has(item.id)) },
+];
+const primaryNavItems = [
+  { id: 'product', href: productPath, label: labels.productGuide, compact: isChinese ? '指南' : 'Guide' },
+  { id: 'content', href: contentPath, label: labels.content, compact: isChinese ? '玩法' : 'Ideas' },
+  { id: 'image', href: imagePath, label: labels.image, compact: isChinese ? '六色' : 'Images' },
+  { id: 'shortcuts', href: shortcutsPath, label: labels.shortcuts, compact: isChinese ? '快捷' : 'Auto' },
+] as const;
+const primaryDocIds = new Set<DocPageConfig['current']>(primaryNavItems.map((item) => item.id));
+const isMoreCurrent = !primaryDocIds.has(config.current);
+const secondaryCompactLabels: Partial<Record<DocPageConfig['current'], string>> = isChinese
+  ? {
+      hardware: '硬件',
+      compatibility: '平台',
+      troubleshooting: '排查',
+      support: '支持',
+      privacy: '隐私',
+      glossary: '术语',
+      campaign: '众筹',
+      engineering: '工程',
+      updates: '进展',
+    }
+  : {
+      hardware: 'HW',
+      compatibility: 'Apps',
+      troubleshooting: 'Help',
+      support: 'Care',
+      privacy: 'Data',
+      glossary: 'Terms',
+      campaign: 'Status',
+      engineering: 'Eng.',
+      updates: 'Updates',
+    };
+const secondaryCompactLabel = secondaryCompactLabels[config.current] ?? labels.menu;
+const breadcrumbs = config.current === 'product'
+  ? [
+      { name: 'Peanup', path: homePath },
+      { name: labels.productGuide, path: productPath },
+    ]
+  : [
+      { name: 'Peanup', path: homePath },
+      { name: labels.productGuide, path: productPath },
+      { name: currentDoc.label, path: canonicalPath },
+    ];
+---
+
+<BaseLayout
+  title={config.title}
+  description={config.description}
+  locale={config.locale}
+  htmlLang={labels.htmlLang}
+  ogLocale={labels.ogLocale}
+  canonicalPath={canonicalPath}
+  alternates={[
+    { lang: 'zh-CN', href: isChinese ? canonicalPath : alternatePath },
+    { lang: 'en', href: isChinese ? alternatePath : canonicalPath },
+  ]}
+  xDefaultPath={isChinese ? canonicalPath : alternatePath}
+  schemaType={config.schemaType ?? 'TechArticle'}
+  datePublished={config.datePublished}
+  dateModified={config.dateModified}
+  image="/assets/peanup-og.webp"
+  faqs={config.faqs}
+  breadcrumbs={breadcrumbs}
+  backTopLabel={labels.backTop}
+>
+  <header class="docs-topbar">
+    <a class="brand" href={homePath} aria-label={labels.home}>
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+      <span>{labels.brand} {isChinese && <b>Peanup</b>}</span>
+      <small class="docs-brand-section">{isChinese ? '文档' : 'Docs'}</small>
+    </a>
+    <nav class="docs-primary-nav" aria-label={labels.nav}>
+      {primaryNavItems.map((item) => (
+        <a aria-current={config.current === item.id ? 'page' : undefined} href={item.href}>
+          <span class="docs-nav-label-full">{item.label}</span>
+          <span class="docs-nav-label-compact">{item.compact}</span>
+        </a>
+      ))}
+      <details class:list={['docs-more-nav', 'docs-document-switcher', { 'is-current': isMoreCurrent }]}>
+        <summary aria-label={isChinese ? `全部文档${isMoreCurrent ? `，当前为${currentDoc.label}` : ''}` : `All documentation${isMoreCurrent ? `, current page: ${currentDoc.label}` : ''}`}>
+          <span>{isMoreCurrent ? currentDoc.label : labels.more}</span>
+        </summary>
+        <div class="docs-more-menu">
+          <header class="docs-menu-intro">
+            <small>{labels.documentIndex}</small>
+            <strong>{labels.documentIndexHint}</strong>
+          </header>
+          {docGroups.map((group) => (
+            <section class="docs-menu-group">
+              <small>{group.label}</small>
+              {group.items.map((item) => (
+                <a aria-current={config.current === item.id ? 'page' : undefined} href={item.href}>
+                  <strong>{item.label}</strong>
+                  <span>{item.description}</span>
+                </a>
+              ))}
+            </section>
+          ))}
+          <div class="docs-menu-utility docs-menu-utility--responsive">
+            <a class="docs-menu-language" lang={labels.alternateLang} href={alternatePath} hreflang={labels.alternateLang} aria-label={isChinese ? '切换到 English' : 'Switch to 简体中文'}><span>{labels.alternate}</span><span aria-hidden="true">↔</span></a>
+            <button class="docs-menu-action" type="button" data-doc-print><span>{labels.print}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V4h10v5M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v6H7z" /></svg></button>
+          </div>
+        </div>
+      </details>
+    </nav>
+    <a class="docs-product-link docs-topbar-product" href={homePath}>{labels.product} <span aria-hidden="true">↗</span></a>
+    <a class="docs-topbar-language" lang={labels.alternateLang} href={alternatePath} hreflang={labels.alternateLang} aria-label={isChinese ? '切换到 English' : 'Switch to 简体中文'}><span class="docs-language-long">{labels.alternate}</span><span class="docs-language-short" aria-hidden="true">{isChinese ? 'EN' : '中'}</span></a>
+    <ThemeToggle locale={config.locale} />
+    <details class="docs-mobile-nav">
+      <summary aria-label={`${labels.menu}：${currentDoc.label}`}><span>{labels.menu}</span></summary>
+      <nav aria-label={labels.mobileNav}>
+        <div class="docs-mobile-actions">
+          <a class="docs-menu-home" href={homePath}>{labels.returnProduct}<span aria-hidden="true">↗</span></a>
+          <a lang={labels.alternateLang} href={alternatePath} hreflang={labels.alternateLang} aria-label={isChinese ? '切换到 English' : 'Switch to 简体中文'}>{labels.alternate}<span aria-hidden="true">↔</span></a>
+        </div>
+        {docGroups.map((group) => (
+          <details class="docs-mobile-menu-group" open={group.items.some((item) => item.id === config.current)}>
+            <summary><span>{group.label}</span><small>{String(group.items.length).padStart(2, '0')}</small></summary>
+            <div>
+              {group.items.map((item) => (
+                <a aria-current={config.current === item.id ? 'page' : undefined} href={item.href}>{item.label}</a>
+              ))}
+            </div>
+          </details>
+        ))}
+        <button class="docs-menu-action" type="button" data-doc-print><span>{labels.print}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V4h10v5M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v6H7z" /></svg></button>
+      </nav>
+    </details>
+    <nav class="docs-mobile-tabs" aria-label={isChinese ? '常用文档' : 'Popular documentation'}>
+      <div class="docs-mobile-tab-track" data-doc-primary-tabs>
+        {primaryNavItems.map((item) => (
+          <a
+            aria-current={config.current === item.id ? 'page' : undefined}
+            aria-label={item.label}
+            title={item.label}
+            href={item.href}
+          >{item.compact}</a>
+        ))}
+      </div>
+      <a
+        class="docs-mobile-tab-more"
+        aria-current={isMoreCurrent ? 'page' : undefined}
+        aria-label={isMoreCurrent
+          ? (isChinese ? `${currentDoc.label}，当前页` : `${currentDoc.label}, current page`)
+          : labels.more}
+        href={isMoreCurrent ? canonicalPath : `${productPath}#docs-library`}
+      >{isMoreCurrent ? secondaryCompactLabel : labels.menu}</a>
+    </nav>
+    <span class="docs-reading-progress" aria-hidden="true"><i data-doc-progress></i></span>
+  </header>
+
+  <main
+    id="main-content"
+    class="docs-layout"
+    tabindex="-1"
+    data-doc-copy-section={labels.copySection}
+    data-doc-copying-section={labels.copyingSection}
+    data-doc-copied-section={labels.copiedSection}
+    data-doc-copy-section-failed={labels.copySectionFailed}
+  >
+    <details class="docs-toc-mobile">
+      <summary aria-label={labels.toc}>
+        <small>{labels.toc}</small>
+        <span><i data-doc-toc-current-number>01</i><strong data-doc-toc-current-label>{config.toc[0]?.label}</strong></span>
+      </summary>
+      <nav aria-label={labels.toc} data-doc-toc-mobile>
+        {config.toc.map((item, index) => (
+          <a
+            href={'#' + item.id}
+            data-doc-toc-link={item.id}
+            data-doc-toc-index={String(index + 1).padStart(2, '0')}
+            data-doc-toc-label={item.label}
+            aria-current={index === 0 ? 'location' : undefined}
+          >
+            <i>{String(index + 1).padStart(2, '0')}</i><span>{item.label}</span>
+          </a>
+        ))}
+      </nav>
+    </details>
+    <aside class="docs-toc" aria-label={labels.toc}>
+      <p>{seriesLabel}</p>
+      <nav data-doc-toc>
+        {config.toc.map((item, index) => (
+          <a
+            href={'#' + item.id}
+            data-doc-toc-link={item.id}
+            data-doc-toc-index={String(index + 1).padStart(2, '0')}
+            data-doc-toc-label={item.label}
+            aria-current={index === 0 ? 'location' : undefined}
+          >
+            <i>{String(index + 1).padStart(2, '0')}</i>{item.label}
+          </a>
+        ))}
+      </nav>
+      <small set:html={config.revisionLabel.replace('\n', '<br />')} />
+    </aside>
+
+    <article class:list={['docs-article', config.articleClass]}>
+      <slot />
+      <nav class="docs-journey" aria-label={labels.continue}>
+        <div class="docs-journey-head">
+          <span>{labels.continue}</span>
+          <a href={homePath}>{labels.returnProduct} <i aria-hidden="true">↗</i></a>
+        </div>
+        <div class="docs-journey-grid">
+          {previousDoc ? (
+            <a href={previousDoc.href} rel="prev">
+              <small>{labels.previous}</small>
+              <strong>{previousDoc.label}</strong>
+              <span>{previousDoc.description}</span>
+            </a>
+          ) : (
+            <a href={homePath} rel="prev">
+              <small>{labels.previous}</small>
+              <strong>{labels.product}</strong>
+              <span>{isChinese ? '回到 Peanup 的完整产品故事' : 'Return to the complete Peanup product story'}</span>
+            </a>
+          )}
+          {nextDoc ? (
+            <a href={nextDoc.href} rel="next">
+              <small>{labels.next}</small>
+              <strong>{nextDoc.label}</strong>
+              <span>{nextDoc.description}</span>
+            </a>
+          ) : (
+            <a href={homePath} rel="next">
+              <small>{labels.next}</small>
+              <strong>{labels.product}</strong>
+              <span>{isChinese ? '带着工程细节回到产品体验' : 'Return to the product with the engineering context'}</span>
+            </a>
+          )}
+        </div>
+      </nav>
+    </article>
+  </main>
+
+  <footer class="docs-footer">
+    <a class="brand footer-brand" href={homePath} aria-label={labels.home}>
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+      <span>{labels.brand} {isChinese && <b>Peanup</b>}</span>
+    </a>
+    <nav class="footer-links" aria-label={labels.footerNav}>
+      <a href={homePath}>{labels.product}</a>
+      <a href="mailto:i@caiths.com">i@caiths.com</a>
+      <a href="https://github.com/poboll/peanup-web" target="_blank" rel="noreferrer">GitHub</a>
+      <a lang={labels.alternateLang} href={alternatePath} hreflang={labels.alternateLang}>{labels.alternate}</a>
+    </nav>
+    <span>© 2026 PEANUP</span>
+  </footer>
+
+  <script>
+    import '../../scripts/docsNavigation';
+  </script>
+</BaseLayout>

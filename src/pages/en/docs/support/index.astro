@@ -1,0 +1,154 @@
+---
+import DocsShell from '../../../../components/docs/DocsShell.astro';
+import type { DocPageConfig } from '../../../../types/docs';
+
+const toc = [
+  ['overview', 'At a glance'],
+  ['before-backing', 'Before backing'],
+  ['care', 'Everyday care'],
+  ['software', 'Software & updates'],
+  ['self-help', 'Start with the stage'],
+  ['request', 'Prepare a useful report'],
+  ['service-terms', 'Service boundaries'],
+  ['faq', 'FAQ'],
+];
+
+const faqs: Array<[string, string]> = [
+  ['Are warranty, returns and repair terms final?', 'No. Before pledges open, the Kickstarter page will publish eligible regions, warranty coverage, return conditions, shipping-damage handling, repair or replacement paths and their limits.'],
+  ['Can I keep using a cracked or pressure-damaged e-paper panel?', 'Do not keep pressing, bending or charging it. The panel is a precision component. Stop using the device and contact support so the physical condition can be assessed.'],
+  ['What should I try first when Qi charging does not start?', 'Remove metal plates, thick cases and debris, then place Peanup flat and centered on a compatible Qi charger. Stop immediately if it is damp, smells unusual or becomes noticeably hot.'],
+  ['Will the current frame disappear when I change phones?', 'A completed e-paper frame remains without a continuous phone connection. Managing the device from a new phone will depend on the final app migration, binding and compatibility flow.'],
+  ['Must I send a private photograph when asking for help?', 'No. Start with the visible status, error text, device and system versions, and the stage that stopped. Only share a processed example frame if it is genuinely needed and you choose to do so.'],
+  ['Can a Kickstarter pledge be refunded like a normal online order?', 'A Kickstarter pledge is not an ordinary retail purchase. Cancellation, refunds, delivery and project risk follow the final campaign terms and platform rules, which will be explained before pledges open.'],
+];
+
+const supportTemplate = `Peanup support information
+Phone model:
+System version:
+Peanup app version:
+Device name or identifier:
+Stage: discovery / connection / transfer / refresh / Qi / NFC / other
+Time and frequency:
+Steps already tried:
+Visible error text:
+
+Do not include access credentials, passwords or unnecessary private source photos.`;
+
+const config: DocPageConfig = {
+  title: 'Peanup Support & Ownership | Care and Service',
+  description: 'Learn how to care for Peanup, prepare a useful support request, and which warranty, returns, repair and delivery terms must be published before Kickstarter pledges open.',
+  locale: 'en',
+  current: 'support',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'SUPPORT & LONG-TERM USE',
+  revisionLabel: 'Crowdfunding preview\nUpdated 2026.07.31',
+  datePublished: '2026-07-31',
+  dateModified: '2026-07-31',
+  schemaType: 'TechArticle',
+  articleClass: 'docs-support',
+  faqs,
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / SUPPORT & SERVICE</span><b>01</b></div>
+    <h1>A frame can keep showing.<br />Service boundaries should stay clear.</h1>
+    <p class="docs-deck">This page does not turn untested plans into promises. It explains how to care for Peanup, where to begin when something stops, and which warranty, return and long-term service details must be public before anyone pledges.</p>
+    <div class="docs-fact-strip" aria-label="Support and long-term use summary">
+      <span><b>CARE</b><small>Protect the panel and body</small></span>
+      <span><b>UPDATE</b><small>Keep the current frame</small></span>
+      <span><b>SUPPORT</b><small>Report useful state</small></span>
+      <span><b>TERMS</b><small>Publish before pledges</small></span>
+    </div>
+    <p class="docs-status"><i></i> Public guides and email are available · final service terms are not announced</p>
+  </section>
+
+  <section class="docs-section" id="before-backing">
+    <header><span>02 / BEFORE BACKING</span><h2>Know what exists today.<br />Know what still needs an answer.</h2></header>
+    <div class="docs-claim-levels">
+      <article><span>AVAILABLE TODAY</span><h3>Information you can use now</h3><p>Product evidence, six-color imaging, setup help, platform conditions, privacy guidance and a contact address are already public and linked by task.</p></article>
+      <article><span>BEFORE PLEDGES</span><h3>Terms that must be published</h3><p>Warranty length, returns, shipping damage, repair or replacement, supported regions, shipping and taxes, and software support periods need one clear campaign statement.</p></article>
+      <article><span>FINAL HARDWARE</span><h3>Evidence that needs the object</h3><p>Charging heat, endurance, packaging, panel protection and recovery behavior must be measured on production-intent hardware before they can shape service rules.</p></article>
+    </div>
+    <div class="docs-policy">
+      <strong>A Kickstarter pledge is not an ordinary online order</strong>
+      <p>Reward tiers, cancellation, refunds, estimated delivery and project risk follow the final campaign terms and platform rules. This preview does not accept payment or present unpublished terms as finished promises.</p>
+    </div>
+  </section>
+
+  <section class="docs-section" id="care">
+    <header><span>03 / EVERYDAY CARE</span><h2>Treat it like a precise print.<br />Treat it like an electronic object.</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>DISPLAY</span><h3>Avoid bending, impact and point pressure</h3><p>E-paper is not designed for concentrated pressure. Keep keys and hard objects away, and do not wedge the device where it will flex repeatedly.</p></article>
+      <article><span>SURFACE</span><h3>Dry first, then clean gently</h3><p>Disconnect charging and use a soft dry cloth. Keep liquid away from seams, and avoid strong solvents or abrasive tools.</p></article>
+      <article><span>POWER</span><h3>Charge flat with room for heat</h3><p>Remove metal debris and align a compatible Qi charger. Stop using the device if it is damp, smells unusual or becomes noticeably hot.</p></article>
+    </div>
+    <a class="docs-context-link" href="/en/docs/hardware/#care">Review complete hardware care and Qi conditions <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="software">
+    <header><span>04 / SOFTWARE & UPDATES</span><h2>After the phone disconnects,<br />the current frame stays.</h2></header>
+    <div class="docs-split">
+      <p class="docs-lead">A completed e-paper refresh does not need a continuous phone connection. The app, Shortcuts and content services prepare the next frame; they do not hold the one already displayed.</p>
+      <div class="docs-copy">
+        <p>System versions, app compatibility, device migration, firmware recovery and the software support period all affect long-term use. They require final hardware and platform validation rather than assumptions from a web demonstration.</p>
+        <p>Connected content may depend on third-party services. Local photographs and completed six-color frames should remain clearly separated from weather, reading and other network sources.</p>
+      </div>
+    </div>
+    <p class="docs-note"><b>A new phone does not erase the frame</b><span>The displayed frame is held by the e-paper state. Whether a new phone can manage, migrate and automate the device will follow the final app flow and compatibility statement.</span></p>
+  </section>
+
+  <section class="docs-section" id="self-help">
+    <header><span>05 / START WITH THE STAGE</span><h2>Find where the update stopped.<br />Then decide whether support is needed.</h2></header>
+    <ol class="docs-steps">
+      <li><span>01 / READ</span><strong>Keep the visible state</strong><p>Note the device name, error text and current stage before choosing another image.</p></li>
+      <li><span>02 / CHECK</span><strong>Run the one-minute check</strong><p>Confirm power, permissions, distance, Qi alignment and the connection stage.</p></li>
+      <li><span>03 / RETRY</span><strong>Resume from the failed stage</strong><p>Keep the completed frame after an interruption instead of repeating crop and conversion.</p></li>
+      <li><span>04 / REPORT</span><strong>Contact support if it still stops</strong><p>Provide system, app, device and stage details so the behavior can be reproduced.</p></li>
+    </ol>
+    <div class="docs-context-links">
+      <a class="docs-context-link" href="/en/docs/troubleshooting/#quick-check">Open the one-minute check <span aria-hidden="true">→</span></a>
+      <a class="docs-context-link" href="/en/docs/compatibility/">Review platform and feature conditions <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <section class="docs-section" id="request">
+    <header><span>06 / USEFUL SUPPORT REQUEST</span><h2>It does not need to be long.<br />It needs the useful state.</h2></header>
+    <div class="docs-grid docs-grid--two">
+      <article><span>DEVICE</span><h3>Phone, system and app</h3><p>Include the phone model, system version, Peanup app version and device name or identifier.</p></article>
+      <article><span>STAGE</span><h3>The exact stage that stopped</h3><p>State whether it is discovery, connection, transfer, refresh, Qi, NFC, appearance or shipping.</p></article>
+      <article><span>REPEAT</span><h3>Time, frequency and steps tried</h3><p>Say roughly when it happened, whether it repeats, and what changed after moving closer, charging or restoring permission.</p></article>
+      <article><span>PRIVACY</span><h3>Leave unnecessary private data out</h3><p>Do not send passwords, access credentials or private source photos. Start with error text and a tightly cropped status screenshot.</p></article>
+    </div>
+    <div class="docs-context-links">
+      <button class="docs-context-link" type="button" data-doc-copy-text={supportTemplate} data-doc-copy-label="Copy support information template" data-doc-copy-success="Support information template copied" data-doc-copy-failed="Copy failed. Try again."><span data-doc-copy-status aria-live="polite">Copy support information template</span></button>
+      <a class="docs-context-link" href="mailto:i@caiths.com">Email i@caiths.com <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <section class="docs-section" id="service-terms">
+    <header><span>07 / SERVICE BOUNDARIES</span><h2>Publish what is known.<br />Leave measurements to real hardware.</h2></header>
+    <div class="docs-table-wrap" tabindex="0" aria-label="Peanup support and service publication status">
+      <table class="docs-table">
+        <thead><tr><th scope="col">Area</th><th scope="col">Status today</th><th scope="col">To publish before pledges</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Public guides</th><td>Product, image, setup, platform, privacy and engineering boundaries</td><td>Revise with the final app and hardware</td></tr>
+          <tr><th scope="row">Contact</th><td>i@caiths.com</td><td>Supported languages, regions and service-time boundaries</td></tr>
+          <tr><th scope="row">Warranty and repair</th><td>Final terms not announced</td><td>Period, coverage, exclusions, repair or replacement path</td></tr>
+          <tr><th scope="row">Returns and refunds</th><td>This preview accepts no payment</td><td>Kickstarter tiers, cancellation, refunds and return conditions</td></tr>
+          <tr><th scope="row">Shipping damage</th><td>Packaging tests require final hardware</td><td>Delivery inspection, evidence and replacement process</td></tr>
+          <tr><th scope="row">Software support</th><td>iOS and Shortcuts are the primary experience</td><td>System versions, maintenance period, migration and recovery</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <a class="docs-context-link" href="/en/docs/campaign/#before-pledge">Review the full pre-pledge publication list <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section docs-faq" id="faq">
+    <header><span>08 / FAQ</span><h2>Questions about keeping Peanup useful.</h2></header>
+    <div class="docs-accordion">
+      {faqs.map(([question, answer], index) => <details><summary><i>{String(index + 1).padStart(2, '0')}</i><span>{question}</span></summary><p>{answer}</p></details>)}
+    </div>
+  </section>
+</DocsShell>

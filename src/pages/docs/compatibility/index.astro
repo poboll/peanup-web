@@ -1,0 +1,143 @@
+---
+import DocsShell from '../../../components/docs/DocsShell.astro';
+import type { DocPageConfig } from '../../../types/docs';
+
+const toc = [
+  ['overview', '快速理解'],
+  ['platforms', '平台矩阵'],
+  ['apple', 'Apple 生态'],
+  ['wechat', '微信小程序'],
+  ['web', '网页体验'],
+  ['bluetooth', '蓝牙边界'],
+  ['nfc', 'CUID NFC'],
+  ['accessibility', '阅读与无障碍'],
+  ['checklist', '选择路径'],
+];
+
+const config: DocPageConfig = {
+  title: 'Peanup 兼容与平台｜iPhone、快捷指令、微信与 CUID NFC',
+  description: 'Peanup 平台兼容说明：iPhone 与 iPad、Apple 快捷指令、微信小程序、网页预览、Bluetooth Low Energy、第三方接入与 CUID NFC 条件。',
+  locale: 'zh-cn',
+  current: 'compatibility',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'PLATFORMS & COMPATIBILITY',
+  revisionLabel: '众筹预览版\n更新于 2026.07.31',
+  datePublished: '2026-07-29',
+  dateModified: '2026-07-31',
+  schemaType: 'WebPage',
+  articleClass: 'docs-compatibility-page',
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / PLATFORMS</span><b>01</b></div>
+    <h1>从 iPhone 开始，<br />也为更多设备留出入口。</h1>
+    <p class="docs-deck">iPhone 是 Peanup 的主要体验：拍照、预览、发送与自动化在一条路径里完成。iPad、微信小程序、网页体验和后续接入各自承担不同角色。</p>
+    <div class="docs-fact-strip" aria-label="平台摘要">
+      <span><b>iOS</b><small>主要 App 体验</small></span>
+      <span><b>iPadOS</b><small>整理与近场发送</small></span>
+      <span><b>WECHAT</b><small>其他设备传图入口</small></span>
+      <span><b>BLE</b><small>附近设备更新</small></span>
+    </div>
+    <p class="docs-status"><i></i> 众筹目标能力 · 最终平台范围以首发版本和系统权限为准</p>
+  </section>
+
+  <section class="docs-section" id="platforms">
+    <header><span>02 / PLATFORM MATRIX</span><h2>同一幅画面，<br />从不同入口来到纸上。</h2></header>
+    <div class="docs-table-wrap docs-compatibility" tabindex="0" aria-label="平台兼容矩阵">
+      <table class="docs-table">
+        <thead><tr><th scope="col">平台</th><th scope="col">计划体验</th><th scope="col">当前口径</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">iPhone</th><td>拍照、导入、六色预览、BLE 发送与快捷指令</td><td>首要产品路径</td></tr>
+          <tr><th scope="row">iPad</th><td>导入、排版、六色预览与近场发送</td><td>与 iOS App 一起验证</td></tr>
+          <tr><th scope="row">Android</th><td>通过微信小程序选择内容并传图</td><td>不承诺独立 Android App</td></tr>
+          <tr><th scope="row">网页</th><td>体验六色预览、文字和内容样式</td><td>当前网页不直接控制硬件</td></tr>
+          <tr><th scope="row">第三方接入</th><td>通过快捷指令或后续公开接口扩展内容</td><td>众筹后的扩展方向</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="docs-section" id="apple">
+    <header><span>03 / APPLE ECOSYSTEM</span><h2>拍、看、传，<br />尽量留在熟悉的系统里。</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>PEANUP APP</span><h3>完成一幅画面</h3><p>拍摄或导入照片，调整裁切，预览六色效果，再发送给附近的 Peanup。</p></article>
+      <article><span>SHARE SHEET</span><h3>从其他 App 开始</h3><p>计划通过系统分享入口把照片或文字交给 Peanup 处理，减少重复导入。</p></article>
+      <article><span>SHORTCUTS</span><h3>把重复交给自动化</h3><p>日历、天气、书摘和固定版式可以由 Apple 快捷指令准备下一帧。</p></article>
+    </div>
+    <ol class="docs-app-flow" aria-label="Peanup App 四步界面">
+      <li><span>01 / LOCAL</span><strong>整理一帧</strong><p>拍照或导入，裁切与六色转换在 iPhone 或 iPad 上完成。</p></li>
+      <li><span>02 / CONTENT</span><strong>选择内容</strong><p>照片、日历、天气和书摘共用一套清楚的预览路径。</p></li>
+      <li><span>03 / SHORTCUTS</span><strong>准备自动化</strong><p>由 Siri、小组件或个人自动化准备下一幅画面。</p></li>
+      <li><span>04 / TRANSFER</span><strong>看见更新进度</strong><p>在 App 内确认连接、传输和电子纸刷新的当前状态。</p></li>
+    </ol>
+    <p class="docs-caption">快捷指令能否自动运行，取决于 iOS 权限、触发条件、内容服务和 Peanup 是否在附近。</p>
+    <a class="docs-context-link" href="/docs/shortcuts/">查看 Apple 快捷指令的完整边界与示例 <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="wechat">
+    <header><span>04 / WECHAT MINI PROGRAM</span><h2>没有独立 Android App，<br />也能保留一条传图路径。</h2></header>
+    <div class="docs-split">
+      <p class="docs-lead">微信小程序是其他设备的计划入口，用于选图、预览并向附近的 Peanup 发送画面。</p>
+      <div class="docs-copy">
+        <p>小程序能力会受到微信权限、手机系统、蓝牙支持与审核规则影响。网站不会把它写成已经发布的原生 Android App。</p>
+        <p>照片处理和设备连接的最终实现会以首发小程序为准；需要联网的内容只在获取对应信息时使用网络。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="docs-section" id="web">
+    <header><span>05 / WEB EXPERIENCE</span><h2>网页让你先试，<br />但不冒充硬件控制器。</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>PREVIEW</span><h3>先看六色关系</h3><p>上传照片或输入文字，观察裁切、纸纹与六色预览。</p></article>
+      <article><span>PRIVACY</span><h3>预览留在浏览器</h3><p>当前在线体验在本地处理输入，不把照片作为设备绑定资料上传。</p></article>
+      <article><span>BOUNDARY</span><h3>不直接连接 Peanup</h3><p>产品网页用于演示与说明；真实传图由 App 或小程序完成。</p></article>
+    </div>
+    <a class="docs-context-link" href="/#motion">回到产品页体验四幕电子纸舞台 <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="bluetooth">
+    <header><span>06 / BLUETOOTH</span><h2>靠近、授权、发送，<br />完成后回到空闲。</h2></header>
+    <ol class="docs-steps">
+      <li><span>01 / PERMISSION</span><strong>允许蓝牙</strong><p>系统需要允许 App 或小程序查找附近设备。</p></li>
+      <li><span>02 / NEARBY</span><strong>保持靠近</strong><p>发送期间把 Peanup 留在手机附近，减少中断。</p></li>
+      <li><span>03 / SINGLE OWNER</span><strong>避免重复连接</strong><p>如果另一台设备正在连接，请先断开再重试。</p></li>
+      <li><span>04 / FINISH</span><strong>等待刷屏完成</strong><p>App 显示完成后再移开设备，连接随后回到空闲。</p></li>
+    </ol>
+    <p class="docs-note"><b>蓝牙不负责保持画面</b><span>电子纸刷新后会自行保持。BLE 只负责把新的完成帧送到附近设备。</span></p>
+  </section>
+
+  <section class="docs-section" id="nfc">
+    <header><span>07 / CUID NFC</span><h2>能否成为门禁卡，<br />由门禁系统决定。</h2></header>
+    <div class="docs-policy">
+      <strong>系统支持 + 管理方授权 + 当地规则</strong>
+      <p>只有读卡器支持 CUID、管理方允许录入并符合当地规则时，Peanup 才可能作为门禁卡使用。不兼容的系统无法使用，Peanup 也不能创建或绕过通行权限。</p>
+    </div>
+    <a class="docs-context-link" href="/docs/privacy/#nfc">查看 NFC 标识与通行数据边界 <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="accessibility">
+    <header><span>08 / ACCESSIBILITY</span><h2>信息不只靠颜色，<br />动效也不应该成为门槛。</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>CURRENT WEBSITE</span><h3>键盘、触摸与减少动态</h3><p>产品页的场景、内容模式和手机状态都可以用键盘或触摸操作。系统选择“减少动态效果”时，页面会缩短或取消非必要位移。</p></article>
+      <article><span>COLOR & LIGHT</span><h3>颜色旁边保留文字</h3><p>六色色板、状态和步骤同时使用名称、编号或形状，不只依赖颜色。电子纸没有背光，实际阅读仍需要合适的环境光。</p></article>
+      <article><span>APP TARGET</span><h3>首发前验证系统辅助能力</h3><p>iOS App 的 VoiceOver 名称、动态字体、焦点顺序和对比度属于发布前验收项；正式众筹页会说明首发版本已经完成的范围。</p></article>
+    </div>
+    <p class="docs-note"><b>网页预览不是辅助设备声明</b><span>Peanup 是以视觉内容为主的电子纸产品。网站的键盘、文字替代和减少动态支持，不代表实物已经获得任何无障碍认证。</span></p>
+  </section>
+
+  <section class="docs-section" id="checklist">
+    <header><span>09 / CHOOSE A PATH</span><h2>你想做什么，<br />就从对应入口开始。</h2></header>
+    <ol class="docs-steps">
+      <li><span>01</span><strong>iPhone 拍照传图</strong><p>使用 Peanup App 完成拍摄、预览和发送。</p></li>
+      <li><span>02</span><strong>让内容自动更新</strong><p>继续阅读 Apple 快捷指令，确认权限与触发条件。</p></li>
+      <li><span>03</span><strong>从其他设备传图</strong><p>使用计划中的微信小程序入口，而不是寻找独立 Android App。</p></li>
+      <li><span>04</span><strong>了解充电与摆放</strong><p>打开硬件与电源指南，查看 Qi、磁吸、续航和保养。</p></li>
+    </ol>
+    <div class="docs-context-links">
+      <a class="docs-context-link" href="/docs/hardware/">打开硬件与电源指南 <span aria-hidden="true">→</span></a>
+      <a class="docs-context-link" href="/docs/troubleshooting/">连接停住了？打开排查指南 <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+</DocsShell>

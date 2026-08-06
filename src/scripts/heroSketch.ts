@@ -57,7 +57,9 @@ class Swallow {
     this.cpY = my - (dx / distance) * distance * p.random(.2, .38);
     this.delay = index / 29 * 1050;
     this.duration = p.random(2800, 4200);
-    this.scale = p.random(.42, .68);
+    // Keep the flock readable at the wide desktop stage. The silhouette is
+    // still delicate on mobile, but no longer collapses into pin-pricks.
+    this.scale = p.random(.5, .76);
     this.phase = p.random(p.TWO_PI);
     for (const side of [-1, 1]) {
       const tail = side < 0 ? this.tailL : this.tailR;
@@ -72,14 +74,20 @@ const mount = document.querySelector<HTMLElement>('#nature-canvas');
 const gallery = mount?.closest<HTMLElement>('.ink-gallery');
 
 if (mount && gallery) {
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // The stage is scroll/click driven, so its core drawing motion remains
+  // available even when a browser reports reduced motion. Only idle sway is
+  // suppressed; otherwise Arc and embedded WebViews can lose whole scenes.
+  const reduceAmbientMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const caption = gallery.querySelector<HTMLElement>('.ink-screen-caption');
-  const labels = Array.from(gallery.querySelectorAll<HTMLElement>('[data-ink-label]'));
+  const stagePanel = gallery.querySelector<HTMLElement>('#ink-stage-panel');
+  const labels = Array.from(gallery.querySelectorAll<HTMLButtonElement>('[data-ink-label]'));
   const phaseNames = {
     rain: ['RAIN CURTAIN', '01 / 04'],
     branch: ['BLOOMING BRANCH', '02 / 04'],
     bird: ['SWALLOW FLIGHT', '03 / 04'],
-    experience: ['YOUR IMAGE', 'READY'],
+    // The live studio owns its own prompt and controls. Keep the canvas
+    // fallback empty so a delayed scene never flashes a generic placeholder.
+    experience: ['', ''],
   } as const;
   type Phase = keyof typeof phaseNames;
   const sceneCopy = (phase: Phase) => {
@@ -116,12 +124,16 @@ if (mount && gallery) {
     let pluckStartedAt = -2000;
     let pluckX = 0;
     let currentPhase: keyof typeof phaseNames = 'rain';
+    let lastScrollY = window.scrollY;
+    let firstFrameReady = false;
     const transitionCanvas = document.createElement('canvas');
     const transitionContext = transitionCanvas.getContext('2d');
     let hasTransitionFrame = false;
     const materialCanvas = document.createElement('canvas');
     const materialContext = materialCanvas.getContext('2d', { willReadFrequently: true });
     const spectraPalette = [[31,34,38], [226,230,225], [35,63,142], [53,86,58], [98,32,30], [193,187,30]] as const;
+    let materialRowError = new Float32Array(0);
+    let materialNextError = new Float32Array(0);
     const refreshDuration = 880;
     const perchedBirdIndices = [0, 3, 6, 9, 12, 15, 18, 21, 24, 27] as const;
     const perchLayout = [
@@ -153,10 +165,11 @@ if (mount && gallery) {
       refreshActive = false;
     };
 
-    const setPhase = (phase: keyof typeof phaseNames, replay = false) => {
+    const setPhase = (phase: keyof typeof phaseNames, replay = false, animate = true) => {
       if (phase === currentPhase && !replay) return;
       const previousPhase = currentPhase;
-      if (transitionContext && p.canvas && p.width > 0 && p.height > 0) {
+      const shouldAnimate = animate && firstFrameReady;
+      if (shouldAnimate && transitionContext && p.canvas && p.width > 0 && p.height > 0) {
         transitionCanvas.width = Math.round(p.width);
         transitionCanvas.height = Math.round(p.height);
         if (previousPhase !== 'experience') {
@@ -167,9 +180,9 @@ if (mount && gallery) {
           hasTransitionFrame = false;
         }
       }
-      gallery.style.setProperty('--ink-write-top', '100%');
+      gallery.style.setProperty('--ink-write-top', shouldAnimate ? '100%' : '0%');
       gallery.style.setProperty('--ink-write-opacity', '0');
-      gallery.classList.toggle('is-leaving-experience', previousPhase === 'experience' && phase !== 'experience');
+      gallery.classList.toggle('is-leaving-experience', shouldAnimate && previousPhase === 'experience' && phase !== 'experience');
       gallery.classList.remove('is-live-ready');
       currentPhase = phase;
       gallery.dataset.phase = phase;
@@ -177,8 +190,9 @@ if (mount && gallery) {
         const active = label.dataset.inkLabel === phase;
         label.classList.toggle('active', active);
         label.closest('li')?.classList.toggle('active', active);
-        if (active) label.setAttribute('aria-current', 'true');
-        else label.removeAttribute('aria-current');
+        label.setAttribute('aria-selected', String(active));
+        label.tabIndex = active ? 0 : -1;
+        if (active && stagePanel) stagePanel.setAttribute('aria-labelledby', label.id);
       });
       const copy = sceneCopy(phase);
       const captionTitle = caption?.querySelector<HTMLElement>('b');
@@ -194,6 +208,15 @@ if (mount && gallery) {
       if (phase === 'branch') resetBranches();
       if (phase === 'bird') {
         buildBirds();
+      }
+      if (!shouldAnimate) {
+        window.clearTimeout(refreshCompletionTimer);
+        hasTransitionFrame = false;
+        refreshActive = false;
+        gallery.classList.remove('is-refreshing', 'is-leaving-experience');
+        gallery.classList.toggle('is-live-ready', phase === 'experience');
+        p.redraw();
+        return;
       }
       refreshStartedAt = p.millis();
       refreshActive = true;
@@ -215,8 +238,10 @@ if (mount && gallery) {
       branchFrame = 0;
       p.randomSeed(8128);
       for (let i = 0; i < 5; i += 1) {
-        const x = p.width * .5 + p.random(-4, 4);
-        const angle = -p.HALF_PI + p.map(i, 0, 4, -.3, .3) + p.random(-.04, .04);
+        // Five separate stems begin across the vase mouth. The old +/-4px
+        // jitter made every root share one trunk on the 419px stage.
+        const x = p.width * (.43 + i * .035) + p.random(-2.5, 2.5);
+        const angle = -p.HALF_PI + p.map(i, 0, 4, -.42, .42) + p.random(-.035, .035);
         branches.push(new GrowingBranch(x, p.height * .73, angle, 1, p.floor(p.random(27, 35)), i * 17));
       }
     };
@@ -258,10 +283,24 @@ if (mount && gallery) {
       context.restore();
     };
 
+    const nearestMaterialInk = (r: number, g: number, b: number) => {
+      const lightness = r * .2126 + g * .7152 + b * .0722;
+      const chroma = Math.max(r, g, b) - Math.min(r, g, b);
+      if (lightness > 205 && chroma < 34) return spectraPalette[1];
+      let result: readonly [number, number, number] = spectraPalette[0];
+      let distance = Number.POSITIVE_INFINITY;
+      for (const ink of spectraPalette) {
+        const dr = r - ink[0]; const dg = g - ink[1]; const db = b - ink[2];
+        const next = dr * dr * .27 + dg * dg * .66 + db * db * .07;
+        if (next < distance) { distance = next; result = ink; }
+      }
+      return result;
+    };
+
     const applyEpaperMaterial = () => {
       if (!materialContext || !p.canvas) return;
       const width = window.innerWidth < 680
-        ? Math.max(360, Math.round(p.width * 1.15))
+        ? Math.max(240, Math.min(360, Math.round(p.width)))
         : Math.min(600, Math.max(480, Math.round(p.width * 1.25)));
       const height = Math.round(width * p.height / Math.max(1, p.width));
       const resized = materialCanvas.width !== width || materialCanvas.height !== height;
@@ -272,36 +311,75 @@ if (mount && gallery) {
       materialContext.imageSmoothingEnabled = true;
       materialContext.drawImage(p.canvas, 0, 0, width, height);
       const image = materialContext.getImageData(0, 0, width, height);
-      const work = new Float32Array(image.data);
-      const nearestInk = (r: number, g: number, b: number) => {
-        const lightness = r * .2126 + g * .7152 + b * .0722;
-        const chroma = Math.max(r, g, b) - Math.min(r, g, b);
-        if (lightness > 205 && chroma < 34) return spectraPalette[1];
-        let result: readonly [number, number, number] = spectraPalette[0];
-        let distance = Number.POSITIVE_INFINITY;
-        for (const ink of spectraPalette) {
-          const dr = r - ink[0]; const dg = g - ink[1]; const db = b - ink[2];
-          const next = dr * dr * .27 + dg * dg * .66 + db * db * .07;
-          if (next < distance) { distance = next; result = ink; }
-        }
-        return result;
-      };
+      // Keep fine dark marks readable after palette quantization. E-paper
+      // texture should soften a photograph, not erase the branches, staff
+      // lines or small type that make a frame legible.
+      const sourceData = new Uint8ClampedArray(image.data);
+      const detailData = new Uint8ClampedArray(image.data.length);
+      const rowLength = (width + 2) * 3;
+      if (materialRowError.length !== rowLength) {
+        materialRowError = new Float32Array(rowLength);
+        materialNextError = new Float32Array(rowLength);
+      } else {
+        materialRowError.fill(0);
+        materialNextError.fill(0);
+      }
+      let rowError = materialRowError;
+      let nextError = materialNextError;
       for (let y = 0; y < height; y += 1) {
         const reverse = y % 2 === 1;
+        const direction = reverse ? -1 : 1;
         for (let step = 0; step < width; step += 1) {
           const x = reverse ? width - step - 1 : step;
           const index = (y * width + x) * 4;
-          const ink = nearestInk(work[index], work[index + 1], work[index + 2]);
-          const error = [work[index] - ink[0], work[index + 1] - ink[1], work[index + 2] - ink[2]];
+          const errorIndex = (x + 1) * 3;
+          const red = image.data[index] + rowError[errorIndex];
+          const green = image.data[index + 1] + rowError[errorIndex + 1];
+          const blue = image.data[index + 2] + rowError[errorIndex + 2];
+          const ink = nearestMaterialInk(red, green, blue);
+          const errorRed = red - ink[0];
+          const errorGreen = green - ink[1];
+          const errorBlue = blue - ink[2];
           image.data[index] = ink[0]; image.data[index + 1] = ink[1]; image.data[index + 2] = ink[2]; image.data[index + 3] = 255;
-          const spread = (dx: number, dy: number, weight: number) => {
-            const nx = x + (reverse ? -dx : dx); const ny = y + dy;
-            if (nx < 0 || nx >= width || ny >= height) return;
-            const target = (ny * width + nx) * 4;
-            for (let channel = 0; channel < 3; channel += 1) work[target + channel] += error[channel] * weight;
-          };
-          spread(1, 0, 7 / 16); spread(-1, 1, 3 / 16); spread(0, 1, 5 / 16); spread(1, 1, 1 / 16);
+          const sourceAlpha = sourceData[index + 3];
+          const sourceLightness = sourceData[index] * .2126 + sourceData[index + 1] * .7152 + sourceData[index + 2] * .0722;
+          if (sourceAlpha > 40 && sourceLightness < 126) {
+            detailData[index] = sourceData[index];
+            detailData[index + 1] = sourceData[index + 1];
+            detailData[index + 2] = sourceData[index + 2];
+            detailData[index + 3] = Math.min(255, Math.round(sourceAlpha * (.58 + (126 - sourceLightness) / 126 * .42)));
+          }
+
+          const neighbor = x + direction;
+          if (neighbor >= 0 && neighbor < width) {
+            const target = (neighbor + 1) * 3;
+            rowError[target] += errorRed * 7 / 16;
+            rowError[target + 1] += errorGreen * 7 / 16;
+            rowError[target + 2] += errorBlue * 7 / 16;
+          }
+          if (y + 1 < height) {
+            const opposite = x - direction;
+            if (opposite >= 0 && opposite < width) {
+              const target = (opposite + 1) * 3;
+              nextError[target] += errorRed * 3 / 16;
+              nextError[target + 1] += errorGreen * 3 / 16;
+              nextError[target + 2] += errorBlue * 3 / 16;
+            }
+            nextError[errorIndex] += errorRed * 5 / 16;
+            nextError[errorIndex + 1] += errorGreen * 5 / 16;
+            nextError[errorIndex + 2] += errorBlue * 5 / 16;
+            if (neighbor >= 0 && neighbor < width) {
+              const target = (neighbor + 1) * 3;
+              nextError[target] += errorRed / 16;
+              nextError[target + 1] += errorGreen / 16;
+              nextError[target + 2] += errorBlue / 16;
+            }
+          }
         }
+        const previousRow = rowError;
+        rowError = nextError;
+        nextError = previousRow;
+        nextError.fill(0);
       }
       materialContext.putImageData(image, 0, 0);
       const target = p.drawingContext as CanvasRenderingContext2D;
@@ -313,6 +391,11 @@ if (mount && gallery) {
       target.drawImage(materialCanvas, 0, 0, p.width, p.height);
       target.filter = 'none';
       target.globalAlpha = .965;
+      target.drawImage(materialCanvas, 0, 0, p.width, p.height);
+      const detailImage = materialContext.createImageData(width, height);
+      detailImage.data.set(detailData);
+      materialContext.putImageData(detailImage, 0, 0);
+      target.globalAlpha = .72;
       target.drawImage(materialCanvas, 0, 0, p.width, p.height);
       target.restore();
     };
@@ -429,7 +512,7 @@ if (mount && gallery) {
         const next = { x: tip.x + p.cos(branch.angle) * step, y: tip.y + p.sin(branch.angle) * step };
         branch.points.push(next);
         branch.grown += 1;
-        if (branch.grown % 3 === 0 && p.random() < .12) flowers.push({ branch, index: branch.points.length - 1, born: branchFrame, size: p.random(3.5, 7.5) });
+        if (branch.grown % 3 === 0 && p.random() < .17) flowers.push({ branch, index: branch.points.length - 1, born: branchFrame, size: p.random(5.5, 9) });
       }
     };
 
@@ -440,7 +523,7 @@ if (mount && gallery) {
 
     const branchOffset = (point: { y: number }, seed: number) => {
       const height = clamp01((p.height * .73 - point.y) / p.height);
-      return reducedMotion ? 0 : p.sin(p.frameCount * .025 + seed + point.y / 90) * 3.2 * height;
+      return reduceAmbientMotion ? 0 : p.sin(p.frameCount * .025 + seed + point.y / 90) * 3.2 * height;
     };
 
     const drawBranches = () => {
@@ -477,10 +560,8 @@ if (mount && gallery) {
       p.textAlign(p.LEFT);
       // Match the accepted production rhythm: branches grow while the e-paper
       // wipe reveals them, instead of waiting behind a blank 880 ms refresh.
-      if (!reducedMotion || branchFrame < 180) {
-        growBranches();
-        growBranches();
-      }
+      growBranches();
+      growBranches();
       for (const branch of branches) {
         if (branch.points.length < 2) continue;
         p.noFill();
@@ -490,15 +571,27 @@ if (mount && gallery) {
         branch.points.forEach((point) => p.vertex(point.x + branchOffset(point, branch.seed), point.y));
         p.endShape();
       }
-      const colors = [[98, 32, 30], [193, 187, 30], [53, 86, 58]];
+      const colors = [[98, 32, 30], [193, 187, 30], [53, 86, 58], [35, 63, 142]];
       for (const flower of flowers) {
         const point = flower.branch.points[flower.index];
         if (!point) continue;
         const bloom = clamp01((branchFrame - flower.born) / 45);
         const color = colors[(flower.index + flower.branch.level) % colors.length];
+        const ease = 1 - Math.pow(1 - bloom, 3);
+        const size = p.lerp(1.5, flower.size, ease);
+        p.push();
+        p.translate(point.x + branchOffset(point, flower.branch.seed), point.y);
+        p.rotate(flower.branch.angle + Math.sin(flower.index * .7) * .32);
+        p.scale(ease);
         p.noStroke();
-        p.fill(color[0], color[1], color[2], 255 * bloom);
-        p.circle(point.x + branchOffset(point, flower.branch.seed), point.y, p.lerp(2, flower.size * 1.35, 1 - Math.pow(1 - bloom, 3)));
+        p.fill(color[0], color[1], color[2], 240 * bloom);
+        for (let petal = 0; petal < 5; petal += 1) {
+          p.ellipse(0, -size * .38, size * .48, size * .82);
+          p.rotate(p.TWO_PI / 5);
+        }
+        p.fill(193, 187, 30, 245 * bloom);
+        p.circle(0, 0, Math.max(1.4, size * .3));
+        p.pop();
       }
       p.noStroke();
       p.fill(35, 63, 142);
@@ -601,7 +694,7 @@ if (mount && gallery) {
     const drawBirds = (scrollPhase: number) => {
       const copy = sceneCopy('bird');
       const pluckAge = p.millis() - pluckStartedAt;
-      const pluckEnergy = reducedMotion ? 0 : clamp01(1 - pluckAge / 900);
+      const pluckEnergy = clamp01(1 - pluckAge / 900);
       const flightProgress = scrollPhase;
       p.background(226, 230, 225);
       p.fill(31, 34, 38, 255);
@@ -719,16 +812,25 @@ if (mount && gallery) {
     p.setup = () => {
       sizeCanvas();
       p.frameRate(window.innerWidth < 680 ? 30 : 42);
+      rainDropAtlas = p.loadImage(
+        '/assets/rain-drops.webp',
+        (image) => { rainDropAtlas = image; p.redraw(); },
+        () => { rainDropAtlas = undefined; p.redraw(); },
+      );
       labels[0]?.classList.add('active');
       labels[0]?.closest('li')?.classList.add('active');
       const handleResize = () => { sizeCanvas(); p.redraw(); };
       const handleScroll = () => {
+        p.wake();
         const scroll = progress();
-        setPhase(phaseForProgress(scroll));
+        const nextScrollY = window.scrollY;
+        const jumpedAcrossScreens = Math.abs(nextScrollY - lastScrollY) > window.innerHeight * .72;
+        lastScrollY = nextScrollY;
+        setPhase(phaseForProgress(scroll), false, !jumpedAcrossScreens);
         p.redraw();
       };
       const pluckStrings = (event: PointerEvent) => {
-        if (currentPhase !== 'bird' || reducedMotion) return;
+        if (currentPhase !== 'bird') return;
         const rect = mount.getBoundingClientRect();
         pluckX = p.constrain(event.clientX - rect.left, 0, rect.width);
         pluckStartedAt = p.millis();
@@ -744,8 +846,8 @@ if (mount && gallery) {
         else p.redraw();
       });
       const phaseOrder: Array<keyof typeof phaseNames> = ['rain', 'branch', 'bird', 'experience'];
-      labels.forEach((label) => {
-        const activate = () => {
+      labels.forEach((label, labelIndex) => {
+        const activate = (moveFocus = false) => {
           const phase = label.dataset.inkLabel as keyof typeof phaseNames;
           const index = phaseOrder.indexOf(phase);
           if (index < 0) return;
@@ -754,21 +856,31 @@ if (mount && gallery) {
           setPhase(phase, replay);
           const top = window.scrollY + gallery.getBoundingClientRect().top;
           const distance = Math.max(1, gallery.offsetHeight - window.innerHeight);
-          window.scrollTo({ top: top + distance * ((index + .5) / phaseOrder.length), behavior: reducedMotion ? 'auto' : 'smooth' });
+          window.scrollTo({ top: top + distance * ((index + .5) / phaseOrder.length), behavior: 'smooth' });
           window.clearTimeout(phasePinTimer);
           phasePinTimer = window.setTimeout(() => {
             pinnedPhase = undefined;
             handleScroll();
-          }, reducedMotion ? 0 : 1200);
+          }, 1200);
+          if (moveFocus) label.focus();
         };
-        label.addEventListener('click', activate);
+        label.addEventListener('click', () => activate());
+        label.addEventListener('keydown', (event) => {
+          if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(event.key)) return;
+          event.preventDefault();
+          const backwards = event.key === 'ArrowLeft' || event.key === 'ArrowUp';
+          const nextIndex = event.key === 'Home'
+            ? 0
+            : event.key === 'End'
+              ? labels.length - 1
+              : (labelIndex + (backwards ? -1 : 1) + labels.length) % labels.length;
+          labels[nextIndex]?.click();
+          labels[nextIndex]?.focus();
+        });
       });
       p.noLoop();
+      p.wake();
       p.redraw();
-    };
-
-    p.preload = () => {
-      rainDropAtlas = p.loadImage('/assets/rain-drops.webp', undefined, () => undefined);
     };
 
     p.draw = () => {
@@ -786,6 +898,10 @@ if (mount && gallery) {
       const pluckAnimating = currentPhase === 'bird' && p.millis() - pluckStartedAt < 900;
       applyEpaperMaterial();
       drawRefresh();
+      if (!firstFrameReady) {
+        firstFrameReady = true;
+        requestAnimationFrame(() => mount.classList.add('is-ready'));
+      }
       if (!refreshActive && !branchAnimating && !pluckAnimating) p.noLoop();
     };
   }, mount);

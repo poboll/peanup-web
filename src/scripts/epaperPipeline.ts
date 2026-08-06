@@ -1,6 +1,27 @@
 const pipeline = document.querySelector<HTMLElement>('[data-epaper-pipeline]');
 const preview = pipeline?.querySelector<HTMLCanvasElement>('[data-epaper-preview]');
 const source = pipeline?.querySelector<HTMLImageElement>('.pipeline-source img');
+const output = pipeline?.querySelector<HTMLElement>('[data-epaper-output]');
+const modeLabel = pipeline?.querySelector<HTMLElement>('[data-epaper-mode-label]');
+
+type DitherMode = 'ordered' | 'diffusion' | 'spectra';
+
+const modeLabels: Record<DitherMode, string> = {
+  ordered: 'ORDERED 8×8',
+  diffusion: 'FLOYD–STEINBERG',
+  spectra: 'PERCEPTUAL MIX',
+};
+
+const bayer8 = [
+  [0, 48, 12, 60, 3, 51, 15, 63],
+  [32, 16, 44, 28, 35, 19, 47, 31],
+  [8, 56, 4, 52, 11, 59, 7, 55],
+  [40, 24, 36, 20, 43, 27, 39, 23],
+  [2, 50, 14, 62, 1, 49, 13, 61],
+  [34, 18, 46, 30, 33, 17, 45, 29],
+  [10, 58, 6, 54, 9, 57, 5, 53],
+  [42, 26, 38, 22, 41, 25, 37, 21],
+] as const;
 
 const palette = [
   [31, 34, 38],
@@ -11,14 +32,16 @@ const palette = [
   [193, 187, 30],
 ] as const;
 
-const nearest = (r: number, g: number, b: number) => {
+const nearest = (r: number, g: number, b: number, perceptual = false) => {
   let best: readonly [number, number, number] = palette[0];
   let distance = Number.POSITIVE_INFINITY;
   for (const color of palette) {
     const dr = r - color[0];
     const dg = g - color[1];
     const db = b - color[2];
-    const next = dr * dr * .3 + dg * dg * .59 + db * db * .11;
+    const next = perceptual
+      ? dr * dr * .27 + dg * dg * .66 + db * db * .07
+      : dr * dr * .3 + dg * dg * .59 + db * db * .11;
     if (next < distance) { best = color; distance = next; }
   }
   return best;
@@ -26,6 +49,8 @@ const nearest = (r: number, g: number, b: number) => {
 
 const render = () => {
   if (!preview || !source || !source.complete || !source.naturalWidth) return;
+  const requestedMode = pipeline?.dataset.ditherMode as DitherMode | undefined;
+  const mode: DitherMode = requestedMode && modeLabels[requestedMode] ? requestedMode : 'diffusion';
   const scale = Math.min(1, 960 / source.naturalWidth);
   const width = Math.max(1, Math.round(source.naturalWidth * scale));
   const height = Math.max(1, Math.round(source.naturalHeight * scale));
@@ -66,10 +91,13 @@ const render = () => {
     for (let step = 0; step < width; step += 1) {
       const x = reverse ? width - 1 - step : step;
       const index = (y * width + x) * 4;
-      const old = [data[index], data[index + 1], data[index + 2]];
-      const color = nearest(old[0], old[1], old[2]);
+      const threshold = mode === 'ordered' ? (bayer8[y % 8][x % 8] / 63 - .5) * 34 : 0;
+      const old = [data[index] + threshold, data[index + 1] + threshold, data[index + 2] + threshold];
+      const color = nearest(old[0], old[1], old[2], mode === 'spectra');
       image.data[index] = color[0]; image.data[index + 1] = color[1]; image.data[index + 2] = color[2];
-      const error = [old[0] - color[0], old[1] - color[1], old[2] - color[2]];
+      if (mode === 'ordered') continue;
+      const strength = mode === 'spectra' ? .58 : 1;
+      const error = [(old[0] - color[0]) * strength, (old[1] - color[1]) * strength, (old[2] - color[2]) * strength];
       const spread = (dx: number, dy: number, weight: number) => {
         const nx = x + (reverse ? -dx : dx); const ny = y + dy;
         if (nx < 0 || nx >= width || ny >= height) return;
@@ -80,6 +108,13 @@ const render = () => {
     }
   }
   context.putImageData(image, 0, 0);
+  output?.classList.add('is-ready');
+  if (modeLabel) modeLabel.textContent = modeLabels[mode];
+  if (output && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    output.classList.remove('is-refreshing');
+    void output.offsetWidth;
+    output.classList.add('is-refreshing');
+  }
 };
 
 let renderScheduled = false;
@@ -95,6 +130,12 @@ const scheduleRender = () => {
 };
 
 if (source && preview && pipeline) {
+  pipeline.addEventListener('peanup:dither-change', (event) => {
+    const mode = (event as CustomEvent<{ mode?: DitherMode }>).detail?.mode;
+    if (!mode || !modeLabels[mode]) return;
+    pipeline.dataset.ditherMode = mode;
+    render();
+  });
   source.addEventListener('load', scheduleRender, { once: true });
   scheduleRender();
   const observer = new IntersectionObserver(([entry]) => {

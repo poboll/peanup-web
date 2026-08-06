@@ -1,0 +1,154 @@
+---
+import DocsShell from '../../../components/docs/DocsShell.astro';
+import type { DocPageConfig } from '../../../types/docs';
+
+const toc = [
+  ['overview', '快速理解'],
+  ['before-backing', '支持以前'],
+  ['care', '日常保养'],
+  ['software', '软件与更新'],
+  ['self-help', '先自行排查'],
+  ['request', '准备支持信息'],
+  ['service-terms', '服务规则边界'],
+  ['faq', '常见问题'],
+];
+
+const faqs: Array<[string, string]> = [
+  ['保修期、退换和维修规则已经确定了吗？', '还没有。正式 Kickstarter 页面会在开放支持前公布适用地区、保修范围、退换条件、运输损坏处理、维修或换机路径，以及相关限制。'],
+  ['电子纸面板破裂或受压后还能继续使用吗？', '不要继续挤压、弯折或充电。面板属于精密部件；请停止使用并联系支持，根据实物状态判断后续处理。'],
+  ['Qi 充电没有反应，应该先做什么？', '移除金属片、厚壳和异物，把设备平放在兼容 Qi 充电器中央。若出现受潮、异味或明显发热，立即停止使用。'],
+  ['换手机以后，原来的画面会消失吗？', '电子纸完成写屏后会保持当前画面，不依赖手机持续连接。新手机能否继续管理设备，取决于最终 App 的迁移、绑定与兼容方案。'],
+  ['联系支持时必须发送私人照片吗？', '不必。优先提供状态截图、错误文字、设备与系统版本和停住的步骤。只有在确有必要且你主动同意时，才考虑提供经过处理的示例画面。'],
+  ['Kickstarter 支持可以像普通网购一样随时退款吗？', 'Kickstarter 支持不是普通零售订单。取消、退款、交付和风险会受正式项目条款及平台规则约束，开放支持前会集中说明。'],
+];
+
+const supportTemplate = `Peanup 支持信息
+手机型号：
+系统版本：
+Peanup App 版本：
+设备名称或编号：
+停住的步骤：发现 / 连接 / 发送 / 写屏 / Qi / NFC / 其他
+发生时间与频率：
+已经尝试：
+页面显示的错误文字：
+
+请勿附上门禁凭据、密码或不必要的私人原图。`;
+
+const config: DocPageConfig = {
+  title: 'Peanup 支持与服务｜长期使用、保养与众筹服务边界',
+  description: '了解 Peanup 日常保养、软件更新、联系支持前需要准备的信息，以及保修、退换、运输损坏、维修和支持地区在 Kickstarter 开放前必须公布的边界。',
+  locale: 'zh-cn',
+  current: 'support',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'SUPPORT & LONG-TERM USE',
+  revisionLabel: '众筹预览指南\n更新于 2026.07.31',
+  datePublished: '2026-07-31',
+  dateModified: '2026-07-31',
+  schemaType: 'TechArticle',
+  articleClass: 'docs-support',
+  faqs,
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / SUPPORT & SERVICE</span><b>01</b></div>
+    <h1>画面可以一直留下，<br />服务边界也应该说清楚。</h1>
+    <p class="docs-deck">这里不提前写下尚未验证的承诺。先说明怎样照顾 Peanup、遇到问题从哪里开始，也列出开放支持前必须公布的保修、退换与长期服务信息。</p>
+    <div class="docs-fact-strip" aria-label="支持与长期使用摘要">
+      <span><b>CARE</b><small>保护面板与机身</small></span>
+      <span><b>UPDATE</b><small>保留当前画面</small></span>
+      <span><b>SUPPORT</b><small>提供有用状态</small></span>
+      <span><b>TERMS</b><small>开放支持前公布</small></span>
+    </div>
+    <p class="docs-status"><i></i> 当前提供公开文档与邮件入口 · 最终服务条款尚未公布</p>
+  </section>
+
+  <section class="docs-section" id="before-backing">
+    <header><span>02 / BEFORE BACKING</span><h2>先知道现在有什么，<br />也知道还缺什么。</h2></header>
+    <div class="docs-claim-levels">
+      <article><span>AVAILABLE TODAY</span><h3>现在可以查到</h3><p>产品规格依据、六色画面、连接排查、平台条件、隐私说明和联系邮箱已经公开，可以从具体问题直接进入。</p></article>
+      <article><span>BEFORE PLEDGES</span><h3>支持以前必须公布</h3><p>保修期、退换条件、运输损坏、维修或换机方式、支持地区、运费税费和软件支持周期需要在正式项目页集中说明。</p></article>
+      <article><span>FINAL HARDWARE</span><h3>必须回到实物验证</h3><p>最终外壳、充电温升、续航、运输包装、面板保护和故障恢复，只有在量产意向硬件上测试后才能形成服务规则。</p></article>
+    </div>
+    <div class="docs-policy">
+      <strong>Kickstarter 支持不是普通电商下单</strong>
+      <p>档位、取消、退款、预计交付和项目风险会受正式项目条款与平台规则约束。当前网站只是公开预览，不接受付款，也不把未公布的规则写成既成承诺。</p>
+    </div>
+  </section>
+
+  <section class="docs-section" id="care">
+    <header><span>03 / EVERYDAY CARE</span><h2>像对待一张精密相纸，<br />也像对待一件电子产品。</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>DISPLAY</span><h3>避免弯折、撞击和点压</h3><p>电子纸面板不适合承受局部重压。携带时避开钥匙等硬物，也不要把设备夹在会持续弯曲的位置。</p></article>
+      <article><span>SURFACE</span><h3>干燥后再轻柔清洁</h3><p>先断开充电，用柔软干布擦拭。不要让液体进入缝隙，也不要使用强溶剂或粗糙清洁工具。</p></article>
+      <article><span>POWER</span><h3>充电时保持平整和通风</h3><p>移除金属异物并对准兼容 Qi 充电器。受潮、异味或明显发热时立即停止使用。</p></article>
+    </div>
+    <a class="docs-context-link" href="/docs/hardware/#care">查看完整硬件保养与 Qi 条件 <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section" id="software">
+    <header><span>04 / SOFTWARE & UPDATES</span><h2>设备断开以后，<br />当前画面仍然在。</h2></header>
+    <div class="docs-split">
+      <p class="docs-lead">电子纸完成写屏后不需要手机持续在线。App、快捷指令和内容服务负责准备下一帧，不负责维持已经显示的画面。</p>
+      <div class="docs-copy">
+        <p>系统版本、App 兼容范围、设备迁移、固件恢复和软件支持周期会影响长期使用。它们会按最终硬件与发布平台验证，不能仅凭网页演示提前确定。</p>
+        <p>联网内容可能依赖第三方服务；本地照片和已经生成的六色帧应尽量与天气、书摘等联网来源分开处理。</p>
+      </div>
+    </div>
+    <p class="docs-note"><b>换手机不等于画面消失</b><span>当前画面保存在电子纸状态中。能否在新手机上继续管理、迁移和自动更新，则以最终 App 的设备流程与兼容说明为准。</span></p>
+  </section>
+
+  <section class="docs-section" id="self-help">
+    <header><span>05 / START WITH THE STAGE</span><h2>先确定停在哪一步，<br />再决定是否需要支持。</h2></header>
+    <ol class="docs-steps">
+      <li><span>01 / READ</span><strong>保留页面状态</strong><p>记下设备名称、错误文字和停住的步骤，不要急着重新选图。</p></li>
+      <li><span>02 / CHECK</span><strong>完成一分钟检查</strong><p>确认电量、权限、距离、Qi 对位和当前连接阶段。</p></li>
+      <li><span>03 / RETRY</span><strong>从失败阶段继续</strong><p>发送中断时保留完成帧，不重复做不必要的裁切与转换。</p></li>
+      <li><span>04 / REPORT</span><strong>仍然停住再联系</strong><p>提供系统、App、设备和步骤信息，让问题可以被复现。</p></li>
+    </ol>
+    <div class="docs-context-links">
+      <a class="docs-context-link" href="/docs/troubleshooting/#quick-check">打开一分钟排查 <span aria-hidden="true">→</span></a>
+      <a class="docs-context-link" href="/docs/compatibility/">核对平台与功能条件 <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <section class="docs-section" id="request">
+    <header><span>06 / USEFUL SUPPORT REQUEST</span><h2>不用写很长，<br />把关键状态写完整。</h2></header>
+    <div class="docs-grid docs-grid--two">
+      <article><span>DEVICE</span><h3>手机、系统与 App</h3><p>写明手机型号、系统版本、Peanup App 版本和设备名称或编号。</p></article>
+      <article><span>STAGE</span><h3>停住的具体步骤</h3><p>说明是发现、连接、发送、写屏、Qi、NFC，还是外观与运输问题。</p></article>
+      <article><span>REPEAT</span><h3>时间、频率和已尝试操作</h3><p>说明发生的大致时间、是否每次重现，以及靠近、补电或恢复权限后是否变化。</p></article>
+      <article><span>PRIVACY</span><h3>不要附上不必要的私人数据</h3><p>不发送密码、门禁凭据或私人原图。优先提供错误文字和经过裁切的状态截图。</p></article>
+    </div>
+    <div class="docs-context-links">
+      <button class="docs-context-link" type="button" data-doc-copy-text={supportTemplate} data-doc-copy-label="复制支持信息模板" data-doc-copy-success="支持信息模板已复制" data-doc-copy-failed="复制失败，请稍后重试"><span data-doc-copy-status aria-live="polite">复制支持信息模板</span></button>
+      <a class="docs-context-link" href="mailto:i@caiths.com">发送邮件到 i@caiths.com <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <section class="docs-section" id="service-terms">
+    <header><span>07 / SERVICE BOUNDARIES</span><h2>能公开的先公开，<br />不能确认的保留到实测以后。</h2></header>
+    <div class="docs-table-wrap" tabindex="0" aria-label="Peanup 支持与服务公开状态">
+      <table class="docs-table">
+        <thead><tr><th scope="col">项目</th><th scope="col">当前状态</th><th scope="col">开放支持前需要公布</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">公开文档</th><td>产品、画面、连接、平台、隐私与工程边界已提供</td><td>随最终 App 与硬件持续修订</td></tr>
+          <tr><th scope="row">联系入口</th><td>i@caiths.com</td><td>支持语言、地区与服务时间边界</td></tr>
+          <tr><th scope="row">保修与维修</th><td>尚未公布最终条款</td><td>期限、覆盖范围、排除项、维修或换机路径</td></tr>
+          <tr><th scope="row">退换与退款</th><td>当前网站不接受付款</td><td>Kickstarter 档位、取消、退款与退换条件</td></tr>
+          <tr><th scope="row">运输损坏</th><td>包装与运输测试仍待最终硬件</td><td>签收检查、举证方式、补发或换机流程</td></tr>
+          <tr><th scope="row">软件支持</th><td>iOS 与快捷指令为首要产品体验</td><td>系统版本、维护周期、迁移与恢复范围</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <a class="docs-context-link" href="/docs/campaign/#before-pledge">查看开放支持前的完整公开清单 <span aria-hidden="true">→</span></a>
+  </section>
+
+  <section class="docs-section docs-faq" id="faq">
+    <header><span>08 / FAQ</span><h2>关于长期使用，<br />先回答这些问题。</h2></header>
+    <div class="docs-accordion">
+      {faqs.map(([question, answer], index) => <details><summary><i>{String(index + 1).padStart(2, '0')}</i><span>{question}</span></summary><p>{answer}</p></details>)}
+    </div>
+  </section>
+</DocsShell>

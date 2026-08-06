@@ -1,7 +1,7 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import ThemeToggle from '../components/ThemeToggle.astro';
-import '../styles/docs.css';
+import DocsShell from '../components/docs/DocsShell.astro';
+import DocsMap from '../components/docs/DocsMap.astro';
+import type { DocPageConfig } from '../types/docs';
 
 const toc = [
   ['overview', '概览'],
@@ -9,7 +9,9 @@ const toc = [
   ['transfer', '更新画面'],
   ['first-update', '第一次更新'],
   ['platforms', '平台与生态'],
+  ['content', '内容与自动化'],
   ['power', '续航与摆放'],
+  ['care', '使用与保养'],
   ['privacy', '隐私'],
   ['nfc', 'CUID NFC'],
   ['specifications', '规格'],
@@ -19,7 +21,7 @@ const toc = [
 const specifications = [
   ['显示屏', '3.68 英寸 E6 六色墨水屏'],
   ['像素密度', '约 258.7 PPI（按有效区计算）'],
-  ['面板分辨率', '528 × 792 pixels'],
+  ['面板分辨率', '528 × 792 像素'],
   ['有效显示区', '51.84 × 77.76 mm'],
   ['面板模组尺寸', '56.24 × 86.54 × 0.87 mm（不含 Peanup 整机外壳）'],
   ['显示方式', '反射式、双稳态、宽视角'],
@@ -39,9 +41,10 @@ const specifications = [
   ['NFC', '支持 CUID，需门禁系统兼容并获得授权'],
 ];
 
-const faqs = [
+const faqs: Array<[string, string]> = [
   ['屏幕需要一直亮着吗？', '不需要背光。刷新完成后，电子纸会继续保持画面。蓝牙也会回到待机状态。'],
-  ['已经确认的屏幕规格是什么？', '厂家规格为 3.68 英寸 E6 六色墨水屏，分辨率是 528 × 792 pixels。有效显示区为 51.84 × 77.76 mm，像素密度约 258.7 PPI。网页预览只模拟视觉效果。'],
+  ['已经确认的屏幕规格是什么？', '厂家规格为 3.68 英寸 E6 六色墨水屏，分辨率是 528 × 792 像素。有效显示区为 51.84 × 77.76 mm，像素密度约 258.7 PPI。网页预览只模拟视觉效果。'],
+  ['只能显示照片、日历、天气和书摘吗？', '不止这些。它们是几种容易理解的例子。只要 App、小程序或快捷指令能把内容生成成一幅 528 × 792 的六色画面，就可以作为下一帧发送；最终开放的内容来源会以正式版本为准。'],
   ['照片必须上传到云端吗？', '不用。裁切和六色转换都在 iPhone 或 iPad 完成。蓝牙只发送处理好的画面，核心功能不需要 Peanup 云账号。'],
   ['可以自动更新吗？', '可以使用 Apple 快捷指令准备自动化流程。实际更新时间仍受 iOS 和内容服务的规则影响。'],
   ['有 Android App 吗？', '首发版本不提供独立 Android App。Android 设备可以通过微信小程序传图。'],
@@ -49,63 +52,27 @@ const faqs = [
   ['CUID NFC 可以替代门禁卡吗？', '门禁系统支持 CUID 时，Peanup 才可能用作门禁卡。录入前需要管理方授权，也要遵守当地规则。'],
   ['刷屏会像手机屏幕一样瞬间完成吗？', '不会。电子纸不是视频屏幕，更新时会经历可见的刷屏过程，完成后再保持画面。最终刷新时间和视觉过程会在量产硬件验证后公布。'],
   ['手机找不到 Peanup 怎么办？', '先确认设备有电、手机蓝牙已开启，并让 Peanup 靠近手机。如果它正连接另一台设备，请先断开，再回到 App 重新扫描。'],
-  ['最终尺寸和续航已经锁定了吗？', '3.68 英寸 E6 面板和 528 × 792 pixels 是厂家规格。3 mm、28 g 和一个月以上续航仍是众筹目标。续航取决于刷新频率。'],
+  ['最终尺寸和续航已经锁定了吗？', '3.68 英寸 E6 面板和 528 × 792 像素是厂家规格。3 mm、28 g 和一个月以上续航仍是众筹目标。续航取决于刷新频率。'],
 ];
+
+const config: DocPageConfig = {
+  title: 'Peanup 产品指南｜3.68 英寸 E6 六色墨水屏',
+  description: 'Peanup 产品文档：3.68 英寸 E6 六色墨水屏、528 × 792 像素、蓝牙传图、Apple 快捷指令、微信小程序、Qi 无线充电、磁吸摆放、隐私与 CUID NFC。',
+  locale: 'zh-cn',
+  current: 'product',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'PRODUCT GUIDE',
+  revisionLabel: '众筹预览版\n更新于 2026.07.31',
+  datePublished: '2026-07-27',
+  dateModified: '2026-07-31',
+  faqs,
+};
 ---
 
-<BaseLayout
-  title="Peanup 产品指南｜3.68 英寸 E6 六色墨水屏"
-  description="Peanup 产品文档：3.68 英寸 E6 六色墨水屏、528 × 792 pixels、蓝牙传图、Apple 快捷指令、微信小程序、Qi 无线充电、磁吸摆放、隐私与 CUID NFC。"
-  locale="zh-cn"
-  htmlLang="zh-CN"
-  ogLocale="zh_CN"
-  canonicalPath="/docs/"
-  alternates={[
-    { lang: 'zh-CN', href: '/docs/' },
-    { lang: 'en', href: '/en/docs/' },
-  ]}
-  xDefaultPath="/docs/"
-  schemaType="TechArticle"
-  datePublished="2026-07-27"
-  dateModified="2026-07-28"
-  image="/assets/peanup-og.webp"
-  backTopLabel="返回顶部"
->
-  <header class="docs-topbar">
-    <a class="brand" href="/" aria-label="返回 Peanup 中文首页">
-      <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
-      <span>花生片 <b>Peanup</b></span>
-    </a>
-    <nav class="docs-primary-nav" aria-label="文档导航">
-      <a aria-current="page" href="/docs/">产品指南</a>
-      <a href="/docs/engineering/">工程文档</a>
-      <a lang="en" href="/en/docs/" hreflang="en">English</a>
-    </nav>
-    <a class="docs-product-link docs-topbar-product" href="/">产品页 <span aria-hidden="true">↗</span></a>
-    <ThemeToggle locale="zh-cn" />
-    <details class="docs-mobile-nav">
-      <summary>目录</summary>
-      <nav aria-label="移动端文档导航">
-        <a aria-current="page" href="/docs/">产品指南</a>
-        <a href="/docs/engineering/">工程文档</a>
-        <a lang="en" href="/en/docs/" hreflang="en">English</a>
-      </nav>
-    </details>
-  </header>
-
-  <main id="main-content" class="docs-layout" tabindex="-1">
-    <aside class="docs-toc" aria-label="本页目录">
-      <p>PRODUCT GUIDE</p>
-      <nav>
-        {toc.map(([id, label], index) => <a href={`#${id}`}><i>{String(index + 1).padStart(2, '0')}</i>{label}</a>)}
-      </nav>
-      <small>众筹预览版<br />更新于 2026.07.28</small>
-    </aside>
-
-    <article class="docs-article">
+<DocsShell config={config}>
       <section class="docs-hero" id="overview">
         <div class="docs-eyebrow"><span>PEANUP / PRODUCT GUIDE</span><b>01</b></div>
-        <h1>一张会更新的纸，<br />留住想看见的画面。</h1>
+        <h1 class="docs-product-title"><span>一张会更新的纸，</span>{' '}<span>一幅会留下的画。</span></h1>
         <p class="docs-deck">Peanup 是一块竖向六色电子纸，用来展示照片和日常信息。用手机更新一次，画面就会安静地留在上面。</p>
         <div class="docs-fact-strip" aria-label="产品概览">
           <span><b>3.68”</b><small>E6 六色墨水屏</small></span>
@@ -113,13 +80,15 @@ const faqs = [
           <span><b>BLE</b><small>近场传图</small></span>
           <span><b>QI</b><small>无线充电</small></span>
         </div>
-        <p class="docs-status"><i></i> 众筹预览 · 最终量产细节仍可能调整</p>
+        <a class="docs-status docs-status-link" href="/docs/campaign/"><i></i><span>众筹预览 · 最终量产细节仍可能调整</span><b aria-hidden="true">→</b></a>
       </section>
+
+      <DocsMap locale="zh-cn" />
 
       <section class="docs-section" id="display">
         <header><span>02 / DISPLAY & FORM</span><h2>看见的是颜料，<br />不是发出的光。</h2></header>
         <div class="docs-split">
-          <p class="docs-lead">厂家面板规格为 3.68 英寸 E6 六色墨水屏。分辨率是 528 × 792 pixels，按有效区计算约 258.7 PPI。</p>
+          <p class="docs-lead">厂家面板规格为 3.68 英寸 E6 六色墨水屏。分辨率是 528 × 792 像素，按有效区计算约 258.7 PPI。</p>
           <div class="docs-copy">
             <p>六种物理电子纸颜色让照片呈现独特的纸面颗粒。反射式面板依靠环境光观看，并在更新结束后继续保持画面。</p>
             <p>白色机身像一张即时相纸。可以拿起、摆放，也可以随身携带。3 mm、28 g 与无外露接口是当前众筹目标。</p>
@@ -142,10 +111,11 @@ const faqs = [
           <span><i></i><b>绿</b><small>06</small></span>
         </div>
         <div class="docs-display-principles" aria-label="电子纸显示原理">
-          <article><span>01 / REFLECTIVE</span><h3>环境光越好，<br />纸面越清楚。</h3><p>屏幕没有背光。环境光照到颜料表面，再反射到眼睛里，所以阳光下依然清晰，也不会像手机屏幕那样持续发光。</p></article>
+          <article><span>01 / REFLECTIVE</span><h3>借环境光，<br />看见纸面。</h3><p>屏幕没有背光。环境光照到颜料表面，再反射到眼睛里；在规格范围内的明亮环境中，画面清楚可读，也不会像手机屏幕那样持续发光。</p></article>
           <article><span>02 / DITHER</span><h3>六种颜料，<br />组合出更多层次。</h3><p>照片先在手机上转换。抖动算法把六种物理颜色交错排列，让有限色板表现明暗、纹理和更接近原图的色彩关系。</p></article>
           <article><span>03 / HOLD</span><h3>刷新一次，<br />画面继续留在纸上。</h3><p>写屏时会看到电子纸完成刷新。之后不需要持续重绘，画面仍然保留；蓝牙也只在更新内容时短暂连接。</p></article>
         </div>
+        <a class="docs-context-link" href="/docs/image-guide/">怎样让一张照片更适合六色电子纸？阅读六色画面指南 <span aria-hidden="true">→</span></a>
       </section>
 
       <section class="docs-section" id="transfer">
@@ -168,6 +138,7 @@ const faqs = [
           <li><span>04</span><strong>等待完成</strong><p>让设备留在手机附近，直到 App 显示刷屏完成，再把它放到喜欢的位置。</p></li>
         </ol>
         <p class="docs-note"><b>关于刷屏</b><span>电子纸不是视频屏幕。更新时画面会经历可见的刷新过程，完成后安静保持。最终刷新时间和视觉过程会在量产硬件验证后公布。</span></p>
+        <a class="docs-context-link" href="/docs/troubleshooting/">第一次连接没有走完？打开连接与排查指南 <span aria-hidden="true">→</span></a>
       </section>
 
       <section class="docs-section" id="platforms">
@@ -177,34 +148,83 @@ const faqs = [
           <article><span>APPLE SHORTCUTS</span><h3>把重复交给自动化</h3><p>通过 Siri、小组件和个人自动化，以更少步骤准备熟悉的画面。</p></article>
           <article><span>WECHAT MINI PROGRAM</span><h3>Android 也能传图</h3><p>通过微信小程序选择图片并发送。首发版本不提供独立 Android App。</p></article>
         </div>
+        <div class="docs-table-wrap docs-compatibility" tabindex="0" aria-label="平台兼容矩阵">
+          <table class="docs-table">
+            <thead><tr><th scope="col">平台</th><th scope="col">传图方式</th><th scope="col">自动化</th><th scope="col">首发状态</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">iPhone / iPad</th><td>Peanup App · BLE</td><td>Apple 快捷指令</td><td>计划支持</td></tr>
+              <tr><th scope="row">Android</th><td>微信小程序 · BLE</td><td>由小程序能力决定</td><td>计划支持</td></tr>
+              <tr><th scope="row">第三方内容</th><td>通过 App 生成画面</td><td>快捷指令与后续接口</td><td>持续扩展</td></tr>
+            </tbody>
+          </table>
+        </div>
         <div class="docs-callout">
           <span>更多内容</span>
-          <p>快捷指令可以定时更新日历、天气或书摘。后续内容来源取决于平台权限和服务支持。</p>
+          <div>
+            <p>快捷指令可以定时更新日历、天气或书摘。后续内容来源取决于平台权限和服务支持。</p>
+            <a class="docs-context-link" href="/docs/shortcuts/">查看快捷指令指南 <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="content">
+        <header><span>06 / CONTENT & AUTOMATION</span><h2>内容可以变化，<br />原图仍留在手机。</h2></header>
+        <div class="docs-split">
+          <p class="docs-lead">照片、文字和六色预览在手机上完成。日历、天气和书摘只在生成对应信息卡片时读取所需内容。</p>
+          <div class="docs-copy">
+            <p>Apple 快捷指令可以串联选图、生成卡片和发送动作。自动化是否按时触发，仍取决于 iOS 权限、内容服务规则以及 Peanup 是否在附近。</p>
+            <p>核心照片传图不要求 Peanup 云账号。外部内容服务只负责提供天气或书摘等信息，不承担原图存储。</p>
+            <a class="docs-context-link" href="/docs/content/">继续阅读内容玩法 <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+        <div class="docs-table-wrap" tabindex="0" aria-label="内容来源与网络需求">
+          <table class="docs-table">
+            <thead><tr><th scope="col">内容</th><th scope="col">生成位置</th><th scope="col">网络需求</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">照片与文字</th><td>iPhone / iPad 本地</td><td>不需要上传原图</td></tr>
+              <tr><th scope="row">日历卡片</th><td>系统日历与本地排版</td><td>取决于日历同步设置</td></tr>
+              <tr><th scope="row">天气与书摘</th><td>对应内容服务 + 本地排版</td><td>获取内容时需要网络</td></tr>
+              <tr><th scope="row">自动化</th><td>Apple 快捷指令</td><td>受系统权限与触发规则约束</td></tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
       <section class="docs-section" id="power">
-        <header><span>06 / POWER & PLACEMENT</span><h2>画面一直在，<br />电量只为变化而用。</h2></header>
+        <header><span>07 / POWER & PLACEMENT</span><h2>画面一直在，<br />电量只为变化而用。</h2></header>
         <div class="docs-grid docs-grid--three">
           <article><span>BATTERY</span><h3>1 个月以上</h3><p>这是众筹目标，不是固定续航承诺。实际续航主要取决于刷新频率和使用环境。</p></article>
           <article><span>QI</span><h3>放上即可补充电量</h3><p>Qi 无线充电支持无外露接口的机身，让日常充电保持简单。</p></article>
           <article><span>MAGNETIC RING</span><h3>冰箱、桌面与手机配件</h3><p>内置磁环支持磁吸摆放和兼容 MagSafe 磁吸配件，但不代表 Apple 认证。</p></article>
         </div>
+        <a class="docs-context-link" href="/docs/hardware/">继续阅读一次刷新、Qi、磁吸与保养 <span aria-hidden="true">→</span></a>
+      </section>
+
+      <section class="docs-section" id="care">
+        <header><span>08 / CARE & ENVIRONMENT</span><h2>轻拿、避潮，<br />让纸面保持平整。</h2></header>
+        <dl class="docs-care" aria-label="使用环境与日常保养">
+          <div><dt>0–50°C</dt><dd>面板工作范围</dd><small>这是厂家面板数据，不等同于 Peanup 整机的防护等级。</small></div>
+          <div><dt>DRY</dt><dd>避开潮气与凝露</dd><small>不要在雨水、浴室或冷热骤变后形成凝露的环境中使用。</small></div>
+          <div><dt>GENTLE</dt><dd>不按压、不弯折</dd><small>电子纸适合观看，不适合承受局部重压、扭曲或跌落冲击。</small></div>
+          <div><dt>CLEAN</dt><dd>柔软干布清洁</dd><small>先断开充电，再轻轻擦拭表面；不要使用湿布或腐蚀性清洁剂。</small></div>
+        </dl>
+        <p class="docs-caption">这些是面板规格与日常使用建议，不构成整机防水、防尘或耐冲击认证。</p>
       </section>
 
       <section class="docs-section" id="privacy">
-        <header><span>07 / PRIVACY</span><h2>你的照片，<br />可以只留在自己的设备。</h2></header>
+        <header><span>09 / PRIVACY</span><h2>你的照片，<br />可以只留在自己的设备。</h2></header>
         <div class="docs-split">
           <p class="docs-lead">照片先在手机上处理，再通过蓝牙发送。裁切和六色转换都在本地完成。</p>
           <div class="docs-copy">
             <p>使用拍摄、导入、预览、画廊和近场传图，不需要 Peanup 云账号。照片和设备绑定都保留在本地。</p>
             <p>天气和书摘等卡片会向对应服务获取内容。照片不会因此上传到云端转换。</p>
+            <a class="docs-context-link" href="/docs/privacy/">阅读完整隐私与数据说明 <span aria-hidden="true">→</span></a>
           </div>
         </div>
       </section>
 
       <section class="docs-section" id="nfc">
-        <header><span>08 / CUID NFC</span><h2>条件合适时，<br />也可以用作门禁卡。</h2></header>
+        <header><span>10 / CUID NFC</span><h2>条件合适时，<br />也可以用作门禁卡。</h2></header>
         <div class="docs-policy">
           <strong>有条件兼容</strong>
           <p>门禁系统支持 CUID 时，Peanup 才可能登记为门禁卡。录入前需要管理方授权，也要遵守当地规则。不兼容的系统无法使用。</p>
@@ -212,19 +232,20 @@ const faqs = [
       </section>
 
       <section class="docs-section" id="specifications">
-        <header><span>09 / SPECIFICATIONS</span><h2>当前产品规格。</h2></header>
-        <div class="docs-table-wrap" tabindex="0" aria-label="可横向滚动的产品规格">
+        <header><span>11 / SPECIFICATIONS</span><h2>当前产品规格。</h2></header>
+        <div class="docs-table-wrap docs-specifications" aria-label="产品规格">
           <table class="docs-table">
             <tbody>
               {specifications.map(([name, value]) => <tr><th scope="row">{name}</th><td>{value}</td></tr>)}
             </tbody>
           </table>
         </div>
-        <p class="docs-caption">面板数据来自厂家 Tentative Specification V0.2。3 mm、28 g 与一个月以上续航是 Peanup 的众筹目标，量产前仍可能调整。续航取决于刷新频率。清洁时请使用柔软干布，并避免按压、潮气和凝露。</p>
+        <p class="docs-caption">面板数据来自厂家 Tentative Specification V0.2。3 mm、28 g 与一个月以上续航是 Peanup 的众筹目标，量产前仍可能调整。续航取决于刷新频率。</p>
+        <a class="docs-context-link" href="/docs/glossary/">不确定 E6、PPI、BLE 或众筹目标的含义？打开术语速查 <span aria-hidden="true">→</span></a>
       </section>
 
       <section class="docs-section docs-faq" id="faq">
-        <header><span>10 / FAQ</span><h2>常见问题。</h2></header>
+        <header><span>12 / FAQ</span><h2>常见问题。</h2></header>
         <div class="docs-accordion">
           {faqs.map(([question, answer], index) => (
             <details>
@@ -235,10 +256,4 @@ const faqs = [
         </div>
       </section>
 
-      <div class="docs-footer">
-        <div><span>PEANUP / PRODUCT GUIDE</span><p>产品问题请联系 <a href="mailto:i@caiths.com">i@caiths.com</a></p></div>
-        <a href="/docs/engineering/">阅读工程文档 <span aria-hidden="true">→</span></a>
-      </div>
-    </article>
-  </main>
-</BaseLayout>
+</DocsShell>

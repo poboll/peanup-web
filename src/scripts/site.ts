@@ -3,6 +3,16 @@ const modeScreen = document.querySelector<HTMLElement>('#mode-screen');
 const title = document.querySelector<HTMLElement>('#screen-title');
 const meta = document.querySelector<HTMLElement>('#screen-meta');
 
+document.querySelectorAll<HTMLElement>('[data-progressive-image]').forEach((picture) => {
+  const image = picture.querySelector<HTMLImageElement>('img');
+  if (!image) return;
+  const reveal = () => {
+    if (image.naturalWidth > 0) picture.classList.add('is-loaded');
+  };
+  image.addEventListener('load', reveal, { once: true });
+  if (image.complete) reveal();
+});
+
 const activateMode = (tab: HTMLButtonElement, moveFocus = false) => {
   tabs.forEach((item) => {
     const selected = item === tab;
@@ -39,7 +49,19 @@ tabs.forEach((tab, index) => {
 
 const scrollCue = document.querySelector<HTMLAnchorElement>('.scroll-cue');
 const continueBrowsing = document.querySelector<HTMLAnchorElement>('[data-continue-browsing]');
+const smoothAnchorLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-smooth-anchor]'));
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+const anchorChromeOffset = () => {
+  const productHeader = document.querySelector<HTMLElement>('.site-header');
+  if (productHeader) return productHeader.getBoundingClientRect().height;
+
+  const docsHeader = document.querySelector<HTMLElement>('.docs-topbar');
+  if (!docsHeader) return 0;
+  const mobileToc = document.querySelector<HTMLElement>('.docs-toc-mobile');
+  const tocVisible = mobileToc && getComputedStyle(mobileToc).display !== 'none';
+  return docsHeader.getBoundingClientRect().height + (tocVisible ? mobileToc.getBoundingClientRect().height : 0);
+};
 
 const animateToAnchor = (link: HTMLAnchorElement, duration: number) => {
   const href = link.getAttribute('href');
@@ -48,7 +70,11 @@ const animateToAnchor = (link: HTMLAnchorElement, duration: number) => {
   if (!target) return;
 
   const start = window.scrollY;
-  const destination = target.getBoundingClientRect().top + start;
+  // The global header is fixed and shrinks after the first scroll. Leave a
+  // small reading gap so chapter labels and the mobile journey tabs never
+  // land underneath the chrome when a user follows a deep link.
+  const headerOffset = anchorChromeOffset();
+  const destination = target.getBoundingClientRect().top + start - headerOffset - 12;
   const animationDuration = reduceMotion.matches ? 1 : duration;
   const startedAt = performance.now();
   document.documentElement.classList.add('slow-scroll-active');
@@ -79,7 +105,13 @@ continueBrowsing?.addEventListener('click', (event) => {
   animateToAnchor(continueBrowsing, 1100);
 });
 
-const languageMenu = document.querySelector<HTMLDetailsElement>('.language-menu');
+smoothAnchorLinks.forEach((link) => {
+  link.addEventListener('click', (event) => {
+    event.preventDefault();
+    animateToAnchor(link, 1100);
+  });
+});
+
 document.querySelectorAll<HTMLAnchorElement>('[data-locale-choice]').forEach((link) => {
   link.addEventListener('click', () => {
     const locale = link.dataset.localeChoice;
@@ -90,6 +122,50 @@ document.querySelectorAll<HTMLAnchorElement>('[data-locale-choice]').forEach((li
   });
 });
 
-document.addEventListener('pointerdown', (event) => {
-  if (languageMenu?.open && !languageMenu.contains(event.target as Node)) languageMenu.open = false;
-});
+const restoreInitialAnchor = () => {
+  const initialHash = document.documentElement.dataset.initialHash;
+  const requestedHash = location.hash || (initialHash ? `#${initialHash}` : '');
+  if (!requestedHash || requestedHash === '#top') return;
+  let id = requestedHash.slice(1);
+  try { id = decodeURIComponent(id); } catch {}
+  const target = document.getElementById(id);
+  if (!target) return;
+
+  let cancelled = false;
+  const cancel = () => { cancelled = true; };
+  window.addEventListener('pointerdown', cancel, { once: true, capture: true });
+  window.addEventListener('wheel', cancel, { once: true, passive: true });
+
+  const align = () => {
+    const currentHash = location.hash || (document.documentElement.dataset.initialHash ? `#${document.documentElement.dataset.initialHash}` : '');
+    let currentId = currentHash.slice(1);
+    try { currentId = decodeURIComponent(currentId); } catch {}
+    if (cancelled || currentId !== id) return;
+    const headerOffset = anchorChromeOffset();
+    const offset = target.getBoundingClientRect().top - headerOffset - 12;
+    if (Math.abs(offset) < 2) return;
+    const previous = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
+    window.scrollTo(0, window.scrollY + offset);
+    document.documentElement.style.scrollBehavior = previous;
+  };
+
+  const restoreHash = () => {
+    delete document.documentElement.dataset.initialHash;
+    history.scrollRestoration = 'auto';
+  };
+
+  requestAnimationFrame(() => requestAnimationFrame(align));
+  const alignAfterLoad = () => {
+    [0, 140, 320, 620, 980, 1420].forEach((delay, index) => {
+      window.setTimeout(() => {
+        align();
+        if (index === 5) restoreHash();
+      }, delay);
+    });
+  };
+  if (document.readyState === 'complete') alignAfterLoad();
+  else window.addEventListener('load', alignAfterLoad, { once: true });
+};
+
+restoreInitialAnchor();

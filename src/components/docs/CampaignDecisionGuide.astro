@@ -1,0 +1,131 @@
+---
+interface Props { locale: 'zh-cn' | 'en' }
+
+import '../../styles/docs-campaign.css';
+
+const { locale } = Astro.props;
+const isChinese = locale === 'zh-cn';
+const copy = isChinese
+  ? {
+      eyebrow: 'SUPPORT CHECK / 支持前快速确认',
+      title: '先看你最在意的一项。',
+      description: '把已经有依据的事实、仍在实现的目标，以及开放支持前必须公布的内容分开看。',
+      selectorLabel: '选择要确认的众筹信息',
+      evidence: '现有依据',
+      condition: '仍需明确',
+      next: '继续阅读',
+      topics: [
+        {
+          id: 'hardware', label: '硬件事实', state: '已明确', status: '面板规格已有厂家直接依据。',
+          evidence: '3.68 英寸 E6 六色电子纸，528 × 792 像素，有效显示区 51.84 × 77.76 mm，约 258.7 PPI。',
+          condition: '整机厚度、重量、外壳尺寸、刷新时间和最终色样仍以量产前实测为准。',
+          href: '/docs/hardware/#display', link: '查看面板与整机证据层级',
+        },
+        {
+          id: 'targets', label: '目标规格', state: '众筹目标', status: '3 mm、28 g 与一个月以上续航是要达到的结果。',
+          evidence: '当前结构、供电和软件方案围绕无外露接口、Qi 补能、磁吸摆放和低频刷新继续打磨。',
+          condition: '最终结构强度、电池容量、温升、刷新频率和续航测试条件尚待整机验证。',
+          href: '/docs/hardware/#targets', link: '查看目标规格与验证方式',
+        },
+        {
+          id: 'platforms', label: '平台兼容', state: '首发范围待定', status: 'iPhone 与 Apple 快捷指令是 Peanup 的首要体验。',
+          evidence: '网页已展示本地图像处理、内容选择、近场更新和自动化的完整产品路径。',
+          condition: 'iOS 版本、快捷指令动作、微信小程序能力、兼容设备与首发顺序会在众筹开放前列明。',
+          href: '/docs/compatibility/', link: '查看平台与功能条件',
+        },
+        {
+          id: 'privacy', label: '隐私与本地处理', state: '网页已可验证', status: '当前在线体验的照片处理发生在浏览器本地。',
+          evidence: '拖入网页的照片不上传、不写入网站存储；页面也不需要账户或设备绑定。',
+          condition: '正式 App 的联网内容、权限说明、诊断数据和保留周期会在发布前形成完整隐私说明。',
+          href: '/docs/privacy/', link: '查看数据如何流动',
+        },
+        {
+          id: 'delivery', label: '价格与交付', state: '尚未公布', status: '当前网站是产品预览，不是预售入口。',
+          evidence: '页面没有虚构价格、库存、折扣、评分或交付承诺。',
+          condition: '档位、价格、运费、支持地区、预计交付时间与风险会在 Kickstarter 开放支持前集中公布。',
+          href: '#faq', link: '查看众筹常见问题',
+        },
+        {
+          id: 'support', label: '支持与服务', state: '开放前公布', status: '长期使用的服务边界会在开放支持前写清。',
+          evidence: '当前已有双语产品文档、连接排查、隐私说明和 i@caiths.com 联系入口。',
+          condition: '保修期、退换条件、运输损坏、维修或换机路径、支持地区与软件支持周期仍需公布最终规则。',
+          href: '/docs/support/', link: '查看支持与长期使用说明',
+        },
+      ],
+    }
+  : {
+      eyebrow: 'SUPPORT CHECK / BEFORE BACKING',
+      title: 'Start with what matters to you.',
+      description: 'Separate sourced facts from targets in development and the information that must be published before pledges open.',
+      selectorLabel: 'Choose campaign information to review',
+      evidence: 'Evidence today',
+      condition: 'Still to be published',
+      next: 'Read next',
+      topics: [
+        {
+          id: 'hardware', label: 'Hardware facts', state: 'Defined', status: 'The panel specification has direct manufacturer evidence.',
+          evidence: 'A 3.68-inch E6 six-color e-paper panel, 528 × 792 pixels, a 51.84 × 77.76 mm active area and approximately 258.7 PPI.',
+          condition: 'Whole-device thickness, weight, enclosure dimensions, refresh time and final color samples still require production-intent hardware.',
+          href: '/en/docs/hardware/#display', link: 'Review panel and device evidence',
+        },
+        {
+          id: 'targets', label: 'Target specifications', state: 'Campaign targets', status: '3 mm, 28 g and one-month-plus battery life are outcomes the project aims to reach.',
+          evidence: 'The current structure, power path and software direction are built around no exposed port, Qi charging, magnetic placement and infrequent refreshes.',
+          condition: 'Structural strength, battery capacity, charging heat, refresh frequency and endurance conditions still require whole-device validation.',
+          href: '/en/docs/hardware/#targets', link: 'Review targets and validation',
+        },
+        {
+          id: 'platforms', label: 'Platform compatibility', state: 'Launch scope pending', status: 'iPhone and Apple Shortcuts are the primary Peanup experience.',
+          evidence: 'The web preview demonstrates the intended path from local image processing and content selection to nearby updates and automation.',
+          condition: 'iOS versions, Shortcut actions, WeChat Mini Program scope, compatible devices and launch sequencing will be listed before pledges open.',
+          href: '/en/docs/compatibility/', link: 'Review platform conditions',
+        },
+        {
+          id: 'privacy', label: 'Privacy and local processing', state: 'Verifiable on the web', status: 'Photos in the current online preview are processed locally in the browser.',
+          evidence: 'Dropped photos are not uploaded or written to site storage, and the page needs no account or device binding.',
+          condition: 'The released app will document network content, permissions, diagnostics and retention before launch.',
+          href: '/en/docs/privacy/', link: 'See how data moves',
+        },
+        {
+          id: 'delivery', label: 'Price and delivery', state: 'Not announced', status: 'This website is a product preview, not a preorder page.',
+          evidence: 'It does not invent pricing, stock, discounts, ratings or delivery promises.',
+          condition: 'Reward tiers, price, shipping, regions, estimated delivery and risks will be published together before the Kickstarter campaign opens.',
+          href: '#faq', link: 'Read the campaign FAQ',
+        },
+        {
+          id: 'support', label: 'Support and service', state: 'Before pledges open', status: 'Long-term service boundaries will be stated before anyone pledges.',
+          evidence: 'Bilingual product documentation, setup help, privacy guidance and the i@caiths.com contact channel are available today.',
+          condition: 'Final warranty, returns, shipping damage, repair or replacement paths, support regions and software support periods still need publication.',
+          href: '/en/docs/support/', link: 'Review support and long-term use',
+        },
+      ],
+    };
+---
+
+<div class="campaign-decision" id="support-check" data-campaign-decision>
+  <header class="campaign-decision-head">
+    <span>{copy.eyebrow}</span>
+    <div><h3>{copy.title}</h3><p>{copy.description}</p></div>
+  </header>
+  <div class="campaign-decision-layout">
+    <div class="campaign-decision-tabs" role="group" aria-label={copy.selectorLabel} data-campaign-decision-tabs>
+      {copy.topics.map((topic, index) => (
+        <button type="button" data-campaign-decision-tab={topic.id} aria-controls={`campaign-decision-${locale}-${topic.id}`} aria-pressed={index === 0 ? 'true' : 'false'} tabindex={index === 0 ? 0 : -1}>
+          <i>{String(index + 1).padStart(2, '0')}</i><span>{topic.label}</span><small>{topic.state}</small>
+        </button>
+      ))}
+    </div>
+    <div class="campaign-decision-panels" aria-live="polite" aria-atomic="false">
+      {copy.topics.map((topic, index) => (
+        <article id={`campaign-decision-${locale}-${topic.id}`} data-campaign-decision-panel={topic.id} hidden={index !== 0}>
+          <header><span>{topic.state}</span><strong>{topic.status}</strong></header>
+          <dl>
+            <div><dt>{copy.evidence}</dt><dd>{topic.evidence}</dd></div>
+            <div><dt>{copy.condition}</dt><dd>{topic.condition}</dd></div>
+          </dl>
+          <a href={topic.href}><small>{copy.next}</small><span>{topic.link}</span><i aria-hidden="true">→</i></a>
+        </article>
+      ))}
+    </div>
+  </div>
+</div>

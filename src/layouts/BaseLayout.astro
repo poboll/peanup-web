@@ -2,6 +2,8 @@
 import type { Locale } from '../i18n/product';
 
 interface AlternateLink { lang: string; href: string }
+interface BreadcrumbEntry { name: string; path: string }
+type FAQEntry = [question: string, answer: string];
 
 interface Props {
   title: string;
@@ -12,7 +14,7 @@ interface Props {
   canonicalPath?: string;
   alternates?: AlternateLink[];
   xDefaultPath?: string;
-  schemaType?: 'Product' | 'TechArticle' | 'none';
+  schemaType?: 'Product' | 'TechArticle' | 'WebPage' | 'none';
   robots?: string;
   backTopLabel?: string;
   ogImage?: string;
@@ -20,6 +22,8 @@ interface Props {
   datePublished?: string;
   dateModified?: string;
   image?: string;
+  faqs?: FAQEntry[];
+  breadcrumbs?: BreadcrumbEntry[];
 }
 
 const {
@@ -39,12 +43,28 @@ const {
   datePublished,
   dateModified,
   image,
+  faqs = [],
+  breadcrumbs = [],
 } = Astro.props;
 
 const site = Astro.site ?? new URL('https://pean.caiths.com');
 const canonical = new URL(canonicalPath, site);
 const absoluteOgImage = new URL(ogImage, site);
 const absoluteSchemaImage = image ? new URL(image, site) : null;
+const ogLocaleByLanguage: Record<string, string> = {
+  'zh-CN': 'zh_CN',
+  'zh-TW': 'zh_TW',
+  'zh-Hant': 'zh_TW',
+  en: 'en_US',
+  ja: 'ja_JP',
+  de: 'de_DE',
+  fr: 'fr_FR',
+};
+const alternateOgLocales = [...new Set(
+  alternates
+    .map((alternate) => ogLocaleByLanguage[alternate.lang])
+    .filter((alternate): alternate is string => Boolean(alternate) && alternate !== ogLocale),
+)];
 const skipLabels: Record<Locale, string> = {
   'zh-cn': '跳到主要内容',
   'zh-tw': '跳到主要內容',
@@ -53,9 +73,8 @@ const skipLabels: Record<Locale, string> = {
   de: 'Zum Hauptinhalt',
   fr: 'Aller au contenu principal',
 };
-const schema = schemaType === 'Product'
+const schemaNode = schemaType === 'Product'
   ? {
-      '@context': 'https://schema.org',
       '@type': 'Product',
       name: 'Peanup',
       alternateName: '花生片 Peanup',
@@ -66,13 +85,13 @@ const schema = schemaType === 'Product'
       url: canonical.href,
       additionalProperty: [
         { '@type': 'PropertyValue', name: 'Display', value: '3.68-inch E6 six-color e-paper' },
+        { '@type': 'PropertyValue', name: 'Resolution', value: '528 × 792 pixels' },
         { '@type': 'PropertyValue', name: 'Pixel density', value: 'Approximately 258.7 PPI' },
         { '@type': 'PropertyValue', name: 'Transfer', value: 'Bluetooth Low Energy' },
       ],
     }
   : schemaType === 'TechArticle'
     ? {
-        '@context': 'https://schema.org',
         '@type': 'TechArticle',
         headline: title,
         description,
@@ -85,7 +104,45 @@ const schema = schemaType === 'Product'
         ...(dateModified ? { dateModified } : {}),
         ...(absoluteSchemaImage ? { image: absoluteSchemaImage.href } : {}),
       }
+    : schemaType === 'WebPage'
+      ? {
+          '@type': 'WebPage',
+          name: title,
+          description,
+          inLanguage: htmlLang,
+          publisher: { '@type': 'Organization', name: 'Peanup' },
+          url: canonical.href,
+          ...(datePublished ? { datePublished } : {}),
+          ...(dateModified ? { dateModified } : {}),
+        }
     : null;
+const faqNode = faqs.length > 0
+  ? {
+      '@type': 'FAQPage',
+      mainEntity: faqs.map(([question, answer]) => ({
+        '@type': 'Question',
+        name: question,
+        acceptedAnswer: { '@type': 'Answer', text: answer },
+      })),
+    }
+  : null;
+const breadcrumbNode = breadcrumbs.length > 0
+  ? {
+      '@type': 'BreadcrumbList',
+      itemListElement: breadcrumbs.map((entry, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: entry.name,
+        item: new URL(entry.path, site).href,
+      })),
+    }
+  : null;
+const supportingSchemaNodes = [breadcrumbNode, faqNode].filter(Boolean);
+const schema = schemaNode
+  ? supportingSchemaNodes.length > 0
+    ? { '@context': 'https://schema.org', '@graph': [schemaNode, ...supportingSchemaNodes] }
+    : { '@context': 'https://schema.org', ...schemaNode }
+  : null;
 ---
 
 <!doctype html>
@@ -106,6 +163,13 @@ const schema = schemaType === 'Product'
           : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         root.dataset.theme = theme;
         root.style.colorScheme = theme;
+        // Let the page own fragment scrolling while content-visibility is
+        // temporarily lifted for the requested chapter.
+        if (location.hash && location.hash !== '#top') {
+          root.dataset.deepLink = 'true';
+          root.dataset.initialHash = location.hash.slice(1);
+          history.scrollRestoration = 'manual';
+        }
         document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#10110f' : '#ffffff');
       })();
     </script>
@@ -115,7 +179,7 @@ const schema = schemaType === 'Product'
     {alternates.map((alternate) => <link rel="alternate" hreflang={alternate.lang} href={new URL(alternate.href, site).href} />)}
     {alternates.length > 0 && <link rel="alternate" hreflang="x-default" href={new URL(xDefaultPath, site).href} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta property="og:type" content={schemaType === 'Product' ? 'product' : 'article'} />
+    <meta property="og:type" content={schemaType === 'Product' ? 'product' : schemaType === 'TechArticle' ? 'article' : 'website'} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={absoluteOgImage.href} />
@@ -124,6 +188,7 @@ const schema = schemaType === 'Product'
     <meta property="og:image:height" content="630" />
     <meta property="og:url" content={canonical.href} />
     <meta property="og:locale" content={ogLocale} />
+    {alternateOgLocales.map((alternate) => <meta property="og:locale:alternate" content={alternate} />)}
     <meta property="og:site_name" content="Peanup" />
     {schemaType === 'TechArticle' && datePublished && <meta property="article:published_time" content={datePublished} />}
     {schemaType === 'TechArticle' && dateModified && <meta property="article:modified_time" content={dateModified} />}
@@ -137,7 +202,6 @@ const schema = schemaType === 'Product'
   </head>
   <body>
     <a class="skip-link" href="#main-content">{skipLabels[locale]}</a>
-    <div class="theme-curtain" data-theme-curtain aria-hidden="true"></div>
     <slot />
     <button class="back-to-top" type="button" aria-label={backTopLabel} title={backTopLabel}>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V5m0 0-6 6m6-6 6 6" /></svg>

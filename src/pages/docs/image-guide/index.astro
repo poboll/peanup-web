@@ -1,0 +1,131 @@
+---
+import DocsShell from '../../../components/docs/DocsShell.astro';
+import type { DocPageConfig } from '../../../types/docs';
+
+const toc = [
+  ['overview', '先保住画面重点'],
+  ['choose', '什么照片更合适'],
+  ['crop', '完整与铺满'],
+  ['rendering', '三类六色渲染'],
+  ['light', '预览与真实纸面'],
+  ['workflow', '从照片到一帧'],
+  ['faq', '常见问题'],
+];
+
+const faqs: Array<[string, string]> = [
+  ['所有照片都能转换成六色画面吗？', '可以预览和转换，但效果会因主体、明暗、颜色与细节密度而不同。主体清楚、明暗关系明确、背景不过分杂乱的照片通常更适合六色电子纸。'],
+  ['照片会被拉伸成 528 × 792 吗？', '不会。产品目标是在预览中明确提供“完整显示”和“铺满画面”两种构图选择。两者都保持原始比例；铺满模式只会裁掉边缘，不会压扁人物或物件。'],
+  ['为什么网页预览和真实电子纸看起来不同？', '网页是发光屏幕，电子纸依靠环境光反射。网页可以模拟六色色板、抖动和纸纹，但不能完全复现实物的反射率、环境光、视角与刷屏过程。'],
+  ['哪一种抖动算法最好？', '没有一种方法适合所有内容。Ordered 适合快速、稳定的预览；误差扩散适合保留照片细节；感知量化先保护主体与色彩关系，再决定怎样使用六种颜色。'],
+  ['原始照片会上传吗？', '当前网页体验在浏览器本地处理照片。产品目标同样是在手机上完成裁切与六色转换，再通过蓝牙发送完成帧。联网内容和第三方来源会遵循各自的授权与隐私规则。'],
+];
+
+const config: DocPageConfig = {
+  title: 'Peanup 六色画面指南｜选图、裁切与电子纸预览',
+  description: '了解怎样为 Peanup 的 528 × 792 六色电子纸选择照片、保持原始比例、使用不同六色渲染策略，并理解网页预览与真实反射式纸面的差异。',
+  locale: 'zh-cn',
+  current: 'image',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'SIX-COLOR IMAGE GUIDE',
+  revisionLabel: '公开画面指南\n更新于 2026.07.30',
+  datePublished: '2026-07-30',
+  dateModified: '2026-07-30',
+  schemaType: 'WebPage',
+  articleClass: 'docs-image-guide',
+  faqs,
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / SIX-COLOR IMAGE GUIDE</span><b>03</b></div>
+    <h1>不是把照片压成六色，<br />而是重新保住重点。</h1>
+    <p class="docs-deck">一幅适合 Peanup 的画面，先有清楚的主体和明暗，再决定裁切与六色渲染。算法负责整理，照片原来的神情应该留下。</p>
+    <div class="docs-fact-strip" aria-label="六色画面概览">
+      <span><b>528 × 792</b><small>面板输出像素</small></span>
+      <span><b>2 : 3</b><small>竖向有效画幅</small></span>
+      <span><b>6</b><small>实体电子纸颜色</small></span>
+      <span><b>LOCAL</b><small>手机本地准备画面</small></span>
+    </div>
+    <p class="docs-status"><i></i> 网页预览是构图参考，不是实物色彩校样</p>
+  </section>
+
+  <section class="docs-section" id="choose">
+    <header><span>01 / CHOOSE A FRAME</span><h2>先看主体，<br />再看颜色。</h2></header>
+    <p class="docs-lead docs-lead--offset">六色电子纸不需要照片变得简单，但需要重点足够清楚。</p>
+    <dl class="image-guide-criteria" aria-label="适合六色电子纸的照片特征">
+      <div><dt>SUBJECT</dt><dd>主体占得住画面</dd><small>人物、物件或风景中心不要太小。第一眼能找到重点，转换后也更容易读懂。</small></div>
+      <div><dt>LIGHT</dt><dd>明暗有层次</dd><small>保留亮部与暗部的距离。大面积接近的灰色容易在有限色板里合在一起。</small></div>
+      <div><dt>COLOR</dt><dd>颜色有主次</dd><small>不必追求饱和。明确的主色与少量呼应色，比每个角落都抢眼更耐看。</small></div>
+      <div><dt>DETAIL</dt><dd>纹理留有呼吸</dd><small>头发、树叶和文字可以保留，但细碎背景最好不要和主体拥有同样的对比度。</small></div>
+    </dl>
+  </section>
+
+  <section class="docs-section" id="crop">
+    <header><span>02 / CROP WITHOUT STRETCH</span><h2>完整或铺满，<br />比例都不改变。</h2></header>
+    <div class="docs-split">
+      <p class="docs-lead">528 × 792 是 2:3 竖向画幅。照片进入预览后，应该由你决定保留完整构图，还是让画面铺满纸面。</p>
+      <div class="docs-copy"><p>“完整显示”可能留出纸白边缘；“铺满画面”会裁掉部分边缘。两种方式都保持原始比例，不能用拉伸换取填满。</p></div>
+    </div>
+    <div class="image-guide-crop-grid" aria-label="完整显示与铺满画面对比">
+      <figure>
+        <span>01 / FIT</span>
+        <div class="image-guide-frame image-guide-frame--fit protected-media"><picture><source srcset="/assets/peanup-anime-source.avif" type="image/avif" /><img src="/assets/peanup-anime-source.webp" alt="完整显示一张照片并保留原始比例" width="500" height="500" loading="lazy" decoding="async" draggable="false" /></picture></div>
+        <figcaption><strong>完整显示</strong><p>画面全部保留，剩余区域成为纸白留边。适合边缘也有重要信息的照片。</p></figcaption>
+      </figure>
+      <figure>
+        <span>02 / FILL</span>
+        <div class="image-guide-frame image-guide-frame--fill protected-media"><picture><source srcset="/assets/peanup-anime-source.avif" type="image/avif" /><img src="/assets/peanup-anime-source.webp" alt="铺满画面并保持照片原始比例" width="500" height="500" loading="lazy" decoding="async" draggable="false" /></picture></div>
+        <figcaption><strong>铺满画面</strong><p>画面填满 2:3 纸面，只裁掉边缘。适合主体集中、希望更有临场感的照片。</p></figcaption>
+      </figure>
+    </div>
+    <p class="docs-caption"><b>安全区：</b>脸、日期和关键文字不要贴边。铺满时为上下或左右裁切预留空间，预览确认后再发送。</p>
+  </section>
+
+  <section class="docs-section" id="rendering">
+    <header><span>03 / RENDER FOR SIX COLORS</span><h2>不同画面，<br />用不同方法整理。</h2></header>
+    <p class="docs-lead docs-lead--offset">六色成像不是给照片盖一层滤镜。它先把颜色映射到 E6 色板，再用不同排列方式重建明暗和纹理。</p>
+    <div class="image-guide-methods" aria-label="六色渲染策略">
+      <article>
+        <span>REALTIME / ORDERED</span><div class="image-guide-method-sample image-guide-method-sample--ordered" aria-hidden="true"></div>
+        <h3>Ordered 4 × 4 / 8 × 8</h3><p>规律阈值让相机预览快速而稳定。边缘清楚，但规则网点会成为画面的一部分。</p><small>适合：实时预览、图形、明确色块</small>
+      </article>
+      <article>
+        <span>BALANCED / DIFFUSION</span><div class="image-guide-method-sample image-guide-method-sample--diffusion" aria-hidden="true"></div>
+        <h3>Floyd–Steinberg / Stucki</h3><p>把量化误差分散到邻近像素，能保留更多局部层次，也需要更仔细地控制边缘。</p><small>适合：照片、皮肤、天空与细节纹理</small>
+      </article>
+      <article>
+        <span>PHOTO / PERCEPTUAL</span><div class="image-guide-method-sample image-guide-method-sample--perceptual" aria-hidden="true"></div>
+        <h3>感知量化 / Palette Mix</h3><p>先保护主体、明暗和色彩关系，再决定六种颜料怎样组合。它不是单独一种固定网点。</p><small>适合：最终写屏与需要保护主体的照片</small>
+      </article>
+    </div>
+    <div class="docs-callout"><span>PREVIEW PRINCIPLE</span><p>预览应该先回答“重点还在不在”，再回答“颜色像不像原图”。最终参数仍要用固定参考图集和真实面板共同校准。需要算法细节时，阅读 <a class="docs-context-link" href="/docs/engineering/#dithering">工程文档的抖动系统 <span aria-hidden="true">→</span></a></p></div>
+  </section>
+
+  <section class="docs-section" id="light">
+    <header><span>04 / SCREEN VS PAPER</span><h2>网页会发光，<br />电子纸只反射光。</h2></header>
+    <div class="image-guide-light-grid">
+      <article><span>01 / BRIGHT AMBIENT</span><h3>环境越明亮，<br />纸面越清楚。</h3><p>反射式电子纸借环境光被看见。它不会像手机屏幕一样主动把白色照亮。</p></article>
+      <article><span>02 / INDOOR</span><h3>室内观看，<br />颜色会更克制。</h3><p>纸白、黑色与彩色都会受到房间光线影响。网页中的高亮白不代表实物会发光。</p></article>
+      <article><span>03 / WEB PREVIEW</span><h3>预览构图和层次，<br />不要把它当色样。</h3><p>网站模拟色板、抖动和纸纹；反射率、视角、环境光和实际刷屏仍以硬件为准。</p></article>
+    </div>
+  </section>
+
+  <section class="docs-section" id="workflow">
+    <header><span>05 / ONE FRAME</span><h2>从生活照片，<br />到一幅完成的画面。</h2></header>
+    <ol class="docs-steps">
+      <li><span>01 / CHOOSE</span><strong>选择照片</strong><p>先看主体、明暗和背景，不急着追求颜色数量。</p></li>
+      <li><span>02 / COMPOSE</span><strong>决定构图</strong><p>在完整显示与铺满画面之间选择，并调整主体位置。</p></li>
+      <li><span>03 / PREVIEW</span><strong>检查六色效果</strong><p>比较不同渲染策略，确认重点、文字和边缘仍然清楚。</p></li>
+      <li><span>04 / SEND</span><strong>发送完成帧</strong><p>手机通过 BLE 发送准备好的画面，电子纸刷新后继续保持。</p></li>
+    </ol>
+    <div class="docs-context-links"><a class="docs-context-link" href="/docs/content/">看看照片之外还能显示什么 <span aria-hidden="true">→</span></a><a class="docs-context-link" href="/docs/privacy/">了解照片与本地处理 <span aria-hidden="true">→</span></a></div>
+  </section>
+
+  <section class="docs-section" id="faq">
+    <header><span>06 / FAQ</span><h2>关于六色画面，<br />先回答这些。</h2></header>
+    <div class="docs-accordion">
+      {faqs.map(([question, answer], index) => <details open={index === 0}><summary><i>{String(index + 1).padStart(2, '0')}</i>{question}</summary><p>{answer}</p></details>)}
+    </div>
+  </section>
+</DocsShell>

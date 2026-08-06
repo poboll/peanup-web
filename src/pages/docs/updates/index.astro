@@ -1,0 +1,144 @@
+---
+import DocsShell from '../../../components/docs/DocsShell.astro';
+import type { DocPageConfig } from '../../../types/docs';
+import '../../../styles/docs-updates.css';
+
+const toc = [
+  ['overview', '为什么公开进展'],
+  ['timeline', '已公开节点'],
+  ['gates', '验证门槛'],
+  ['next', '下一步公开什么'],
+  ['faq', '常见问题'],
+];
+
+const filters = [
+  ['all', '全部'],
+  ['product', '产品'],
+  ['software', '软件'],
+  ['validation', '验证'],
+] as const;
+
+const updates = [
+  {
+    date: '2026.07',
+    type: 'product',
+    label: '产品',
+    title: 'E6 面板口径已经统一',
+    body: '公开页面与 Docs 现在统一使用 3.68 英寸、528 × 792 像素、51.84 × 77.76 mm 有效显示区和约 258.7 PPI。它们来自厂家面板规格书，不等于整机已经完成量产验证。',
+    mark: 'PANEL / E6',
+  },
+  {
+    date: '2026.07',
+    type: 'software',
+    label: '软件',
+    title: '先在本地整理，再发送完成帧',
+    body: '照片裁切、六色预览、文字排版和常用信息卡片都围绕手机本地处理展开。网页舞台用来解释这条路径，不把照片上传到 Peanup 云端。',
+    mark: 'LOCAL / FRAME',
+  },
+  {
+    date: '2026.07',
+    type: 'validation',
+    label: '验证',
+    title: '把每一个目标拆成可检查的门槛',
+    body: 'BLE 传输与失败恢复、刷新时间、待机功耗、Qi 温升与对位、磁吸稳定性，以及 CUID NFC 的条件兼容，都被移到正式支持前的验证清单中。',
+    mark: 'TEST / GATES',
+  },
+  {
+    date: '2026.06',
+    type: 'software',
+    label: '体验',
+    title: '四幕舞台只讲一件事：画面会留下',
+    body: '云雨、花枝、飞燕和写屏过渡被收进同一条体验路径：外面的世界可以流动，电子纸在刷新后把一帧安静地留住。',
+    mark: 'STAGE / HOLD',
+  },
+] as const;
+
+const faqs: Array<[string, string]> = [
+  ['这里的日期是不是量产时间？', '不是。这里记录的是网站和公开资料的进展日期，不代表量产、发货或 Kickstarter 开放支持日期。'],
+  ['哪些参数已经确定？', '3.68 英寸 E6 面板、528 × 792 像素、有效区和约 258.7 PPI 来自厂家规格书。3 mm、28 g、Qi、磁吸、一个月以上续航等属于整机目标，仍需最终硬件验证。'],
+  ['为什么要把验证门槛写出来？', '因为电子纸产品的体验不只由屏幕尺寸决定。传输、刷新、功耗、充电、磁吸和 NFC 都需要在真实硬件上测量，公开门槛可以避免把网页演示误读成承诺。'],
+  ['后续更新会在哪里出现？', '新的公开节点会先出现在这里；最终首发范围、价格、地区、交付、保修和退换规则会在 Kickstarter 页面开放前集中公布。'],
+];
+
+const config: DocPageConfig = {
+  title: 'Peanup 项目进展｜公开节点、验证门槛与下一步',
+  description: '查看 Peanup 已公开的面板、软件体验和硬件验证进展，并区分厂家事实、整机目标与 Kickstarter 开放前的验证门槛。',
+  locale: 'zh-cn',
+  current: 'updates',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'PROJECT UPDATES',
+  revisionLabel: '众筹预览版\n更新于 2026.07.31',
+  datePublished: '2026-07-31',
+  dateModified: '2026-07-31',
+  schemaType: 'WebPage',
+  articleClass: 'docs-updates',
+  faqs,
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / PROJECT UPDATES</span><b>01</b></div>
+    <h1><span>把进展写出来，</span><span>也把边界写清楚。</span></h1>
+    <p class="docs-deck">这里记录已经公开的产品、软件和验证节点。它不是倒计时，也不是预售承诺；每一条信息都会标明它来自哪里、下一步还需要什么。</p>
+    <div class="docs-fact-strip" aria-label="项目进展摘要">
+      <span><b>12</b><small>文档专题</small></span>
+      <span><b>E6</b><small>厂家面板资料</small></span>
+      <span><b>LOCAL</b><small>网页体验路径</small></span>
+      <span><b>OPEN</b><small>持续公开更新</small></span>
+    </div>
+    <p class="docs-status"><i></i> 当前是公开预览 · 不是预售或交付时间表</p>
+  </section>
+
+  <section class="docs-section" id="timeline">
+    <header><span>02 / PUBLISHED NODES</span><h2>每一条进展，<br />都能回到一个事实。</h2></header>
+    <div class="docs-update-filter" role="toolbar" aria-label="筛选项目进展" data-update-filters>
+      {filters.map(([id, label], index) => <button type="button" data-update-filter={id} aria-pressed={index === 0 ? 'true' : 'false'}>{label}</button>)}
+    </div>
+    <ol class="docs-updates-timeline" data-updates-list>
+      {updates.map((item) => (
+        <li data-update-item data-update-type={item.type}>
+          <time datetime={item.date.replace('.', '-')}>{item.date}</time>
+          <span class="docs-update-kind">{item.label}</span>
+          <div>
+            <small>{item.mark}</small>
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+    <p class="docs-update-empty" data-updates-empty hidden>这个筛选暂时没有更多已公开节点。</p>
+  </section>
+
+  <section class="docs-section" id="gates">
+    <header><span>03 / VALIDATION GATES</span><h2>先测真实硬件，<br />再把目标写成承诺。</h2></header>
+    <div class="docs-update-gates">
+      <article><span>01 / RADIO</span><h3>BLE 传输与恢复</h3><p>确认发现、连接、分包、回压、失败重试和传输完成后的待机行为。</p><b>待真实硬件测量</b></article>
+      <article><span>02 / DISPLAY</span><h3>刷新时间与保持</h3><p>用不同画面密度测试整帧写入、局部变化、刷新观感和新画面保持时间。</p><b>待真实硬件测量</b></article>
+      <article><span>03 / POWER</span><h3>功耗与 Qi</h3><p>把刷新频率、待机、充电温升和 Qi 对位条件放在同一套测试记录里。</p><b>待真实硬件测量</b></article>
+      <article><span>04 / ACCESS</span><h3>磁吸与 CUID NFC</h3><p>确认磁吸稳定性、兼容配件边界和 CUID 门禁系统的实际授权条件。</p><b>条件兼容</b></article>
+    </div>
+    <div class="docs-callout"><span>READ THE BOUNDARY</span><p>完整的规格、工程状态与 Kickstarter 公开项分别写在 <a class="docs-context-link" href="/docs/campaign/">众筹状态</a> 和 <a class="docs-context-link" href="/docs/engineering/">工程文档</a> 中。</p></div>
+  </section>
+
+  <section class="docs-section" id="next">
+    <header><span>04 / WHAT COMES NEXT</span><h2>下一步不是更多口号，<br />而是更具体的证据。</h2></header>
+    <ol class="docs-steps docs-update-next">
+      <li><span>01 / HARDWARE</span><strong>固定最终整机口径</strong><p>公布厚度、重量、外观、面板装配和接口边界。</p></li>
+      <li><span>02 / PERFORMANCE</span><strong>公开传输与续航条件</strong><p>给出典型刷新时间、刷新频率、功耗和测试环境。</p></li>
+      <li><span>03 / SERVICE</span><strong>补齐支持与交付规则</strong><p>在开放支持前公布价格、地区、运费、保修、退换与维修范围。</p></li>
+      <li><span>04 / CAMPAIGN</span><strong>再打开支持入口</strong><p>当事实、目标和风险都能被清楚阅读时，才进入 Kickstarter 页面。</p></li>
+    </ol>
+  </section>
+
+  <section class="docs-section docs-faq" id="faq">
+    <header><span>05 / FAQ</span><h2>关于进展，<br />先回答这些。</h2></header>
+    <div class="docs-accordion">
+      {faqs.map(([question, answer], index) => <details open={index === 0}><summary><i>{String(index + 1).padStart(2, '0')}</i>{question}</summary><p>{answer}</p></details>)}
+    </div>
+  </section>
+  <script>
+    import '../../../scripts/docsUpdates';
+  </script>
+</DocsShell>

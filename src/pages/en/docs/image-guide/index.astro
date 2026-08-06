@@ -1,0 +1,109 @@
+---
+import DocsShell from '../../../../components/docs/DocsShell.astro';
+import type { DocPageConfig } from '../../../../types/docs';
+
+const toc = [
+  ['overview', 'Protect the focal point'],
+  ['choose', 'Choose a photograph'],
+  ['crop', 'Fit or fill'],
+  ['rendering', 'Three rendering paths'],
+  ['light', 'Preview and real paper'],
+  ['workflow', 'From photo to frame'],
+  ['faq', 'Common questions'],
+];
+
+const faqs: Array<[string, string]> = [
+  ['Can every photograph become a six-color frame?', 'Every photograph can be previewed and rendered, but results vary with subject, value structure, color and detail density. A clear subject, distinct light and dark areas, and a quieter background usually translate more successfully.'],
+  ['Will a photograph be stretched to 528 × 792?', 'No. The product goal is to make both fit and fill explicit in the preview. Both preserve the source proportions. Fill crops only the edges; it does not squeeze a person or object.'],
+  ['Why does the web preview differ from real e-paper?', 'A browser display emits light, while e-paper reflects ambient light. The website can approximate the six-color palette, dithering and paper texture, but not the physical reflectivity, viewing light, angle or refresh process.'],
+  ['Which dithering method is best?', 'No single method fits every frame. Ordered dithering is fast and stable for preview; error diffusion preserves photographic detail; perceptual quantization protects the subject and color relationships before choosing how the six pigments are used.'],
+  ['Is the original photograph uploaded?', 'The current web experience processes it locally in the browser. The product goal is also to crop and render on the phone, then send only the finished frame over Bluetooth. Connected content and third-party sources follow their own permissions and privacy rules.'],
+];
+
+const config: DocPageConfig = {
+  title: 'Peanup Image Guide | Six-color Crop, Dither & Preview',
+  description: "Choose and crop a photo for Peanup's 528 × 792 display, compare six-color rendering, and see how a web preview differs from reflective e-paper.",
+  locale: 'en',
+  current: 'image',
+  toc: toc.map(([id, label]) => ({ id, label })),
+  seriesLabel: 'SIX-COLOR IMAGE GUIDE',
+  revisionLabel: 'Public image guide\nUpdated 2026.07.30',
+  datePublished: '2026-07-30',
+  dateModified: '2026-07-30',
+  schemaType: 'WebPage',
+  articleClass: 'docs-image-guide',
+  faqs,
+};
+---
+
+<DocsShell config={config}>
+  <section class="docs-hero" id="overview">
+    <div class="docs-eyebrow"><span>PEANUP / SIX-COLOR IMAGE GUIDE</span><b>03</b></div>
+    <h1>Do not crush a photo into six colors.<br />Protect what matters in it.</h1>
+    <p class="docs-deck">A strong Peanup frame begins with a clear subject and value structure, then chooses a crop and rendering path. The algorithm organizes the image. Its expression should remain.</p>
+    <div class="docs-fact-strip" aria-label="Six-color frame at a glance">
+      <span><b>528 × 792</b><small>Panel output pixels</small></span>
+      <span><b>2 : 3</b><small>Portrait active frame</small></span>
+      <span><b>6</b><small>Physical e-paper colors</small></span>
+      <span><b>LOCAL</b><small>Prepared on the phone</small></span>
+    </div>
+    <p class="docs-status"><i></i> The web preview guides composition; it is not a physical color proof</p>
+  </section>
+
+  <section class="docs-section" id="choose">
+    <header><span>01 / CHOOSE A FRAME</span><h2>Start with the subject.<br />Then look at color.</h2></header>
+    <p class="docs-lead docs-lead--offset">Six-color e-paper does not require a simple photograph. It does require a focal point that can hold its ground.</p>
+    <dl class="image-guide-criteria" aria-label="Photograph qualities for six-color e-paper">
+      <div><dt>SUBJECT</dt><dd>Give it enough space</dd><small>Do not make the person, object or landscape center too small. A visible focal point survives rendering better.</small></div>
+      <div><dt>LIGHT</dt><dd>Keep value separation</dd><small>Preserve a useful distance between highlights and shadows. Similar grays can merge in a limited palette.</small></div>
+      <div><dt>COLOR</dt><dd>Build a hierarchy</dd><small>High saturation is not the goal. One leading color and a few supporting colors often feel calmer and clearer.</small></div>
+      <div><dt>DETAIL</dt><dd>Leave texture room</dd><small>Hair, leaves and type can remain, but a busy background should not carry the same contrast as the subject.</small></div>
+    </dl>
+  </section>
+
+  <section class="docs-section" id="crop">
+    <header><span>02 / CROP WITHOUT STRETCH</span><h2>Fit or fill.<br />Never distort.</h2></header>
+    <div class="docs-split"><p class="docs-lead">528 × 792 is a 2:3 portrait frame. The preview should let you choose whether to preserve the full composition or fill the paper.</p><div class="docs-copy"><p>Fit may leave paper-colored margins. Fill crops the outer edges. Both preserve the source proportions; neither stretches the image to occupy space.</p></div></div>
+    <div class="image-guide-crop-grid" aria-label="Fit and fill comparison">
+      <figure><span>01 / FIT</span><div class="image-guide-frame image-guide-frame--fit protected-media"><picture><source srcset="/assets/peanup-anime-source.avif" type="image/avif" /><img src="/assets/peanup-anime-source.webp" alt="A photograph fitted inside a portrait frame without changing its proportions" width="500" height="500" loading="lazy" decoding="async" draggable="false" /></picture></div><figcaption><strong>Fit the whole image</strong><p>Keep every edge and let the remaining area become a paper margin. Useful when the edges carry information.</p></figcaption></figure>
+      <figure><span>02 / FILL</span><div class="image-guide-frame image-guide-frame--fill protected-media"><picture><source srcset="/assets/peanup-anime-source.avif" type="image/avif" /><img src="/assets/peanup-anime-source.webp" alt="A photograph filling a portrait frame while preserving its proportions" width="500" height="500" loading="lazy" decoding="async" draggable="false" /></picture></div><figcaption><strong>Fill the paper</strong><p>Occupy the complete 2:3 frame and crop only the perimeter. Useful when the subject is centered and presence matters.</p></figcaption></figure>
+    </div>
+    <p class="docs-caption"><b>Safe area:</b> Keep faces, dates and essential words away from the perimeter. Leave room for vertical or horizontal crop movement, then confirm the preview before sending.</p>
+  </section>
+
+  <section class="docs-section" id="rendering">
+    <header><span>03 / RENDER FOR SIX COLORS</span><h2>Different frames need<br />different rendering paths.</h2></header>
+    <p class="docs-lead docs-lead--offset">Six-color rendering is not an overlay. It maps the source into the E6 palette, then rebuilds values and texture through deliberate pigment placement.</p>
+    <div class="image-guide-methods" aria-label="Six-color rendering strategies">
+      <article><span>REALTIME / ORDERED</span><div class="image-guide-method-sample image-guide-method-sample--ordered" aria-hidden="true"></div><h3>Ordered 4 × 4 / 8 × 8</h3><p>Regular thresholds make camera preview fast and stable. Edges stay clear, while the ordered dot structure becomes part of the image.</p><small>Useful for: live preview, graphics and flat color</small></article>
+      <article><span>BALANCED / DIFFUSION</span><div class="image-guide-method-sample image-guide-method-sample--diffusion" aria-hidden="true"></div><h3>Floyd–Steinberg / Stucki</h3><p>Quantization error moves into neighboring pixels, preserving more local structure while requiring careful edge handling.</p><small>Useful for: photographs, skin, skies and fine texture</small></article>
+      <article><span>PHOTO / PERCEPTUAL</span><div class="image-guide-method-sample image-guide-method-sample--perceptual" aria-hidden="true"></div><h3>Perceptual / Palette Mix</h3><p>Protect the subject, values and color relationships first, then decide how the six pigments should work together.</p><small>Useful for: final frames and subject-sensitive photographs</small></article>
+    </div>
+    <div class="docs-callout"><span>PREVIEW PRINCIPLE</span><p>Ask whether the focal point survived before asking whether every color matches the source. Final parameters still need a fixed reference set and the physical panel. For implementation detail, read the <a class="docs-context-link" href="/en/docs/engineering/#dithering">engineering dithering system <span aria-hidden="true">→</span></a></p></div>
+  </section>
+
+  <section class="docs-section" id="light">
+    <header><span>04 / SCREEN VS PAPER</span><h2>The web emits light.<br />E-paper reflects it.</h2></header>
+    <div class="image-guide-light-grid">
+      <article><span>01 / BRIGHT AMBIENT</span><h3>More ambient light<br />reveals the paper.</h3><p>Reflective e-paper is seen through the light around it. It does not illuminate white like a phone display.</p></article>
+      <article><span>02 / INDOOR</span><h3>Indoors, color<br />becomes quieter.</h3><p>Paper white, black and color all respond to the room. A bright browser white does not mean the physical surface glows.</p></article>
+      <article><span>03 / WEB PREVIEW</span><h3>Judge composition,<br />not a color proof.</h3><p>The site approximates palette, dithering and texture. Reflectivity, viewing angle, ambient light and refresh remain physical.</p></article>
+    </div>
+  </section>
+
+  <section class="docs-section" id="workflow">
+    <header><span>05 / ONE FRAME</span><h2>From a living photograph<br />to one finished frame.</h2></header>
+    <ol class="docs-steps">
+      <li><span>01 / CHOOSE</span><strong>Choose the photo</strong><p>Look first at subject, values and background rather than the number of colors.</p></li>
+      <li><span>02 / COMPOSE</span><strong>Set the crop</strong><p>Choose fit or fill, then move the focal point into a comfortable position.</p></li>
+      <li><span>03 / PREVIEW</span><strong>Check six colors</strong><p>Compare rendering paths and confirm that the focal point, type and edges remain clear.</p></li>
+      <li><span>04 / SEND</span><strong>Send the frame</strong><p>The phone sends the prepared frame over BLE. The e-paper refreshes, then continues to hold it.</p></li>
+    </ol>
+    <div class="docs-context-links"><a class="docs-context-link" href="/en/docs/content/">See what can live beyond photographs <span aria-hidden="true">→</span></a><a class="docs-context-link" href="/en/docs/privacy/">Understand photos and local processing <span aria-hidden="true">→</span></a></div>
+  </section>
+
+  <section class="docs-section" id="faq">
+    <header><span>06 / FAQ</span><h2>Six-color images,<br />answered plainly.</h2></header>
+    <div class="docs-accordion">{faqs.map(([question, answer], index) => <details open={index === 0}><summary><i>{String(index + 1).padStart(2, '0')}</i>{question}</summary><p>{answer}</p></details>)}</div>
+  </section>
+</DocsShell>

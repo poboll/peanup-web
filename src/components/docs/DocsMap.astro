@@ -1,0 +1,154 @@
+---
+interface Props { locale: 'zh-cn' | 'en' }
+
+const { locale } = Astro.props;
+const isChinese = locale === 'zh-cn';
+const root = isChinese ? '/docs' : '/en/docs';
+const copy = isChinese
+  ? {
+      quickLabel: 'START HERE / 按任务开始',
+      quickTitle: '先完成眼前的一件事。',
+      quickAria: 'Peanup 快速任务入口',
+      campaignCta: '准备支持前，先确认规格、平台、隐私与交付状态',
+      quickItems: [
+        ['01', '第一次更新', '从准备、授权到完成第一幅画面。', `${root}/#first-update`],
+        ['02', '让照片更适合六色', '选图、裁切并保住画面的重点。', `${root}/image-guide/#choose`],
+        ['03', '连接或刷屏停住了', '按当前停住的步骤继续排查。', `${root}/troubleshooting/#quick-check`],
+        ['04', '搭一条更新流程', '选择触发、内容和写屏方式，先看完整路径。', `${root}/shortcuts/#builder`],
+      ],
+      label: 'DOCUMENT LIBRARY / 完整目录',
+      title: '玩法、设置与工程细节，\n都按问题整理好了。',
+      aria: 'Peanup 专题文档',
+      disclosureLabel: '浏览全部文档',
+      disclosureCount: '12 个专题',
+      groups: [
+        {
+          number: '01',
+          title: '核心指南',
+          items: [
+            ['01', '内容玩法', '照片、日历、天气、书摘与文字。', `${root}/content/`],
+            ['02', '六色画面指南', '选图、裁切与六色预览。', `${root}/image-guide/`],
+            ['03', '硬件与电源', 'E6、刷新、充电与摆放。', `${root}/hardware/`],
+          ],
+        },
+        {
+          number: '02',
+          title: '使用与连接',
+          items: [
+            ['04', '兼容与平台', 'iPhone、微信、BLE 与 NFC。', `${root}/compatibility/`],
+            ['05', '连接与排查', '从停住的步骤继续。', `${root}/troubleshooting/`],
+            ['06', 'Apple 快捷指令', '准备并自动更新下一帧。', `${root}/shortcuts/`],
+            ['07', '支持与服务', '长期使用、联系支持与服务规则。', `${root}/support/`],
+          ],
+        },
+        {
+          number: '03',
+          title: '规格与公开',
+          items: [
+            ['08', '隐私与数据', '照片、本地处理与联网边界。', `${root}/privacy/`],
+            ['09', '术语速查', 'E6、PPI、BLE、Qi 与规格口径。', `${root}/glossary/`],
+            ['10', '众筹状态', '已明确、目标与发布前公开项。', `${root}/campaign/`],
+            ['11', '工程文档', '528 × 792、六色渲染与 BLE。', `${root}/engineering/`],
+            ['12', '项目进展', '公开节点、验证门槛与下一步。', `${root}/updates/`],
+          ],
+        },
+      ],
+    }
+  : {
+      quickLabel: 'START HERE / BY TASK',
+      quickTitle: 'Finish the one thing in front of you.',
+      quickAria: 'Peanup quick task paths',
+      campaignCta: 'Before backing, check specifications, platforms, privacy and delivery status',
+      quickItems: [
+        ['01', 'Complete the first update', 'Prepare, authorize and finish the first frame.', `${root}/#first-update`],
+        ['02', 'Make a photo work in six colors', 'Choose, crop and keep the visual focus.', `${root}/image-guide/#choose`],
+        ['03', 'Resume a stalled update', 'Continue from discovery, transfer or refresh.', `${root}/troubleshooting/#quick-check`],
+        ['04', 'Build an update flow', 'Choose a trigger, content and write condition.', `${root}/shortcuts/#builder`],
+      ],
+      label: 'DOCUMENT LIBRARY / COMPLETE INDEX',
+      title: 'Ideas, setup and engineering details,\norganized around real questions.',
+      aria: 'Peanup topic guides',
+      disclosureLabel: 'Browse all documents',
+      disclosureCount: '12 topics',
+      groups: [
+        {
+          number: '01',
+          title: 'Core guides',
+          items: [
+            ['01', 'Content ideas', 'Photos, calendars, weather, reading notes and text.', `${root}/content/`],
+            ['02', 'Six-color image guide', 'Choose, crop and preview a frame.', `${root}/image-guide/`],
+            ['03', 'Hardware & power', 'E6, refresh, charging and placement.', `${root}/hardware/`],
+          ],
+        },
+        {
+          number: '02',
+          title: 'Use & setup',
+          items: [
+            ['04', 'Platforms', 'iPhone, WeChat, BLE and NFC.', `${root}/compatibility/`],
+            ['05', 'Setup & help', 'Continue from the step that stopped.', `${root}/troubleshooting/`],
+            ['06', 'Apple Shortcuts', 'Prepare and automate the next frame.', `${root}/shortcuts/`],
+            ['07', 'Support & service', 'Long-term use, useful reports and service terms.', `${root}/support/`],
+          ],
+        },
+        {
+          number: '03',
+          title: 'Specs & policy',
+          items: [
+            ['08', 'Privacy & data', 'Photos, local processing and network boundaries.', `${root}/privacy/`],
+            ['09', 'Glossary', 'E6, PPI, BLE, Qi and specification language.', `${root}/glossary/`],
+            ['10', 'Campaign status', 'Confirmed facts, targets and launch disclosures.', `${root}/campaign/`],
+            ['11', 'Engineering notes', '528 × 792, six-color rendering and BLE.', `${root}/engineering/`],
+            ['12', 'Project updates', 'Published milestones, validation gates and next steps.', `${root}/updates/`],
+          ],
+        },
+      ],
+    };
+---
+
+<section class="docs-quick-start" aria-labelledby={`docs-quick-title-${locale}`}>
+  <div class="docs-quick-head">
+    <span>{copy.quickLabel}</span>
+    <h2 id={`docs-quick-title-${locale}`}>{copy.quickTitle}</h2>
+  </div>
+  <nav class="docs-quick-grid" aria-label={copy.quickAria}>
+    {copy.quickItems.map(([number, title, description, href]) => (
+      <a href={href}>
+        <small>{number}</small>
+        <strong>{title}</strong>
+        <span>{description}</span>
+        <i aria-hidden="true">↗</i>
+      </a>
+    ))}
+  </nav>
+  <a class="docs-quick-campaign" href={`${root}/campaign/#support-check`}><span>{copy.campaignCta}</span><i aria-hidden="true">→</i></a>
+</section>
+
+<section id="docs-library" class="docs-map" aria-label={copy.aria}>
+  <div class="docs-map-head">
+    <span>{copy.label}</span>
+    <h2>{copy.title.split('\n').map((line) => <span>{line}</span>)}</h2>
+  </div>
+  <details class="docs-map-disclosure" open data-doc-map-disclosure>
+    <summary>
+      <span>{copy.disclosureLabel}</span>
+      <small>{copy.disclosureCount}</small>
+    </summary>
+    <div class="docs-map-groups">
+      {copy.groups.map((group, groupIndex) => (
+        <section class="docs-map-group" aria-labelledby={`docs-map-group-${locale}-${groupIndex}`}>
+          <h3 id={`docs-map-group-${locale}-${groupIndex}`}><small>{group.number}</small><span>{group.title}</span></h3>
+          <div class="docs-map-list">
+            {group.items.map(([number, title, description, href]) => (
+              <a href={href}>
+                <small>{number}</small>
+                <strong>{title}</strong>
+                <span>{description}</span>
+                <i aria-hidden="true">↗</i>
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </details>
+</section>
