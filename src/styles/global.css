@@ -19,14 +19,12 @@
   position: absolute;
   z-index: 3;
   aspect-ratio: 37 / 56;
+  isolation: isolate;
 }
-.hero-product-preview { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: 50% 50%; }
-.hero-product-preview--dark { z-index: 2; visibility: hidden; opacity: 0; }
+.hero-product-preview { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; object-fit: fill; }
 .hero-product picture { position: absolute; z-index: 2; inset: 0; display: block; width: 100%; height: 100%; opacity: 0; }
-.hero-product .hero-product-image--light { z-index: 3; }
-.hero-product .hero-product-image--light.is-loaded { opacity: 1; }
-.hero-product .hero-product-image--dark { z-index: 4; visibility: hidden; opacity: 0; pointer-events: none; }
-.hero-product img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: 50% 50%; mix-blend-mode: normal; }
+.hero-product .hero-product-image.is-loaded { opacity: 1; }
+.hero-product img { display: block; width: 100%; height: 100%; object-fit: fill; }
 .hero-object-label { position: absolute; z-index: 4; left: var(--pad); display: grid; grid-template-columns: auto 76px auto; gap: 13px; align-items: center; color: var(--muted); font: 9px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; }
 .hero-object-label span { color: var(--blue); }
 .hero-object-label i { height: 1px; background: var(--line); }
@@ -212,27 +210,23 @@ html[data-locale="zh-tw"] .story h2 { word-break: auto-phrase; }
 .apple-head h2 { margin: 25px 0 0; font-family: "Songti SC", "STSong", serif; font-size: clamp(42px, 5vw, 72px); font-weight: 500; line-height: 1.12; }
 .apple-head h2 > span { display: block; }
 .apple-head > p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.95; }
-.apple-stage { display: grid; grid-template-columns: minmax(520px, .96fr) minmax(0, 1.04fr); grid-template-rows: minmax(0, 1fr) auto; min-height: 1050px; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); scroll-margin-top: 88px; }
-.shortcut-phone { position: relative; grid-column: 1; grid-row: 1 / 3; min-height: 980px; display: grid; place-items: center; overflow: hidden; border-right: 1px solid var(--line); background: #fff; touch-action: pan-y; }
+.apple-stage { display: grid; grid-template-columns: minmax(520px, .96fr) minmax(0, 1.04fr); grid-template-rows: minmax(0, 1fr) auto; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); scroll-margin-top: 88px; }
+.shortcut-phone { position: relative; grid-column: 1; grid-row: 1 / 3; display: grid; place-items: center; overflow: hidden; border-right: 1px solid var(--line); background: #fff; touch-action: pan-y; }
 .shortcut-phone::before { content: "IPHONE 17 PRO / 71.9 x 150 mm"; position: absolute; left: 24px; bottom: 22px; color: #999b95; font: 8px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
 .shortcut-phone::after { content: ""; position: absolute; left: 50%; bottom: 2%; width: min(54%, 280px); height: 15px; border-radius: 50%; background: radial-gradient(ellipse at center, rgba(20,20,18,.11), rgba(20,20,18,0) 72%); filter: blur(4px); transform: translateX(-50%); pointer-events: none; }
 .iphone-device {
+  --chassis-width: 662;
+  --chassis-height: 1380;
+  --physical-width: 71.9;
+  --physical-height: 150;
   /* The chassis PNG is the source of truth for the silhouette. The wrapper
      keeps the measured body ratio; the image itself is fitted without
      stretching so the titanium rail and corner arcs stay optically true. */
-  --chassis-width: 662;
-  --chassis-height: 1380;
   /* The physical study label stays in data-device-size. The transparent
      source frame is trimmed to its measured body canvas before fitting, so
      the rail and R-corners keep their native proportions. */
-  --physical-width: 71.9;
-  --physical-height: 150;
-  --display-width-points: 402;
-  --display-height-points: 874;
-  --status-height-points: 62;
-  /* Measured from iphone-17-pro-frame.png (662 x 1380), after removing the
-     six-pixel transparent trim on each side: the display opening is
-     x=31..632 and y=35..1345. */
+  /* Measured from iphone-17-pro-frame.png (662 x 1380): the display opening
+     is x=28..634 and y=35..1345 after antialias compensation. */
   /* Slightly slimmer visible rail for the current Pro-style display. */
   --screen-left: 4.229607%;
   --screen-top: 2.53623%;
@@ -245,35 +239,35 @@ html[data-locale="zh-tw"] .story h2 { word-break: auto-phrase; }
   z-index: 1;
   isolation: isolate;
   /* Keep the wrapper on the measured physical body ratio. */
-  width: clamp(304px, 23.4vw, 360px);
   aspect-ratio: var(--frame-ratio);
   container-type: inline-size;
   /* The frame asset owns the physical R-corners. Keeping the wrapper clear
      prevents a second CSS radius from changing the silhouette at fractional
      sizes. */
-  border-radius: 11.8% / 5.5%;
+  border-radius: 0;
   background: transparent;
   filter:
-    drop-shadow(0 18px 21px rgba(20,20,18,.15))
-    drop-shadow(0 5px 7px rgba(20,20,18,.08));
+    drop-shadow(0 18px 25px rgba(20,23,28,.14))
+    drop-shadow(0 4px 7px rgba(20,23,28,.075));
 }
 .iphone-device::before {
-  /* A quiet outline keeps the study legible while the chassis PNG is still
-     coming from a slow connection. It disappears as soon as the real rail
-     has decoded, so it never creates a second bezel. */
+  /* A complete zero-request chassis keeps the study legible while the real
+     rail is decoding or unavailable. It disappears once the PNG is ready. */
   content: "";
   position: absolute;
   z-index: 0;
   inset: .5%;
-  border: 1px solid rgba(62, 70, 82, .42);
+  border: 1px solid rgba(112, 121, 135, .78);
   border-radius: 11.8% / 5.5%;
-  opacity: .72;
+  background: #080a0d;
+  opacity: 1;
   pointer-events: none;
   transition: opacity .22s ease;
 }
 .iphone-device[data-frame-ready="true"]::before { opacity: 0; }
+.iphone-device[data-frame-failed="true"] .iphone-frame { display: none; }
 .iphone-frame { position: absolute; z-index: 30; inset: 0; width: 100%; height: 100%; display: block; object-fit: contain; object-position: center; pointer-events: none; filter: saturate(.78) brightness(.985) contrast(1.02); }
-.iphone-glass { position: absolute; z-index: 20; top: var(--screen-top); left: var(--screen-left); width: var(--screen-width); height: var(--screen-height); overflow: hidden; border: 0; /* The active display follows the source opening's corner arcs. */ border-radius: 3.35% / 6.45%; color: #1f201e; background: #f7f8f4; box-shadow: inset 0 0 0 .55px rgba(21,23,26,.18), inset 0 0 0 .95px rgba(255,255,255,.38); container-type: inline-size; color-scheme: light; }
+.iphone-glass { position: absolute; z-index: 20; top: var(--screen-top); left: var(--screen-left); width: var(--screen-width); height: var(--screen-height); overflow: hidden; border: 0; border-radius: 13.8% 13.8% 9.35% 9.35% / 4.85% 4.85% 3.2% 3.2%; color: #1f201e; background: #f7f8f4; box-shadow: inset 0 0 0 .55px rgba(21,23,26,.2), inset 0 0 0 .95px rgba(255,255,255,.34); container-type: inline-size; color-scheme: light; }
 .iphone-statusbar {
   /* All status geometry is expressed in the 402pt display coordinate space.
      cqw scales those points with the live screen opening, so the left/right
@@ -293,9 +287,9 @@ html[data-locale="zh-tw"] .story h2 { word-break: auto-phrase; }
   position: absolute;
   z-index: 2;
   top: 0;
-  left: -1.65%;
+  left: -2.99%;
   display: block;
-  width: 101.7%;
+  width: 100%;
   height: 100%;
   object-fit: fill;
   user-select: none;
@@ -420,13 +414,16 @@ html[data-locale="ja"] .peanup-live-copy strong { overflow-wrap: normal; word-br
 .phone-compose { grid-template-rows: auto minmax(0,1fr) auto; }
 .phone-compose-card { min-height: 0; padding: 3.2cqw; display: grid; grid-template-rows: minmax(0,1fr) auto auto; gap: 2.5cqw; overflow: hidden; border: 1px solid #d2d3ce; border-radius: 4.5cqw; background: rgba(255,255,255,.78); box-shadow: 0 6px 18px rgba(31,33,30,.045); }
 .phone-compose-card > strong { font-family: "Songti SC", "STSong", "Yu Mincho", serif; font-size: 14px; font-weight: 500; line-height: 1.25; }
-.phone-compose-art { position: relative; min-height: 0; overflow: hidden; border: 1px solid #c6c8c1; border-radius: 2.2cqw; background: #e7e8e1; }
-.phone-compose-art > i { position: absolute; display: block; }
-.phone-compose-art > i:first-child { top: 10%; right: 8%; width: 16%; aspect-ratio: 1; border-radius: 50%; background: #b5473b; }
-.phone-compose-art > i:nth-child(2) { left: -12%; bottom: 18%; width: 65%; height: 34%; border-radius: 50% 55% 0 0; background: #496fa7; transform: rotate(8deg); }
-.phone-compose-art > i:nth-child(3) { right: -16%; bottom: 8%; width: 70%; height: 42%; border-radius: 60% 48% 0 0; background: #d5ae35; transform: rotate(-7deg); }
-.phone-compose-art > i:nth-child(4) { left: 25%; bottom: -13%; width: 58%; height: 38%; border-radius: 50% 50% 0 0; background: #20211f; transform: rotate(4deg); }
-.phone-compose-art > span { position: absolute; z-index: 2; left: 3cqw; top: 3cqw; color: #30322e; font: 7px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+.phone-compose-art { position: relative; min-height: 0; overflow: hidden; border: 1px solid #c6c8c1; border-radius: 2.2cqw; background: repeating-linear-gradient(0deg, rgba(31,33,30,.06) 0 1px, transparent 1px 4px), #e9e9e3; }
+.phone-compose-art::before { content: ""; position: absolute; z-index: 3; inset: auto -8% -5% -6%; height: 31%; background: #d5ae35; clip-path: polygon(0 35%, 35% 18%, 65% 30%, 100% 8%, 100% 100%, 0 100%); }
+.phone-compose-art > i { position: absolute; }
+.phone-compose-art > i:first-child { top: 11%; right: 10%; width: 14%; aspect-ratio: 1; border-radius: 50%; background: #b5473b; }
+.phone-compose-art > i:nth-child(2) { inset: auto -3% 22% -4%; height: 47%; background: #496fa7; clip-path: polygon(0 100%, 0 66%, 25% 42%, 50% 68%, 74% 33%, 100% 72%, 100% 100%); }
+.phone-compose-art > i:nth-child(3) { inset: auto -5% 12% -4%; height: 37%; background: #668468; clip-path: polygon(0 100%, 0 62%, 27% 35%, 55% 58%, 76% 26%, 100% 52%, 100% 100%); }
+.phone-compose-art > i:nth-child(4) { z-index: 4; left: 25%; bottom: 8%; width: 2px; height: 43%; background: #20211f; transform: rotate(-19deg); transform-origin: bottom; }
+.phone-compose-art > i:nth-child(4)::before { content: ""; position: absolute; top: 28%; width: 14cqw; height: 2px; background: #20211f; transform: rotate(31deg); transform-origin: left; }
+.phone-compose-art > i:nth-child(4)::after { content: ""; position: absolute; left: -1.2cqw; top: 17%; width: 2.4cqw; aspect-ratio: 1; border-radius: 50%; background: #b5473b; box-shadow: 8.4cqw 5.5cqw 0 #eeeee8, 11.8cqw 7.5cqw 0 #20211f; }
+.phone-compose-art > span { position: absolute; left: 3cqw; top: 3cqw; color: #30322e; font: 7px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
 .phone-pigment-track { display: grid; grid-template-columns: repeat(6,1fr); height: 1.8cqw; }
 .phone-pigment-track i { background: var(--phone-pigment); }
 .phone-source-list { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); border-top: 1px solid #d5d6d0; border-bottom: 1px solid #d5d6d0; }
@@ -438,7 +435,19 @@ html[data-locale="ja"] .peanup-live-copy strong { overflow-wrap: normal; word-br
 .phone-library-grid { min-height: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid #d5d6d0; border-left: 1px solid #d5d6d0; }
 .phone-library-card { min-width: 0; min-height: 0; padding: 2.4cqw; display: grid; grid-template-rows: minmax(0, 1fr) auto auto; gap: 1.35cqw; overflow: hidden; border-right: 1px solid #d5d6d0; border-bottom: 1px solid #d5d6d0; background: rgba(255,255,255,.4); }
 .phone-library-card > span { color: #496fa7; font: 6px/1 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: nowrap; }
-.phone-library-card > strong { min-width: 0; overflow: hidden; font-family: "Songti SC", "STSong", "Yu Mincho", serif; font-size: 9px; font-weight: 600; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+.phone-library-card > strong {
+  min-width: 0;
+  min-height: 2.4em;
+  display: -webkit-box;
+  overflow: hidden;
+  font-family: "Songti SC", "STSong", "Yu Mincho", serif;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
 .phone-library-art { position: relative; min-height: 0; overflow: hidden; border: 1px solid #c9cbc4; background: #e7e8e1; }
 .phone-library-art i { position: absolute; display: block; }
 .phone-library-card--photo .phone-library-art i { right: 11%; top: 11%; width: 18%; aspect-ratio: 1; border-radius: 50%; background: #b5473b; }
@@ -538,9 +547,10 @@ html[data-locale="ja"] .peanup-live-copy strong { overflow-wrap: normal; word-br
 .pipeline-canvas canvas { position: relative; z-index: 1; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity .18s ease; }
 .pipeline-canvas.is-ready canvas { opacity: 1; }
 .pipeline-canvas.is-ready .pipeline-canvas-fallback { opacity: 0; }
-.pipeline-device picture, .pipeline-device img { width: 100%; height: auto; max-height: 100%; display: block; }
+/* Keep the poster in the device's paint layer. A forced GPU texture can be
+   evicted during a long scroll and briefly reappear one frame late. */
+.pipeline-device-image { position: absolute; z-index: 1; inset: 6px; width: calc(100% - 12px); height: calc(100% - 12px); object-fit: cover; object-position: 54% 55%; pointer-events: none; }
 .pipeline-canvas canvas { object-fit: contain; image-rendering: auto; }
-.pipeline-device img { object-fit: cover; object-position: 54% 55%; filter: saturate(.82) contrast(.99) brightness(1.025); }
 .pipeline-canvas > i { position: absolute; z-index: 2; left: 8px; bottom: 8px; padding: 5px 7px; color: #f5f1e6; background: rgba(20,20,20,.78); font: normal 7px/1 ui-monospace, monospace; }
 .pipeline-canvas.is-refreshing canvas { animation: pipeline-dither-write .48s var(--ease) both; }
 .pipeline-transfer { display: flex; flex-direction: column; justify-content: flex-end; padding: 16px; background: #eef0eb; }
@@ -552,13 +562,22 @@ html[data-locale="ja"] .peanup-live-copy strong { overflow-wrap: normal; word-br
 .pipeline-transfer > b { font: 9px/1 ui-monospace, monospace; }
 .pipeline-transfer > small { margin-top: 7px; color: var(--blue); font: 7px/1 ui-monospace, monospace; }
 .pipeline-device { padding: 12px 16% 27px; background-color: #ecece7; background-image: repeating-linear-gradient(0deg, rgba(35,35,31,.035) 0 1px, transparent 1px 5px); }
-.pipeline-device > div { position: relative; width: 100%; height: auto; aspect-ratio: 1260 / 1674; padding: 6px; display: grid; place-items: center; border: 1px solid #aaa9a2; border-radius: 3px; background: #f8f8f4; box-shadow: 0 12px 24px rgba(20,20,20,.15), inset 0 0 0 2px #fff; overflow: hidden; }
-.pipeline-device > div::after { content: ""; position: absolute; inset: 6px; pointer-events: none; opacity: .3; background-image: repeating-linear-gradient(0deg, rgba(20,24,22,.04) 0 1px, transparent 1px 4px), linear-gradient(95deg, transparent, rgba(114,91,56,.035) 32%, transparent 57%, rgba(44,72,95,.03)); mix-blend-mode: multiply; }
-.pipeline-device > div > i { position: absolute; z-index: 2; left: 6px; right: 6px; bottom: 6px; height: 0; background: rgba(244,241,232,.94); border-top: 1px solid rgba(71,121,188,.6); }
-.pipeline-visible .pipeline-device > div > i { animation: epaper-write 1.25s .25s var(--ease) both; }
+.pipeline-device > div { position: relative; width: 100%; height: auto; aspect-ratio: 1260 / 1674; padding: 6px; display: grid; place-items: center; isolation: isolate; border: 1px solid #aaa9a2; border-radius: 3px; background-color: #f8f8f4; box-shadow: 0 12px 24px rgba(20,20,20,.15), inset 0 0 0 2px #fff; overflow: hidden; }
+.pipeline-device > div::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 6px;
+  contain: paint;
+  pointer-events: none;
+  background: #ecece8;
+}
+.pipeline-device > div::after { content: ""; position: absolute; z-index: 2; inset: 6px; pointer-events: none; opacity: .3; background-image: repeating-linear-gradient(0deg, rgba(20,24,22,.04) 0 1px, transparent 1px 4px), linear-gradient(95deg, transparent, rgba(114,91,56,.035) 32%, transparent 57%, rgba(44,72,95,.03)); }
+.pipeline-device > div > i { position: absolute; z-index: 3; left: 6px; right: 6px; bottom: 6px; height: calc(100% - 12px); opacity: 0; transform: scaleY(0); transform-origin: bottom; background: transparent; border-top: 1px solid rgba(71,121,188,.66); box-shadow: 0 -5px 12px rgba(71,121,188,.08); }
+[data-pipeline-device].is-writing > i { opacity: 1; animation: epaper-write 1.25s .25s var(--ease) both; }
 .pipeline-device > b { position: absolute; left: 0; right: 0; bottom: 8px; text-align: center; color: #777; font: 9px/1 ui-monospace, monospace; }
 @keyframes packet-shift { from { opacity: 0; transform: translateX(-22px) rotate(45deg); } to { opacity: 1; transform: translateX(0) rotate(45deg); } }
-@keyframes epaper-write { from { height: calc(100% - 12px); } to { height: 0; } }
+@keyframes epaper-write { from { transform: scaleY(1); } to { transform: scaleY(0); } }
 @keyframes pipeline-dither-write { from { opacity: .42; clip-path: inset(100% 0 0); } to { opacity: 1; clip-path: inset(0); } }
 .image-pipeline h3 { margin: 0 0 12px; font-family: "Songti SC", serif; font-size: 25px; font-weight: 500; }
 .image-pipeline p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.8; }
@@ -828,8 +847,6 @@ footer > span { justify-self: end; color: var(--muted); }
 .pipeline-canvas > i { font-size: 10px; }
 .pipeline-device { padding: 8px 10px 27px; display: grid; place-items: center; background: #fff; background-image: none; }
 .pipeline-device > div { width: auto; max-width: 100%; height: 100%; padding: 5px; background: #fbfbf8; box-shadow: 0 12px 26px rgba(20,20,20,.13), inset 0 0 0 1px #fff; }
-.pipeline-device picture, .pipeline-device img { width: 100%; height: 100%; display: block; }
-.pipeline-device img { object-fit: contain; object-position: 50% 50%; filter: none; }
 .pipeline-device > b, .pipeline-transfer > b, .pipeline-transfer > small { font-size: 10px; }
 .image-pipeline p { font-size: 14px; }
 .dither-presets article { background: #fff; }
@@ -841,11 +858,11 @@ footer > span { justify-self: end; color: var(--muted); }
 .specifications-head { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(260px, .72fr); gap: clamp(52px, 8vw, 126px); align-items: end; padding: 78px 0 92px; }
 .specifications-head h2 { margin: 0; font-family: "Iowan Old Style", "Songti SC", "STSong", "Yu Mincho", Georgia, serif; font-size: clamp(54px, 5.8vw, 84px); font-weight: 400; line-height: 1.04; }
 .specifications-head h2 span { display: block; width: max-content; max-width: 100%; }
-.specifications-head h2 span:last-child { margin-top: .12em; margin-left: clamp(28px, 5vw, 76px); }
+.specifications-head h2 span:last-child { max-width: calc(100% - clamp(28px, 5vw, 76px)); margin-top: .12em; margin-left: clamp(28px, 5vw, 76px); }
 .specifications-head p { max-width: 440px; margin: 0 0 .45em; color: var(--muted); }
-html[data-locale="en"] .specifications-head h2,
+html[data-locale="en"] .specifications-head h2 { font-size: clamp(44px, 4.5vw, 68px); }
 html[data-locale="de"] .specifications-head h2,
-html[data-locale="fr"] .specifications-head h2 { font-size: clamp(44px, 4.5vw, 68px); }
+html[data-locale="fr"] .specifications-head h2 { font-size: clamp(40px, 3.45vw, 56px); }
 .specification-list { display: grid; grid-template-columns: repeat(4, 1fr); margin: 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
 .specification-list > div { position: relative; min-height: 150px; padding: 22px 20px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .specification-list > div:nth-child(4n+1) { padding-left: 0; }
@@ -872,12 +889,11 @@ html[data-locale="fr"] .specifications-head h2 { font-size: clamp(44px, 4.5vw, 6
 .detail-photo figcaption { position: absolute; z-index: 2; left: 14px; bottom: 14px; padding: 8px 10px; border: 1px solid rgba(20,20,20,.2); color: var(--ink); background: rgba(255,255,255,.9); font: 11px/1 ui-monospace, monospace; }
 
 .apple-ecosystem,
-.technology,
 .specifications,
 .details,
 .story { content-visibility: auto; }
 .apple-ecosystem { contain-intrinsic-size: auto 1950px; }
-.technology { contain-intrinsic-size: auto 4150px; }
+.technology { content-visibility: visible; contain-intrinsic-size: none; }
 .specifications { contain-intrinsic-size: auto 980px; }
 .details { contain-intrinsic-size: auto 1080px; }
 .story { contain-intrinsic-size: auto 720px; }
@@ -913,7 +929,7 @@ html[data-deep-link] .product-main > * {
   .apple-journey button { min-height: 172px; padding: 22px; grid-template-columns: 1fr; gap: 13px; align-content: start; border-right: 1px solid var(--line); }
   .apple-journey button:last-child { border-right: 0; }
   .apple-journey small { align-self: end; }
-  .shortcut-phone { grid-column: 1; grid-row: 2; min-height: clamp(700px, 84vw, 900px); border-right: 0; border-bottom: 1px solid var(--line); }
+  .shortcut-phone { grid-column: 1; grid-row: 2; border-right: 0; border-bottom: 1px solid var(--line); }
   .shortcut-phone::before { left: 20px; bottom: 18px; }
   .apple-platforms { grid-column: 1; grid-row: 3; }
   .specification-list { grid-template-columns: repeat(3, 1fr); }
@@ -1007,7 +1023,15 @@ html[data-deep-link] .product-main > * {
   .ink-live-photo small { margin-top: 3px; }
   .ink-live-text textarea { min-height: 32px; max-height: 52px; margin-top: 3px; font-size: 11px; line-height: 1.3; }
   .ink-live-footer { min-height: 44px; }
-  .ink-live-footer > p { padding: 6px 7px 5px; }
+  .ink-live-footer > p {
+    padding: 6px 7px 5px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    line-height: 1.15;
+    text-overflow: clip;
+    white-space: normal;
+  }
   .ink-live-footer > output { padding: 0 6px; font-size: 8px; }
   .ink-live-reset { min-width: 44px; padding: 0 7px; }
   .ink-live-reset span { display: none; }
@@ -1047,8 +1071,6 @@ html[data-deep-link] .product-main > * {
   .apple-journey strong { font-size: 0; line-height: 1.2; overflow-wrap: normal; word-break: normal; hyphens: none; }
   .apple-journey strong::after { content: attr(data-phone-mobile-title); font-family: "Songti SC", "STSong", "Yu Mincho", Georgia, serif; font-size: clamp(13px, 3.8vw, 16px); font-weight: 500; line-height: 1.2; }
   .apple-journey small { display: none; }
-  .shortcut-phone { min-height: clamp(640px, 168vw, 680px); padding-block: 22px 32px; }
-  .iphone-device { width: min(67vw, 248px); }
   .shortcut-phone::before { left: 0; right: 0; bottom: 12px; text-align: center; }
   .shortcut-phone::after { bottom: 18px; width: min(54%, 190px); height: 12px; opacity: .72; filter: blur(3px); }
   .apple-platforms { grid-template-columns: 1fr; }
@@ -1161,16 +1183,13 @@ html[data-theme="dark"] .dither-presets article {
 html[data-theme="dark"] .hero::before,
 html[data-theme="dark"] .wordmark { -webkit-text-stroke-color: var(--ghost-line); }
 html[data-theme="dark"] .hero-spec-rail { background: rgba(16, 17, 15, .94); }
-html[data-theme="dark"] .hero-product-preview--light,
-html[data-theme="dark"] .hero-product-image--light { visibility: hidden; opacity: 0; }
-html[data-theme="dark"] .hero-product .hero-product-image--light.is-loaded { opacity: 0; }
-html[data-theme="dark"] .hero-product-preview--dark { visibility: visible; opacity: 1; }
-html[data-theme="dark"] .hero-product-image--dark { visibility: visible; }
-html[data-theme="dark"] .hero-product-image--dark.is-loaded { opacity: 1; }
-html[data-theme="dark"] .hero-product-preview--light,
-html[data-theme="dark"] .hero-product-image--light img { filter: none; }
-html[data-theme="dark"] .hero-product-preview--dark,
-html[data-theme="dark"] .hero-product-image--dark img { mix-blend-mode: normal; filter: drop-shadow(0 28px 34px rgba(0, 0, 0, .23)); }
+/* One shared 740 x 1120 image owns both themes. Dark mode only removes the
+   photographed backdrop, so the product cannot resize or drift. */
+html[data-theme="dark"] .hero-product-preview,
+html[data-theme="dark"] .hero-product-image {
+  -webkit-mask: url('/assets/peanup-product-cutout.webp') center / 100% 100% no-repeat;
+  mask: url('/assets/peanup-product-cutout.webp') center / 100% 100% no-repeat;
+}
 html[data-theme="dark"] .scroll-cue { border-color: var(--line); background: var(--surface-raised); }
 html[data-theme="dark"] .hero-color-ruler i { border-color: rgba(255, 255, 255, .12); }
 html[data-theme="dark"] .ink-gallery,
@@ -1190,7 +1209,7 @@ html[data-theme="dark"] .apple-journey button { color: var(--ink); background: v
 html[data-theme="dark"] .apple-journey button:hover { background: var(--surface-hover); }
 html[data-theme="dark"] .apple-journey button.active { background: #222320; }
 html[data-theme="dark"] .apple-platforms { background: var(--surface-raised); }
-html[data-theme="dark"] .iphone-device { background: transparent; filter: drop-shadow(0 26px 25px rgba(0,0,0,.45)) drop-shadow(0 8px 7px rgba(0,0,0,.3)); }
+html[data-theme="dark"] .iphone-device { background: transparent; filter: drop-shadow(0 20px 27px rgba(0,0,0,.42)) drop-shadow(0 5px 8px rgba(0,0,0,.2)); }
 html[data-theme="dark"] .iphone-glass { background: #f1f1ec; box-shadow: inset 0 0 0 .65px rgba(21,23,26,.24), inset 0 0 0 1px rgba(255,255,255,.32); }
 html[data-theme="dark"] .ink-device-shell,
 html[data-theme="dark"] .device-shell { color: #1f2226; box-shadow: 0 34px 80px rgba(0, 0, 0, .48), inset 0 0 0 4px rgba(255,255,255,.76); }
@@ -1583,14 +1602,13 @@ html[data-theme="dark"] .automation-timeline button:hover { background: var(--su
   .hero-statement { font-size: clamp(20px, 1.55vw, 25px) !important; line-height: 1.5 !important; }
   .hero-panel-spec span { font-size: clamp(42px, 4.2vw, 58px); }
   .apple-head h2 { font-size: clamp(36px, 3.6vw, 52px); }
+}
 
-  .shortcut-phone { min-height: clamp(820px, 62vw, 920px); }
-  .apple-stage { min-height: clamp(880px, 61vw, 980px); }
+@media screen and (min-width: 1101px) {
+  .shortcut-phone { min-height: clamp(790px, 57vw, 870px); }
+  .apple-stage { min-height: clamp(850px, 57vw, 920px); }
   .iphone-device {
-    /* Keep the full 71.9 × 150mm silhouette visible beside the journey copy.
-       The previous 23.4vw cap made the model dominate desktop layouts. */
-    width: min(clamp(300px, 22.4vw, 332px), calc(52svh - 70px));
-    aspect-ratio: var(--frame-ratio);
+    width: min(clamp(318px, 23.5vw, 340px), calc(47.9333svh - 62px));
   }
 }
 
@@ -1600,7 +1618,6 @@ html[data-theme="dark"] .automation-timeline button:hover { background: var(--su
   .shortcut-phone { min-height: clamp(590px, 150vw, 640px); padding-block: 16px 28px; }
   .iphone-device {
     width: min(62vw, 238px, calc(48svh - 95px));
-    aspect-ratio: var(--frame-ratio);
   }
 }
 
@@ -1609,7 +1626,7 @@ html[data-theme="dark"] .automation-timeline button:hover { background: var(--su
    the titanium rail and screen overlay aligned at fractional widths. */
 @media screen and (min-width: 681px) and (max-width: 1100px) {
   .shortcut-phone { min-height: clamp(720px, 78vw, 920px); }
-  .iphone-device { width: min(60vw, 304px, calc(52svh - 76px)); aspect-ratio: var(--frame-ratio); }
+  .iphone-device { width: min(60vw, 304px, calc(52svh - 76px)); }
 }
 
 /* Final type and device calibration. The serif stack keeps Chinese glyphs
@@ -1639,57 +1656,4 @@ html[data-theme="dark"] .automation-timeline button:hover { background: var(--su
   .specifications h2 { font-size: clamp(39px, 4.15vw, 64px); line-height: 1.08; }
   .ink-gallery-copy h2 { font-size: clamp(38px, 4vw, 60px); line-height: 1.1; }
   .apple-head h2 { font-size: clamp(35px, 3.45vw, 50px); line-height: 1.1; }
-}
-
-.hero-product-image--dark img {
-  /* The light photo and transparent cutout share the same measured product
-     bounds. Keep both themes in one geometry box so the object cannot grow or
-     drift when the theme curtain completes. */
-  transform: none;
-}
-
-/*
- * Native phone calibration
- *
- * The local 662 x 1380 chassis is the source of truth for the silhouette,
- * side controls and Dynamic Island. Do not paint a second body underneath it:
- * a backing layer makes the transparent corners read as an oversized bezel.
- * The display opening is measured from that same asset (31, 35, 601, 1310).
- */
-.iphone-device {
-  border-radius: 0;
-  /* Use the measured 71.9 x 150 mm body ratio as the final source of truth;
-     the native frame is fitted inside it without a second CSS silhouette. */
-  aspect-ratio: var(--frame-ratio);
-  filter: drop-shadow(0 18px 25px rgba(20, 23, 28, .14)) drop-shadow(0 4px 7px rgba(20, 23, 28, .075));
-}
-
-
-/* The source opening has a broader top arc and a tighter bottom arc than a
-   symmetric CSS radius. These four values keep the content inside the rail at
-   both desktop and mobile fractional sizes. */
-.iphone-glass {
-  /* The 17 Pro display has a softer top arc and a slightly tighter lower
-     arc. These percentages are measured against the 402 x 874 pt opening,
-     so the curve scales with the screen instead of the outer chassis. */
-  border-radius: 4% 4% 4% 4% / 5.8% 5.8% 5.35% 5.35%;
-  box-shadow: inset 0 0 0 .55px rgba(21, 23, 26, .2), inset 0 0 0 .95px rgba(255, 255, 255, .34);
-}
-
-/* The 1056 x 163 asset is an exact export of the 402 x 62 pt status region.
-   Keep the full native strip instead of independently positioning the time;
-   this prevents the left and right glyphs from drifting apart on fractional
-   desktop and mobile sizes. */
-.iphone-status-image {
-  /* The PNG contains the calibrated time inset and untouched right-side
-     indicators. Translate the complete strip only for the measured display
-     opening; never move the time and indicators independently in CSS. */
-  left: -2.99%;
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
-}
-
-html[data-theme="dark"] .iphone-device {
-  filter: drop-shadow(0 20px 27px rgba(0, 0, 0, .42)) drop-shadow(0 5px 8px rgba(0, 0, 0, .2));
 }

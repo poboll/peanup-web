@@ -4,7 +4,7 @@ import TroubleshootingGuide, { type TroubleshootingStage } from '../../../../com
 import type { DocPageConfig } from '../../../../types/docs';
 
 const toc = [
-  ['overview', 'Start here'],
+  ['overview', 'Quick check'],
   ['quick-check', 'One-minute check'],
   ['discovery', 'Device not found'],
   ['transfer', 'Transfer paused'],
@@ -75,9 +75,9 @@ const config: DocPageConfig = {
   current: 'troubleshooting',
   toc: toc.map(([id, label]) => ({ id, label })),
   seriesLabel: 'SETUP & TROUBLESHOOTING',
-  revisionLabel: 'Crowdfunding preview guide\nUpdated 2026.07.30',
+  revisionLabel: 'Crowdfunding preview guide\nUpdated 2026.08.10',
   datePublished: '2026-07-30',
-  dateModified: '2026-07-30',
+  dateModified: '2026-08-10',
   schemaType: 'TechArticle',
   articleClass: 'docs-troubleshooting',
   faqs,
@@ -114,7 +114,7 @@ const config: DocPageConfig = {
       noteLabel="Also check"
       stages={troubleshootingStages}
     />
-    <p class="docs-note"><b>Do not choose the photo again yet</b><span>A connection failure should not discard a cropped and rendered frame. Keep the preview and resume from the connection stage.</span></p>
+    <p class="docs-note"><b>Do not choose the photo again yet</b><span>Keep the cropped and rendered frame after a connection failure, then resume from the connection stage.</span></p>
   </section>
 
   <section class="docs-section" id="discovery">
@@ -136,7 +136,7 @@ const config: DocPageConfig = {
   <section class="docs-section" id="transfer">
     <header><span>04 / TRANSFER</span><h2>When sending stops,<br />show more than a progress bar.</h2></header>
     <div class="docs-split">
-      <p class="docs-lead">An update has more states than “success” and “failed.” The app should distinguish discovery, connection, transfer, acknowledgement and panel refresh.</p>
+      <p class="docs-lead">An update has more states than “success” and “failed.” Progress distinguishes discovery, connection, transfer, acknowledgement and panel refresh.</p>
       <div class="docs-copy">
         <p>If transfer is interrupted, retain the completed frame and known progress, move closer and retry. Cropping and rendering need to run again only when you choose a different source.</p>
         <p>Send to one Peanup at a time. Backgrounding the app, locking the phone, leaving Bluetooth range or losing permission can interrupt the current connection.</p>
@@ -144,7 +144,7 @@ const config: DocPageConfig = {
     </div>
     <div class="docs-table-wrap" tabindex="0" aria-label="Transfer states and next actions">
       <table class="docs-table">
-        <thead><tr><th scope="col">Stage</th><th scope="col">The interface should say</th><th scope="col">Next action</th></tr></thead>
+        <thead><tr><th scope="col">Stage</th><th scope="col">Visible status</th><th scope="col">Next action</th></tr></thead>
         <tbody>
           <tr><th scope="row">Discovery</th><td>Looking for nearby devices</td><td>Stay close and confirm permission and power.</td></tr>
           <tr><th scope="row">Connection</th><td>Establishing a nearby connection</td><td>Do not switch devices or leave the flow.</td></tr>

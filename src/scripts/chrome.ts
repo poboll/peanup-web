@@ -81,29 +81,59 @@ const waitForPaint = () => new Promise<void>((resolve) => {
 });
 const waitForThemeFade = () => new Promise<void>((resolve) => window.setTimeout(resolve, 340));
 
-const decodeThemeImage = async (theme: Theme) => {
-  const image = document.querySelector<HTMLImageElement>(`.hero-product-image--${theme} img`);
-  if (!image) return;
-  const picture = image.closest('picture');
-  const source = picture?.querySelector<HTMLSourceElement>('source[data-srcset]');
-  if (source?.dataset.srcset && !source.srcset) source.srcset = source.dataset.srcset;
-  if (image.dataset.src && !image.getAttribute('src')) image.src = image.dataset.src;
-  if (!image.complete) {
-    await new Promise<void>((resolve) => {
-      image.addEventListener('load', () => resolve(), { once: true });
-      image.addEventListener('error', () => resolve(), { once: true });
-    });
-  }
-  try {
-    await image.decode();
-  } catch {}
+let heroImageDecode: Promise<void> | null = null;
+const decodeHeroImage = () => {
+  if (heroImageDecode) return heroImageDecode;
+  heroImageDecode = (async () => {
+    const image = document.querySelector<HTMLImageElement>('.hero-product-image img');
+    if (!image) return;
+    const picture = image.closest('picture');
+    const source = picture?.querySelector<HTMLSourceElement>('source[data-srcset]');
+    if (source?.dataset.srcset && !source.srcset) source.srcset = source.dataset.srcset;
+    if (image.dataset.src && !image.getAttribute('src')) image.src = image.dataset.src;
+    if (!image.complete) {
+      await new Promise<void>((resolve) => {
+        image.addEventListener('load', () => resolve(), { once: true });
+        image.addEventListener('error', () => resolve(), { once: true });
+      });
+    }
+    try {
+      await image.decode();
+    } catch {}
+    // `decode()` can resolve after the original load listener has already run.
+    // Promote the decoded layer here as well so a theme switch never falls back
+    // to the rounded 74 px preview for a single captured transition frame.
+    if (image.naturalWidth > 0) picture?.classList.add('is-loaded');
+  })();
+  return heroImageDecode;
 };
 
-// Decode both theme images during the first paint window. The dark AVIF is
-// only about 30 KB and the tiny preview remains in place if a slow connection
-// cannot finish it, so the theme reveal never waits for a late network start.
-void decodeThemeImage('light');
-void decodeThemeImage('dark');
+// Keep the mask image alive after decoding. CSS masks otherwise enter the
+// compositor independently and can arrive one frame after the theme snapshot,
+// which looks like a tiny product resize even though its box never moves.
+const heroMaskImage = new Image();
+heroMaskImage.decoding = 'async';
+heroMaskImage.src = '/assets/peanup-product-cutout.webp';
+let heroMaskDecode: Promise<void> | null = null;
+const decodeHeroMask = () => {
+  if (heroMaskDecode) return heroMaskDecode;
+  heroMaskDecode = (async () => {
+    if (!heroMaskImage.complete) {
+      await new Promise<void>((resolve) => {
+        heroMaskImage.addEventListener('load', () => resolve(), { once: true });
+        heroMaskImage.addEventListener('error', () => resolve(), { once: true });
+      });
+    }
+    try { await heroMaskImage.decode(); } catch {}
+  })();
+  return heroMaskDecode;
+};
+
+const decodeThemeAssets = () => Promise.all([decodeHeroImage(), decodeHeroMask()]);
+
+// Warm both exact-resolution bitmaps during the first paint window, without an
+// HTML preload that reports as unused for visitors who stay in the light theme.
+void decodeThemeAssets();
 
 const setThemeControlsBusy = (busy: boolean) => {
   themeToggles.forEach((toggle) => {
@@ -131,10 +161,9 @@ const switchThemeWithReveal = async (theme: Theme, origin?: HTMLElement) => {
     root.style.setProperty('--theme-reveal-x', `${x}px`);
     root.style.setProperty('--theme-reveal-y', `${y}px`);
     root.style.setProperty('--theme-reveal-radius', `${radius}px`);
-
-    // The matching lightweight preview is already decoded, so the reveal can
-    // start immediately while the full-resolution photograph finishes nearby.
-    void decodeThemeImage(theme);
+    // Decode the target before the root snapshot is captured. Keeping the hero
+    // inside that one snapshot avoids a separately resampled product layer.
+    await decodeThemeAssets();
 
     const startViewTransition = (document as ThemeTransitionDocument).startViewTransition?.bind(document);
     if (startViewTransition) {

@@ -9,7 +9,7 @@ const toc = [
   ['software', '软件与更新'],
   ['self-help', '先自行排查'],
   ['request', '准备支持信息'],
-  ['service-terms', '服务规则边界'],
+  ['service-terms', '保修与服务'],
   ['faq', '常见问题'],
 ];
 
@@ -35,15 +35,15 @@ Peanup App 版本：
 请勿附上门禁凭据、密码或不必要的私人原图。`;
 
 const config: DocPageConfig = {
-  title: 'Peanup 支持与服务｜长期使用、保养与众筹服务边界',
-  description: '了解 Peanup 日常保养、软件更新、联系支持前需要准备的信息，以及保修、退换、运输损坏、维修和支持地区在 Kickstarter 开放前必须公布的边界。',
+  title: 'Peanup 支持与服务｜保养、排查与长期使用',
+  description: '了解 Peanup 日常保养、软件更新、故障排查与联系支持的方法，以及 Kickstarter 上线前将公布的保修、退换、维修和服务地区信息。',
   locale: 'zh-cn',
   current: 'support',
   toc: toc.map(([id, label]) => ({ id, label })),
   seriesLabel: 'SUPPORT & LONG-TERM USE',
-  revisionLabel: '众筹预览指南\n更新于 2026.07.31',
+  revisionLabel: '众筹预览指南\n更新于 2026.08.10',
   datePublished: '2026-07-31',
-  dateModified: '2026-07-31',
+  dateModified: '2026-08-10',
   schemaType: 'TechArticle',
   articleClass: 'docs-support',
   faqs,
@@ -53,27 +53,27 @@ const config: DocPageConfig = {
 <DocsShell config={config}>
   <section class="docs-hero" id="overview">
     <div class="docs-eyebrow"><span>PEANUP / SUPPORT & SERVICE</span><b>01</b></div>
-    <h1>画面可以一直留下，<br />服务边界也应该说清楚。</h1>
-    <p class="docs-deck">这里不提前写下尚未验证的承诺。先说明怎样照顾 Peanup、遇到问题从哪里开始，也列出开放支持前必须公布的保修、退换与长期服务信息。</p>
+    <h1>从第一次更新，<br />到长期使用。</h1>
+    <p class="docs-deck">从保护面板、完成更新，到定位故障和联系支持，本指南按实际使用顺序展开。保修、退换、维修与服务地区将在 Kickstarter 上线前集中公布。</p>
     <div class="docs-fact-strip" aria-label="支持与长期使用摘要">
       <span><b>CARE</b><small>保护面板与机身</small></span>
       <span><b>UPDATE</b><small>保留当前画面</small></span>
       <span><b>SUPPORT</b><small>提供有用状态</small></span>
       <span><b>TERMS</b><small>开放支持前公布</small></span>
     </div>
-    <p class="docs-status"><i></i> 当前提供公开文档与邮件入口 · 最终服务条款尚未公布</p>
+    <p class="docs-status"><i></i> 公开指南与邮件联系已开放 · 完整服务条款将在众筹前公布</p>
   </section>
 
   <section class="docs-section" id="before-backing">
-    <header><span>02 / BEFORE BACKING</span><h2>先知道现在有什么，<br />也知道还缺什么。</h2></header>
+    <header><span>02 / BEFORE BACKING</span><h2>众筹开放前，<br />先了解长期使用的安排。</h2></header>
     <div class="docs-claim-levels">
-      <article><span>AVAILABLE TODAY</span><h3>现在可以查到</h3><p>产品规格依据、六色画面、连接排查、平台条件、隐私说明和联系邮箱已经公开，可以从具体问题直接进入。</p></article>
-      <article><span>BEFORE PLEDGES</span><h3>支持以前必须公布</h3><p>保修期、退换条件、运输损坏、维修或换机方式、支持地区、运费税费和软件支持周期需要在正式项目页集中说明。</p></article>
-      <article><span>FINAL HARDWARE</span><h3>必须回到实物验证</h3><p>最终外壳、充电温升、续航、运输包装、面板保护和故障恢复，只有在量产意向硬件上测试后才能形成服务规则。</p></article>
+      <article><span>AVAILABLE TODAY</span><h3>指南已经可以使用</h3><p>产品规格、六色画面、连接排查、平台条件、隐私说明和联系邮箱都已经公开，可以从遇到的问题直接进入。</p></article>
+      <article><span>BEFORE PLEDGES</span><h3>保修与退换将集中公布</h3><p>正式项目页会列出保修期、退换条件、运输损坏处理、维修或换机方式、服务地区、运费税费和软件支持周期。</p></article>
+      <article><span>FINAL HARDWARE</span><h3>服务规则来自实物测试</h3><p>充电温升、续航、包装、面板保护和故障恢复会在量产意向硬件上测试，并成为最终服务规则的依据。</p></article>
     </div>
     <div class="docs-policy">
       <strong>Kickstarter 支持不是普通电商下单</strong>
-      <p>档位、取消、退款、预计交付和项目风险会受正式项目条款与平台规则约束。当前网站只是公开预览，不接受付款，也不把未公布的规则写成既成承诺。</p>
+      <p>当前网站不接受付款。档位、取消、退款、预计交付与项目风险，以正式 Kickstarter 项目页和平台规则为准。</p>
     </div>
   </section>
 
@@ -92,8 +92,8 @@ const config: DocPageConfig = {
     <div class="docs-split">
       <p class="docs-lead">电子纸完成写屏后不需要手机持续在线。App、快捷指令和内容服务负责准备下一帧，不负责维持已经显示的画面。</p>
       <div class="docs-copy">
-        <p>系统版本、App 兼容范围、设备迁移、固件恢复和软件支持周期会影响长期使用。它们会按最终硬件与发布平台验证，不能仅凭网页演示提前确定。</p>
-        <p>联网内容可能依赖第三方服务；本地照片和已经生成的六色帧应尽量与天气、书摘等联网来源分开处理。</p>
+        <p>系统版本、App 兼容范围、设备迁移、固件恢复和软件支持周期都会影响长期使用。首发说明会把支持范围和迁移方式逐项列出。</p>
+        <p>天气、书摘等内容可能依赖第三方服务；本地照片与已经生成的六色帧会采用独立路径，不因内容服务变化而失去。</p>
       </div>
     </div>
     <p class="docs-note"><b>换手机不等于画面消失</b><span>当前画面保存在电子纸状态中。能否在新手机上继续管理、迁移和自动更新，则以最终 App 的设备流程与兼容说明为准。</span></p>
@@ -128,13 +128,13 @@ const config: DocPageConfig = {
   </section>
 
   <section class="docs-section" id="service-terms">
-    <header><span>07 / SERVICE BOUNDARIES</span><h2>能公开的先公开，<br />不能确认的保留到实测以后。</h2></header>
+    <header><span>07 / WARRANTY & SERVICE</span><h2>保修、退换与维修，<br />众筹开放前一次公布。</h2></header>
     <div class="docs-table-wrap" tabindex="0" aria-label="Peanup 支持与服务公开状态">
       <table class="docs-table">
-        <thead><tr><th scope="col">项目</th><th scope="col">当前状态</th><th scope="col">开放支持前需要公布</th></tr></thead>
+        <thead><tr><th scope="col">项目</th><th scope="col">现在可以使用</th><th scope="col">众筹开放时补充</th></tr></thead>
         <tbody>
-          <tr><th scope="row">公开文档</th><td>产品、画面、连接、平台、隐私与工程边界已提供</td><td>随最终 App 与硬件持续修订</td></tr>
-          <tr><th scope="row">联系入口</th><td>i@caiths.com</td><td>支持语言、地区与服务时间边界</td></tr>
+          <tr><th scope="row">公开文档</th><td>产品、画面、连接、平台、隐私与工程资料已提供</td><td>随最终 App 与硬件更新</td></tr>
+          <tr><th scope="row">联系入口</th><td>i@caiths.com</td><td>支持语言、地区与服务时间</td></tr>
           <tr><th scope="row">保修与维修</th><td>尚未公布最终条款</td><td>期限、覆盖范围、排除项、维修或换机路径</td></tr>
           <tr><th scope="row">退换与退款</th><td>当前网站不接受付款</td><td>Kickstarter 档位、取消、退款与退换条件</td></tr>
           <tr><th scope="row">运输损坏</th><td>包装与运输测试仍待最终硬件</td><td>签收检查、举证方式、补发或换机流程</td></tr>

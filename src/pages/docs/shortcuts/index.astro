@@ -8,9 +8,9 @@ const toc = [
   ['model', '一次更新'],
   ['recipes', '日常示例'],
   ['builder', '搭一条流程'],
-  ['actions', '动作草案'],
+  ['actions', '首发动作'],
   ['conditions', '条件与失败'],
-  ['privacy', '隐私边界'],
+  ['privacy', '隐私与权限'],
   ['faq', '常见问题'],
 ];
 
@@ -36,7 +36,7 @@ const plannerGroups: ShortcutPlannerGroup[] = [
   {
     id: 'delivery', label: 'DELIVERY', title: '什么时候真正写屏？',
     options: [
-      { id: 'preview', label: '预览后发送', phrase: '先预览六色结果，再由你确认发送。', note: '这是最稳妥的默认流程。' },
+      { id: 'preview', label: '预览后发送', phrase: '先预览六色结果，再由你确认发送。', note: '默认先确认画面，再开始写屏。' },
       { id: 'nearby', label: '设备在旁时发送', phrase: '检测到附近 Peanup 后再尝试发送。', note: '发送仍需要设备有电、在蓝牙范围内并可连接。' },
       { id: 'prepare', label: '只准备画面', phrase: '先保存完成帧，等设备在旁时再发送。', note: '准备画面不需要让 Peanup 持续连接。' },
       { id: 'confirm', label: '每次询问', phrase: '每次更新前都请求你的确认。', note: '适合包含个人照片或敏感信息的内容。' },
@@ -48,19 +48,19 @@ const faqs: Array<[string, string]> = [
   ['快捷指令会让 Peanup 一直保持蓝牙连接吗？', '不会。设计目标是先在手机上准备画面，只在真正发送更新时建立近场连接，完成后回到空闲。'],
   ['自动化能在完全无人操作时刷新吗？', '要看 iOS 触发条件、系统权限、设备距离和最终 App 能力。有些自动化可能仍需要确认，正式版本会逐项标明。'],
   ['照片会上传到云端吗？', '核心照片路径的目标是在 iPhone 或 iPad 本地完成裁切和六色转换，再把完成帧通过 BLE 发给附近的 Peanup。'],
-  ['这些快捷指令动作现在已经发布了吗？', '还没有。本页描述众筹预览阶段的产品接口草案，动作名称、输入字段和后台执行能力会随 App 与硬件验证调整。'],
+  ['这些快捷指令动作现在已经发布了吗？', '还没有。当前页面展示预期的使用方式；正式 App 会公布最终动作名称、输入字段和可自动执行的范围。'],
 ];
 
 const config: DocPageConfig = {
   title: 'Peanup 快捷指令与自动化｜照片、天气、日历与书摘更新',
-  description: 'Peanup Apple 快捷指令与自动化说明：触发、六色预览、蓝牙发送、日常示例、权限条件、失败处理和本地隐私边界。',
+  description: 'Peanup Apple 快捷指令与自动化说明：触发、六色预览、蓝牙发送、日常示例、权限条件、失败处理和本地照片处理。',
   locale: 'zh-cn',
   current: 'shortcuts',
   toc: toc.map(([id, label]) => ({ id, label })),
   seriesLabel: 'SHORTCUTS & AUTOMATION',
-  revisionLabel: '众筹预览接口草案\n更新于 2026.07.30',
+  revisionLabel: '众筹预览说明\n更新于 2026.08.10',
   datePublished: '2026-07-29',
-  dateModified: '2026-07-30',
+  dateModified: '2026-08-10',
   schemaType: 'TechArticle',
   articleClass: 'docs-shortcuts',
   faqs,
@@ -70,7 +70,7 @@ const config: DocPageConfig = {
 <DocsShell config={config}>
   <section class="docs-hero" id="overview">
     <div class="docs-eyebrow"><span>PEANUP / SHORTCUTS</span><b>01</b></div>
-    <h1><span class="shortcut-title-line">让画面在合适的时候更新，</span><span class="shortcut-title-line">而不是多制造一个提醒。</span></h1>
+    <h1><span class="shortcut-title-line">让画面按时更新，</span><span class="shortcut-title-line">不用多一个提醒。</span></h1>
     <p class="docs-deck">快捷指令负责选择触发条件和内容。Peanup App 在手机上整理并预览六色画面，只在发送时连接附近的设备。</p>
     <div class="docs-fact-strip" aria-label="快捷指令能力摘要">
       <span><b>SIRI</b><small>语音与系统入口</small></span>
@@ -78,7 +78,7 @@ const config: DocPageConfig = {
       <span><b>AUTO</b><small>时间与个人自动化</small></span>
       <span><b>LOCAL</b><small>照片在设备上处理</small></span>
     </div>
-    <p class="docs-status"><i></i> 产品接口草案 · 最终能力以 App 与硬件验证为准</p>
+    <p class="docs-status"><i></i> 交互方案预览 · 最终动作名称将在 App 发布前更新</p>
   </section>
 
   <section class="docs-section" id="model">
@@ -113,32 +113,32 @@ const config: DocPageConfig = {
     <header><span>04 / BUILD A ROUTINE</span><h2>先搭一条流程，<br />再决定是否自动。</h2></header>
     <div class="docs-split">
       <p class="docs-lead">选择一个开始时刻、一种内容和一次写屏方式，看看它们怎样组成完整更新。</p>
-      <div class="docs-copy"><p>这里不会创建系统快捷指令，也不会连接设备。它只把产品接口草案变成一条看得懂、能讨论的流程。</p></div>
+      <div class="docs-copy"><p>流程试搭不会创建系统快捷指令或连接设备，只用于预览触发、内容与发送条件怎样组合。</p></div>
     </div>
     <ShortcutPlanner
       ariaLabel="快捷指令流程试搭"
       summaryLabel="你的流程"
       noteLabel="成立条件"
-      linkLabel="查看动作草案"
+      linkLabel="查看首发动作"
       groups={plannerGroups}
     />
-    <p class="docs-caption">流程试搭不代表这些动作已经发布。正式能力仍取决于 iOS 权限、后台执行条件、BLE 协议和最终 App。</p>
+    <p class="docs-caption">流程试搭只展示组合方式，不会写入系统快捷指令或连接设备。实际运行仍受 iOS 权限、后台条件和设备距离影响。</p>
   </section>
 
   <section class="docs-section" id="actions">
     <header><span>05 / ACTION DRAFT</span><h2>动作名称要短，<br />输入和结果要一眼明白。</h2></header>
-    <div class="docs-table-wrap" tabindex="0" aria-label="快捷指令动作草案">
+    <div class="docs-table-wrap" tabindex="0" aria-label="计划中的快捷指令动作">
       <table class="docs-table docs-shortcut-actions">
-        <thead><tr><th scope="col">动作草案</th><th scope="col">输入</th><th scope="col">结果</th><th scope="col">状态</th></tr></thead>
+        <thead><tr><th scope="col">计划动作</th><th scope="col">输入</th><th scope="col">结果</th><th scope="col">状态</th></tr></thead>
         <tbody>
           <tr><th scope="row">准备 Peanup 照片</th><td>照片、裁切位置</td><td>六色完成帧</td><td>众筹目标</td></tr>
           <tr><th scope="row">生成信息卡</th><td>模板、文字、日期</td><td>预览画面</td><td>众筹目标</td></tr>
           <tr><th scope="row">发送到 Peanup</th><td>完成帧、目标设备</td><td>传输与写屏状态</td><td>硬件验证中</td></tr>
-          <tr><th scope="row">读取最近状态</th><td>目标设备</td><td>连接、进度或错误</td><td>接口草案</td></tr>
+          <tr><th scope="row">读取最近状态</th><td>目标设备</td><td>连接、进度或错误</td><td>规划中</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="docs-caption">这不是已经发布的 API 清单。动作命名、参数、后台执行与回调结果会根据 iOS 限制、BLE 协议和最终交互继续收敛。</p>
+    <p class="docs-caption">首发 App 将为每个动作列出名称、可用参数、后台条件与返回状态。</p>
   </section>
 
   <section class="docs-section" id="conditions">
@@ -150,12 +150,12 @@ const config: DocPageConfig = {
     </div>
     <div class="docs-table-wrap docs-compatibility" tabindex="0" aria-label="自动化失败处理">
       <table class="docs-table">
-        <thead><tr><th scope="col">情况</th><th scope="col">页面或 App 应该怎样回应</th></tr></thead>
+        <thead><tr><th scope="col">遇到的情况</th><th scope="col">你会看到</th></tr></thead>
         <tbody>
           <tr><th scope="row">找不到设备</th><td>保留已经准备好的画面，提示靠近设备后重试，不丢失原始选择。</td></tr>
           <tr><th scope="row">发送被中断</th><td>显示已发送进度与可重试状态，不把失败写成“完成”。</td></tr>
           <tr><th scope="row">内容权限被拒绝</th><td>只停用对应内容来源，不阻止本地照片和手动传图。</td></tr>
-          <tr><th scope="row">后台条件不允许</th><td>说明需要确认或前台运行，不承诺 iOS 不允许的静默执行。</td></tr>
+          <tr><th scope="row">后台条件不允许</th><td>提示你确认或打开 App 后继续，不把未执行的动作显示为完成。</td></tr>
         </tbody>
       </table>
     </div>
@@ -174,7 +174,7 @@ const config: DocPageConfig = {
   </section>
 
   <section class="docs-section" id="faq">
-    <header><span>08 / FAQ</span><h2>先把边界说清楚。</h2></header>
+    <header><span>08 / FAQ</span><h2>关于自动更新，<br />一次回答清楚。</h2></header>
     <div class="docs-accordion">
       {faqs.map(([question, answer], index) => <details><summary><i>{String(index + 1).padStart(2, '0')}</i>{question}</summary><p>{answer}</p></details>)}
     </div>

@@ -3,7 +3,7 @@ import DocsShell from '../../../../components/docs/DocsShell.astro';
 import type { DocPageConfig } from '../../../../types/docs';
 
 const toc = [
-  ['overview', 'Start here'],
+  ['overview', 'At a glance'],
   ['display', 'Display and detail'],
   ['update', 'Connection and update'],
   ['placement', 'Power and placement'],
@@ -26,9 +26,9 @@ const config: DocPageConfig = {
   current: 'glossary',
   toc: toc.map(([id, label]) => ({ id, label })),
   seriesLabel: 'TERMS & CLAIMS',
-  revisionLabel: 'Public language guide\nUpdated 2026.07.30',
+  revisionLabel: 'Public terms guide\nUpdated 2026.08.09',
   datePublished: '2026-07-30',
-  dateModified: '2026-07-30',
+  dateModified: '2026-08-09',
   schemaType: 'WebPage',
   articleClass: 'docs-glossary-page',
   faqs,
@@ -38,15 +38,15 @@ const config: DocPageConfig = {
 <DocsShell config={config}>
   <section class="docs-hero" id="overview">
     <div class="docs-eyebrow"><span>PEANUP / TERMS & CLAIMS</span><b>01</b></div>
-    <h1><span class="glossary-title-line">Clear words first.</span><span class="glossary-title-line">Then the experience.</span></h1>
-    <p class="docs-deck">E-paper, BLE, Qi and CUID should not be barriers to understanding Peanup. This page explains what each term means here, and separates panel facts, product targets and capabilities that still need validation.</p>
+    <h1><span class="glossary-title-line">E6, BLE and Qi</span><span class="glossary-title-line">describe real experiences.</span></h1>
+    <p class="docs-deck">These terms describe the six-color panel, nearby updates, wireless charging and conditional access-card compatibility. Each entry is labeled as a manufacturer fact, crowdfunding target or whole-device validation item.</p>
     <div class="docs-fact-strip" aria-label="Key term summary">
       <span><b>E6</b><small>Six-color panel marker</small></span>
       <span><b>≈258.7</b><small>Active-area PPI</small></span>
       <span><b>BLE</b><small>Nearby update channel</small></span>
       <span><b>TARGET</b><small>Crowdfunding goals stay labeled</small></span>
     </div>
-    <p class="docs-status"><i></i> A public language guide, not a replacement for the engineering profile</p>
+    <p class="docs-status"><i></i> Public terms guide · engineering details are linked separately</p>
   </section>
 
   <section class="docs-section" id="display">

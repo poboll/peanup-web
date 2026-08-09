@@ -225,15 +225,10 @@ const technologyChapters = {
       </div>
 
       <figure class="hero-product protected-media" aria-label={copy.hero.imageAlt}>
-        <img class="hero-product-preview hero-product-preview--light" src="/assets/peanup-product-preview-light.webp" alt="" width="120" height="182" fetchpriority="high" decoding="sync" draggable="false" />
-        <img class="hero-product-preview hero-product-preview--dark" src="/assets/peanup-product-preview-dark.webp" alt="" width="120" height="182" fetchpriority="high" decoding="sync" draggable="false" />
-        <picture class="hero-product-image hero-product-image--light" data-progressive-image aria-hidden="true">
+        <img class="hero-product-preview" src="/assets/peanup-product-preview-light.webp" alt="" width="74" height="112" fetchpriority="high" decoding="sync" draggable="false" />
+        <picture class="hero-product-image" data-progressive-image aria-hidden="true">
           <source srcset="/assets/peanup-product.avif" type="image/avif" />
           <img src="/assets/peanup-product.webp" alt="" width="740" height="1120" fetchpriority="high" decoding="async" draggable="false" />
-        </picture>
-        <picture class="hero-product-image hero-product-image--dark" data-progressive-image aria-hidden="true">
-          <source data-srcset="/assets/peanup-product-cutout.avif" type="image/avif" />
-          <img data-src="/assets/peanup-product-cutout.webp" alt="" width="740" height="1120" draggable="false" />
         </picture>
       </figure>
 
@@ -408,7 +403,7 @@ const technologyChapters = {
       <div class="section-index"><span>{copy.ecosystem.index}</span><span>{copy.ecosystem.kicker}</span></div>
       <div class="apple-head"><div><span>PEANUP / iOS</span><h2><span>{copy.ecosystem.title[0]}</span>{' '}<span>{copy.ecosystem.title[1]}</span></h2></div><p>{copy.ecosystem.body}</p></div>
       <div class="apple-stage" data-image-warmup>
-        <div class="shortcut-phone" data-phone-gesture aria-label={`${copy.ecosystem.kicker}. ${copy.ecosystem.title.join(' ')}`}>
+        <div class="shortcut-phone" data-phone-gesture role="group" aria-label={`${copy.ecosystem.kicker}. ${copy.ecosystem.title.join(' ')}`}>
           <div
             class="iphone-device iphone-17-pro iphone-17-pro--black"
             data-phone-device
@@ -426,8 +421,6 @@ const technologyChapters = {
             data-status-visible-bounds="193x66x880x40"
             data-screen-frame="28x35x606x1310"
             data-island-frame="138x14x126x37"
-            role="img"
-            aria-label="Black iPhone 17 Pro app preview, proportioned to the 71.9 by 150 by 8.75 millimetre body with a calibrated display opening"
           >
             <div class="iphone-glass">
               <div
@@ -435,19 +428,27 @@ const technologyChapters = {
                 data-status-source="iphone-17-pro-status-png"
                 aria-hidden="true"
               >
-                <img
-                  class="iphone-status-image protected-media"
-                  src="/assets/iphone-17-pro-status.png"
-                  width="1056"
-                  height="163"
-                  loading="eager"
-                  decoding="sync"
-                  fetchpriority="high"
-                  draggable="false"
-                  alt=""
-                />
+                <picture>
+                  <source srcset="/assets/iphone-17-pro-status.webp" type="image/webp" />
+                  <img
+                    class="iphone-status-image protected-media"
+                    src="/assets/iphone-17-pro-status.png"
+                    width="1056"
+                    height="163"
+                    loading="lazy"
+                    decoding="async"
+                    fetchpriority="low"
+                    draggable="false"
+                    alt=""
+                  />
+                </picture>
                 <span class="iphone-status-fallback" aria-hidden="true">
                   <time>9:41</time>
+                  <span class="iphone-status-fallback-icons">
+                    <i class="iphone-status-signal"><b></b><b></b><b></b><b></b></i>
+                    <i class="iphone-status-wifi"></i>
+                    <i class="iphone-status-battery"><b></b></i>
+                  </span>
                 </span>
               </div>
               <div class="shortcut-screen" data-phone-screen data-state="compose">
@@ -538,18 +539,21 @@ const technologyChapters = {
               </div>
               <i class="home-indicator" aria-hidden="true"></i>
             </div>
-            <img
-              class="iphone-frame protected-media"
-              src="/assets/iphone-17-pro-frame.png"
-              width="662"
-              height="1380"
-              loading="lazy"
-              decoding="async"
-              fetchpriority="low"
-              draggable="false"
-              alt=""
-              aria-hidden="true"
-            />
+            <picture>
+              <source srcset="/assets/iphone-17-pro-frame.webp" type="image/webp" />
+              <img
+                class="iphone-frame protected-media"
+                src="/assets/iphone-17-pro-frame.png"
+                width="662"
+                height="1380"
+                loading="lazy"
+                decoding="async"
+                fetchpriority="low"
+                draggable="false"
+                alt=""
+                aria-hidden="true"
+              />
+            </picture>
             <i class="iphone-camera-control" aria-hidden="true"></i>
             <div class="dynamic-island" aria-hidden="true">
               <span class="dynamic-island-progress"><b></b><small>68%</small></span>
@@ -635,7 +639,7 @@ const technologyChapters = {
               {index === 0 && <div class="pipeline-visual pipeline-source protected-media"><picture><source srcset="/assets/peanup-anime-source.avif" type="image/avif" /><source srcset="/assets/peanup-anime-source.webp" type="image/webp" /><img src="/assets/peanup-anime-source.jpg" alt={copy.technology.pipeline[0].title} width="500" height="500" loading="lazy" decoding="async" draggable="false" /></picture></div>}
               {index === 1 && <div class="pipeline-visual pipeline-canvas" data-epaper-output><picture class="pipeline-canvas-fallback protected-media" aria-hidden="true"><source srcset="/assets/peanup-anime-source.avif" type="image/avif" /><source srcset="/assets/peanup-anime-source.webp" type="image/webp" /><img src="/assets/peanup-anime-source.jpg" alt="" width="500" height="500" loading="lazy" decoding="async" draggable="false" /></picture><canvas id="epaper-preview" data-epaper-preview aria-label={copy.technology.pipeline[1].title}></canvas><i data-epaper-mode-label aria-live="polite">FLOYD–STEINBERG</i></div>}
               {index === 2 && <div class="pipeline-visual pipeline-transfer" aria-hidden="true"><div class="transfer-rail"><i></i><i></i><i></i><i></i><i></i><i></i></div><b>FRAME.P6</b><small>PACKET 068 / 100</small></div>}
-              {index === 3 && <div class="pipeline-visual pipeline-device"><div class="protected-media"><picture><source srcset="/assets/peanup-lifestyle.avif" type="image/avif" /><img src="/assets/peanup-lifestyle.webp" alt={copy.life.imageAlt} width="1260" height="1674" loading="lazy" decoding="async" draggable="false" /></picture><i></i></div><b>PEANUP</b></div>}
+              {index === 3 && <div class="pipeline-visual pipeline-device"><div class="protected-media" data-pipeline-device><img class="pipeline-device-image" src="/assets/peanup-lifestyle-poster.webp" alt={copy.life.imageAlt} width="580" height="771" loading="eager" fetchpriority="high" decoding="sync" draggable="false" /><i></i></div><b>PEANUP</b></div>}
               <h3>{step.title}</h3><p>{step.body}</p>
             </li>
           ))}

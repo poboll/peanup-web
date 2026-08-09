@@ -6,7 +6,7 @@ import '../../../../styles/docs-updates.css';
 const toc = [
   ['overview', 'Why publish updates'],
   ['timeline', 'Published nodes'],
-  ['gates', 'Validation gates'],
+  ['gates', 'Pre-launch checks'],
   ['next', 'What comes next'],
   ['faq', 'FAQ'],
 ];
@@ -39,9 +39,9 @@ const updates = [
     date: '2026.07',
     type: 'validation',
     label: 'Validation',
-    title: 'Every target now has a checkable gate',
-    body: 'BLE transfer and recovery, refresh timing, standby power, Qi temperature and alignment, magnetic stability, and conditional CUID NFC support are now listed as checks before public pledges open.',
-    mark: 'TEST / GATES',
+    title: 'Every target now has a checkable test',
+    body: 'BLE transfer and recovery, refresh timing, standby power, Qi temperature and alignment, magnetic stability, and conditional CUID NFC support are now on the real-hardware checklist before Kickstarter opens.',
+    mark: 'TEST / BEFORE LAUNCH',
   },
   {
     date: '2026.06',
@@ -56,20 +56,20 @@ const updates = [
 const faqs: Array<[string, string]> = [
   ['Do these dates mean production dates?', 'No. They are dates for public website and documentation progress, not dates for manufacturing, shipping or Kickstarter launch.'],
   ['Which specifications are already defined?', 'The 3.68-inch E6 panel, 528 × 792 pixels, active area and approximately 258.7 PPI come from the manufacturer sheet. The 3 mm, 28 g, Qi, magnetic, one-month-plus battery and software features are complete-device targets that still need final validation.'],
-  ['Why publish the validation gates?', 'An e-paper product is more than its panel size. Transfer, refresh, power, charging, magnets and NFC all need measurements on real hardware. Public gates keep a web demonstration from being mistaken for a finished promise.'],
-  ['Where will the next updates appear?', 'New public nodes will appear here first. Final launch scope, price, regions, delivery, warranty and returns will be published together before Kickstarter support opens.'],
+  ['What will be checked before the campaign opens?', 'Transfer, refresh, power, charging, magnets and NFC will be measured on complete hardware. The results will be published with the final specifications; the web demonstration will not stand in for device data.'],
+  ['Where will the next updates appear?', 'New public updates are added to the project timeline. Final launch scope, price, regions, delivery, warranty and returns will be published together before Kickstarter support opens.'],
 ];
 
 const config: DocPageConfig = {
-  title: 'Peanup Project Updates | Nodes and validation gates',
-  description: 'Track Peanup public progress across the E6 panel, local image path and hardware validation gates while separating facts, targets and Kickstarter disclosures.',
+  title: 'Peanup Project Updates | Progress and next steps',
+  description: 'Follow Peanup panel, software and hardware progress, including what is confirmed and what will be checked on real hardware before Kickstarter opens.',
   locale: 'en',
   current: 'updates',
   toc: toc.map(([id, label]) => ({ id, label })),
   seriesLabel: 'PROJECT UPDATES',
-  revisionLabel: 'Preview edition\nUpdated 31 July 2026',
+  revisionLabel: 'Preview edition\nUpdated 9 August 2026',
   datePublished: '2026-07-31',
-  dateModified: '2026-07-31',
+  dateModified: '2026-08-09',
   schemaType: 'WebPage',
   articleClass: 'docs-updates',
   faqs,
@@ -79,8 +79,8 @@ const config: DocPageConfig = {
 <DocsShell config={config}>
   <section class="docs-hero" id="overview">
     <div class="docs-eyebrow"><span>PEANUP / PROJECT UPDATES</span><b>01</b></div>
-    <h1><span>Publish the progress.</span><span>Publish the boundary too.</span></h1>
-    <p class="docs-deck">This page records public product, software and validation nodes. It is not a countdown or a pre-order promise. Each note says where it came from and what still needs to be proven.</p>
+    <h1><span>From the first frame</span><span>toward a product ready to deliver.</span></h1>
+    <p class="docs-deck">Product, software and hardware validation are arranged by date. Each update names its evidence and next step; pricing, delivery and campaign terms will follow the final Kickstarter page.</p>
     <div class="docs-fact-strip" aria-label="Project update summary">
       <span><b>12</b><small>DOCUMENT TOPICS</small></span>
       <span><b>E6</b><small>PANEL RECORD</small></span>
@@ -112,18 +112,18 @@ const config: DocPageConfig = {
   </section>
 
   <section class="docs-section" id="gates">
-    <header><span>03 / VALIDATION GATES</span><h2>Measure the hardware first.<br />Then turn targets into promises.</h2></header>
+    <header><span>03 / BEFORE LAUNCH</span><h2>Measure the hardware first.<br />Then make the campaign promise.</h2></header>
     <div class="docs-update-gates">
-      <article><span>01 / RADIO</span><h3>BLE transfer and recovery</h3><p>Confirm discovery, connection, framing, backpressure, retries and standby behavior after a finished transfer.</p><b>Real-hardware measurement</b></article>
-      <article><span>02 / DISPLAY</span><h3>Refresh timing and hold</h3><p>Test full-frame writes, density changes, refresh behavior and the time a new image remains held.</p><b>Real-hardware measurement</b></article>
-      <article><span>03 / POWER</span><h3>Power and Qi</h3><p>Record refresh frequency, standby, charging temperature and Qi alignment in one repeatable test set.</p><b>Real-hardware measurement</b></article>
+      <article><span>01 / RADIO</span><h3>BLE transfer and recovery</h3><p>Confirm discovery, connection, framing, backpressure, retries and standby behavior after a finished transfer.</p><b>Testing on hardware</b></article>
+      <article><span>02 / DISPLAY</span><h3>Refresh timing and hold</h3><p>Test full-frame writes, density changes, refresh behavior and the time a new image remains held.</p><b>Testing on hardware</b></article>
+      <article><span>03 / POWER</span><h3>Power and Qi</h3><p>Record refresh frequency, standby, charging temperature and Qi alignment in one repeatable test set.</p><b>Testing on hardware</b></article>
       <article><span>04 / ACCESS</span><h3>Magnets and CUID NFC</h3><p>Confirm magnetic stability, accessory boundaries and the real authorization conditions for CUID access systems.</p><b>Conditional compatibility</b></article>
     </div>
-    <div class="docs-callout"><span>READ THE BOUNDARY</span><p>Full specifications, engineering status and campaign disclosures live in <a class="docs-context-link" href="/en/docs/campaign/">Campaign status</a> and <a class="docs-context-link" href="/en/docs/engineering/">Engineering notes</a>.</p></div>
+    <div class="docs-callout"><span>MORE DETAIL</span><p>Full specifications and the items due before Kickstarter opens are collected in <a class="docs-context-link" href="/en/docs/campaign/">Campaign status</a> and <a class="docs-context-link" href="/en/docs/engineering/">Engineering notes</a>.</p></div>
   </section>
 
   <section class="docs-section" id="next">
-    <header><span>04 / WHAT COMES NEXT</span><h2>The next step is not another slogan.<br />It is better evidence.</h2></header>
+    <header><span>04 / WHAT COMES NEXT</span><h2>Next, put the results<br />where people can see them.</h2></header>
     <ol class="docs-steps docs-update-next">
       <li><span>01 / HARDWARE</span><strong>Freeze the complete-device language</strong><p>Publish thickness, weight, enclosure, panel assembly and connector boundaries.</p></li>
       <li><span>02 / PERFORMANCE</span><strong>Publish transfer and battery conditions</strong><p>Give typical refresh time, refresh frequency, power and test environment.</p></li>

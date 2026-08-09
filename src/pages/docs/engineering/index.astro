@@ -11,7 +11,7 @@ const toc = [
   ['dithering', '抖动系统'],
   ['ble', 'BLE 状态机'],
   ['power', '功耗模型'],
-  ['boundaries', '验证边界'],
+  ['boundaries', '真机项目'],
 ];
 
 const algorithms = [
@@ -25,30 +25,30 @@ const algorithms = [
 
 const config: DocPageConfig = {
   title: 'Peanup 工程文档｜本地图像处理与 BLE',
-  description: 'Peanup 工程文档：3.68 英寸 E6 六色墨水屏、528 × 792 面板 Profile、图像链路、抖动算法、BLE 传输状态机、本地优先架构与硬件验证边界。',
+  description: 'Peanup 工程文档：3.68 英寸 E6 六色墨水屏、528 × 792 面板 Profile、图像链路、抖动算法、BLE 传输状态机、本地优先架构与真机测量项目。',
   locale: 'zh-cn',
   current: 'engineering',
   toc: toc.map(([id, label]) => ({ id, label })),
   seriesLabel: 'ENGINEERING NOTES',
-  revisionLabel: '证据驱动的工作文档\nRevision 0.3 · 2026.07.30',
+  revisionLabel: '证据驱动的工作文档\nRevision 0.4 · 2026.08.10',
   datePublished: '2026-07-28',
-  dateModified: '2026-07-30',
+  dateModified: '2026-08-10',
   articleClass: 'docs-article--engineering',
 };
 ---
 
 <DocsShell config={config}>
       <section class="docs-hero" id="scope">
-        <div class="docs-eyebrow"><span>PEANUP / ENGINEERING</span><b>REV. 0.3</b></div>
+        <div class="docs-eyebrow"><span>PEANUP / ENGINEERING</span><b>REV. 0.4</b></div>
         <h1 class="engineering-hero-title">
           <span>从手机上的一帧，</span>
           <span>到屏幕里的<wbr />真实颜料。</span>
         </h1>
-        <p class="docs-deck">这份文档明确区分旧版应用已经证明的事实、可以按标准路径重建的能力，以及仍需 Peanup 真机闭环验证的部分。它是工程依据，不是众筹宣传承诺。</p>
+        <p class="docs-deck">工程资料分为三层：旧版应用留下的直接证据、可用标准平台技术重建的软件链路，以及必须由 Peanup 真机测量的参数。每一项都以 E / R / H 标明依据。</p>
         <div class="docs-evidence" aria-label="证据等级">
-          <span><i>E</i><strong>Evidence</strong><small>二进制、资源或已恢复常量中的直接证据</small></span>
-          <span><i>R</i><strong>Rebuild</strong><small>可用标准平台技术重新实现</small></span>
-          <span><i>H</i><strong>Hardware</strong><small>需要控制器手册、抓包或实机测量</small></span>
+          <span><i>E</i><strong>直接证据</strong><small>二进制、资源或已恢复常量中的记录</small></span>
+          <span><i>R</i><strong>可重建</strong><small>可用标准平台技术重新实现</small></span>
+          <span><i>H</i><strong>真机测量</strong><small>来自控制器资料、抓包或实机结果</small></span>
         </div>
       </section>
 

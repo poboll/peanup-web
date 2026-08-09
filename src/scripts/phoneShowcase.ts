@@ -17,15 +17,31 @@ let writeTimer = 0;
 let touchStartX = 0;
 let touchStartY = 0;
 
-// Keep the phone legible on slow or offline previews. The real status-bar
-// asset remains the source of truth; this only supplies a tiny local fallback
-// instead of leaving an empty strip in the device mockup.
+// Keep the phone legible on slow or offline previews. The CSS fallback is
+// visible until the exact transparent status strip has decoded.
+const markStatusReady = () => statusBar?.classList.add('is-ready');
+statusImage?.addEventListener('load', markStatusReady, { once: true });
 statusImage?.addEventListener('error', () => statusBar?.classList.add('is-fallback'), { once: true });
-if (statusImage?.complete && statusImage.naturalWidth === 0) statusBar?.classList.add('is-fallback');
+if (statusImage?.complete) {
+  if (statusImage.naturalWidth > 0) markStatusReady();
+  else statusBar?.classList.add('is-fallback');
+}
 
-const markFrameReady = () => frameImage?.closest<HTMLElement>('[data-phone-device]')?.setAttribute('data-frame-ready', 'true');
+const frameDevice = frameImage?.closest<HTMLElement>('[data-phone-device]');
+const markFrameReady = () => {
+  frameDevice?.removeAttribute('data-frame-failed');
+  frameDevice?.setAttribute('data-frame-ready', 'true');
+};
+const markFrameFailed = () => {
+  frameDevice?.removeAttribute('data-frame-ready');
+  frameDevice?.setAttribute('data-frame-failed', 'true');
+};
 frameImage?.addEventListener('load', markFrameReady, { once: true });
-if (frameImage?.complete && frameImage.naturalWidth > 0) markFrameReady();
+frameImage?.addEventListener('error', markFrameFailed, { once: true });
+if (frameImage?.complete) {
+  if (frameImage.naturalWidth > 0) markFrameReady();
+  else markFrameFailed();
+}
 
 const selectState = (control: HTMLButtonElement, moveFocus = false) => {
   const state = control.dataset.phoneState;

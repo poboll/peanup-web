@@ -149,11 +149,11 @@ const docItems = isChinese
       { id: 'troubleshooting', href: troubleshootingPath, label: labels.troubleshooting, description: '首次连接、传输、刷屏与充电排查' },
       { id: 'shortcuts', href: shortcutsPath, label: labels.shortcuts, description: 'Apple 自动化与日常更新' },
       { id: 'support', href: supportPath, label: labels.support, description: '长期使用、联系支持与服务规则' },
-      { id: 'privacy', href: privacyPath, label: labels.privacy, description: '照片、本地处理与数据边界' },
-      { id: 'glossary', href: glossaryPath, label: labels.glossary, description: 'E6、PPI、BLE、Qi 与规格口径' },
-      { id: 'campaign', href: campaignPath, label: labels.campaign, description: '已明确规格、众筹目标与发布前验证' },
-      { id: 'engineering', href: engineeringPath, label: labels.engineering, description: '六色渲染、BLE 与验证边界' },
-      { id: 'updates', href: updatesPath, label: labels.updates, description: '已公开进展、验证节点与下一步' },
+      { id: 'privacy', href: privacyPath, label: labels.privacy, description: '照片、本地处理与联网方式' },
+      { id: 'glossary', href: glossaryPath, label: labels.glossary, description: 'E6、PPI、BLE 与 Qi' },
+      { id: 'campaign', href: campaignPath, label: labels.campaign, description: '已确认规格、众筹目标与上线清单' },
+      { id: 'engineering', href: engineeringPath, label: labels.engineering, description: '六色渲染、BLE 与功耗' },
+      { id: 'updates', href: updatesPath, label: labels.updates, description: '公开进展与下一步' },
     ] as const
   : [
       { id: 'product', href: productPath, label: labels.productGuide, description: 'Specifications, updates and common questions' },
@@ -164,11 +164,11 @@ const docItems = isChinese
       { id: 'troubleshooting', href: troubleshootingPath, label: labels.troubleshooting, description: 'First connection, transfer, refresh and charging' },
       { id: 'shortcuts', href: shortcutsPath, label: labels.shortcuts, description: 'Apple automation and everyday updates' },
       { id: 'support', href: supportPath, label: labels.support, description: 'Long-term use, useful reports and service terms' },
-      { id: 'privacy', href: privacyPath, label: labels.privacy, description: 'Photos, local processing and data boundaries' },
+      { id: 'privacy', href: privacyPath, label: labels.privacy, description: 'Photos, local processing and network use' },
       { id: 'glossary', href: glossaryPath, label: labels.glossary, description: 'E6, PPI, BLE, Qi and specification language' },
-      { id: 'campaign', href: campaignPath, label: labels.campaign, description: 'Confirmed facts, crowdfunding targets and launch checks' },
-      { id: 'engineering', href: engineeringPath, label: labels.engineering, description: 'Six-color rendering, BLE and validation' },
-      { id: 'updates', href: updatesPath, label: labels.updates, description: 'Published progress, validation gates and what comes next' },
+      { id: 'campaign', href: campaignPath, label: labels.campaign, description: 'Confirmed facts, crowdfunding targets and launch list' },
+      { id: 'engineering', href: engineeringPath, label: labels.engineering, description: 'Six-color rendering, BLE and power' },
+      { id: 'updates', href: updatesPath, label: labels.updates, description: 'Published progress and what comes next' },
     ] as const;
 const currentDocIndex = docItems.findIndex((item) => item.id === config.current);
 const currentDoc = currentDocIndex >= 0 ? docItems[currentDocIndex] : docItems[0];
@@ -304,7 +304,7 @@ const breadcrumbs = config.current === 'product'
         </div>
       </details>
     </nav>
-    <a class="docs-product-link docs-topbar-product" href={homePath}>{labels.product} <span aria-hidden="true">↗</span></a>
+    <a class="docs-product-link docs-topbar-product" href={homePath}>{labels.product} <span class="docs-topbar-product-arrow" aria-hidden="true">↗</span></a>
     <a class="docs-topbar-language" lang={labels.alternateLang} href={alternatePath} hreflang={labels.alternateLang} aria-label={isChinese ? '切换到 English' : 'Switch to 简体中文'}><span class="docs-language-long">{labels.alternate}</span><span class="docs-language-short" aria-hidden="true">{isChinese ? 'EN' : '中'}</span></a>
     <ThemeToggle locale={config.locale} />
     <details class="docs-mobile-nav">

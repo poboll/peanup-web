@@ -3,6 +3,9 @@ const preview = pipeline?.querySelector<HTMLCanvasElement>('[data-epaper-preview
 const source = pipeline?.querySelector<HTMLImageElement>('.pipeline-source img');
 const output = pipeline?.querySelector<HTMLElement>('[data-epaper-output]');
 const modeLabel = pipeline?.querySelector<HTMLElement>('[data-epaper-mode-label]');
+const device = pipeline?.querySelector<HTMLElement>('[data-pipeline-device]');
+const deviceImage = device?.querySelector<HTMLImageElement>('.pipeline-device-image');
+const deviceWriteMask = device?.querySelector<HTMLElement>(':scope > i');
 
 type DitherMode = 'ordered' | 'diffusion' | 'spectra';
 
@@ -138,12 +141,69 @@ if (source && preview && pipeline) {
   });
   source.addEventListener('load', scheduleRender, { once: true });
   scheduleRender();
-  const observer = new IntersectionObserver(([entry]) => {
-    if (!entry?.isIntersecting) return;
+  // This card uses one display-sized poster rather than swapping a thumbnail
+  // for a larger photograph. The same decoded pixels stay mounted while the
+  // section moves in and out of content-visibility.
+  let deviceReady = device?.dataset.imageReady === 'true';
+  let deviceVisible = false;
+  let deviceWriteStarted = device?.dataset.writeStarted === 'true'
+    || device?.dataset.writeComplete === 'true';
+  let deviceWriteCleanup = 0;
+  const finishDeviceWrite = () => {
+    if (!device) return;
+    window.clearTimeout(deviceWriteCleanup);
+    device.classList.remove('is-writing');
+    device.classList.add('has-written');
+    device.dataset.writeComplete = 'true';
+    if (deviceWriteMask) deviceWriteMask.hidden = true;
+  };
+  const startDeviceWrite = () => {
+    if (!device || !deviceReady || !deviceVisible || deviceWriteStarted) return;
+    deviceWriteStarted = true;
+    device.dataset.writeStarted = 'true';
+    // The scanner is tied to the first visible, fully decoded frame. A late
+    // image decode must never replay it while the reader is already scrolling.
+    // Remove the animation class once it finishes as well: Chromium can
+    // reconstruct a content-visibility layer after a long scroll, and keeping
+    // a completed CSS animation attached may briefly repaint its first frame.
+    requestAnimationFrame(() => {
+      if (deviceWriteMask) deviceWriteMask.hidden = false;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        finishDeviceWrite();
+        return;
+      }
+      deviceWriteMask?.addEventListener('animationend', finishDeviceWrite, { once: true });
+      device.classList.add('is-writing');
+      deviceWriteCleanup = window.setTimeout(finishDeviceWrite, 1800);
+    });
+  };
+  const markDeviceReady = async () => {
+    if (deviceReady || !device || !deviceImage) return;
+    if (!deviceImage.complete || !deviceImage.naturalWidth) return;
+    try { await deviceImage.decode(); } catch {}
+    deviceReady = true;
+    device.dataset.imageReady = 'true';
+    device.classList.add('is-image-ready');
+    startDeviceWrite();
+  };
+  if (deviceImage) {
+    deviceImage.addEventListener('load', () => { void markDeviceReady(); }, { once: true });
+    if (deviceImage.complete) void markDeviceReady();
+  }
+  if (device && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry?.isIntersecting) return;
+      deviceVisible = true;
+      pipeline.classList.add('pipeline-visible');
+      startDeviceWrite();
+      observer.disconnect();
+    }, { threshold: .35 });
+    observer.observe(device);
+  } else {
+    deviceVisible = true;
     pipeline.classList.add('pipeline-visible');
-    observer.disconnect();
-  }, { threshold: .35 });
-  observer.observe(pipeline);
+    startDeviceWrite();
+  }
 }
 
 export {};

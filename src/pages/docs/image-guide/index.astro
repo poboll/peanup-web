@@ -27,9 +27,9 @@ const config: DocPageConfig = {
   current: 'image',
   toc: toc.map(([id, label]) => ({ id, label })),
   seriesLabel: 'SIX-COLOR IMAGE GUIDE',
-  revisionLabel: '公开画面指南\n更新于 2026.07.30',
+  revisionLabel: '公开画面指南\n更新于 2026.08.10',
   datePublished: '2026-07-30',
-  dateModified: '2026-07-30',
+  dateModified: '2026-08-10',
   schemaType: 'WebPage',
   articleClass: 'docs-image-guide',
   faqs,
@@ -39,8 +39,8 @@ const config: DocPageConfig = {
 <DocsShell config={config}>
   <section class="docs-hero" id="overview">
     <div class="docs-eyebrow"><span>PEANUP / SIX-COLOR IMAGE GUIDE</span><b>03</b></div>
-    <h1>不是把照片压成六色，<br />而是重新保住重点。</h1>
-    <p class="docs-deck">一幅适合 Peanup 的画面，先有清楚的主体和明暗，再决定裁切与六色渲染。算法负责整理，照片原来的神情应该留下。</p>
+    <h1>先留住画面重点，<br />再用六种颜色呈现。</h1>
+    <p class="docs-deck">一幅适合 Peanup 的画面，先有清楚的主体和明暗，再决定裁切与六色渲染。算法整理颜色，照片原来的神情不能丢。</p>
     <div class="docs-fact-strip" aria-label="六色画面概览">
       <span><b>528 × 792</b><small>面板输出像素</small></span>
       <span><b>2 : 3</b><small>竖向有效画幅</small></span>
@@ -64,7 +64,7 @@ const config: DocPageConfig = {
   <section class="docs-section" id="crop">
     <header><span>02 / CROP WITHOUT STRETCH</span><h2>完整或铺满，<br />比例都不改变。</h2></header>
     <div class="docs-split">
-      <p class="docs-lead">528 × 792 是 2:3 竖向画幅。照片进入预览后，应该由你决定保留完整构图，还是让画面铺满纸面。</p>
+      <p class="docs-lead">528 × 792 是 2:3 竖向画幅。进入预览后，由你决定保留完整构图，还是让画面铺满纸面。</p>
       <div class="docs-copy"><p>“完整显示”可能留出纸白边缘；“铺满画面”会裁掉部分边缘。两种方式都保持原始比例，不能用拉伸换取填满。</p></div>
     </div>
     <div class="image-guide-crop-grid" aria-label="完整显示与铺满画面对比">
@@ -99,7 +99,7 @@ const config: DocPageConfig = {
         <h3>感知量化 / Palette Mix</h3><p>先保护主体、明暗和色彩关系，再决定六种颜料怎样组合。它不是单独一种固定网点。</p><small>适合：最终写屏与需要保护主体的照片</small>
       </article>
     </div>
-    <div class="docs-callout"><span>PREVIEW PRINCIPLE</span><p>预览应该先回答“重点还在不在”，再回答“颜色像不像原图”。最终参数仍要用固定参考图集和真实面板共同校准。需要算法细节时，阅读 <a class="docs-context-link" href="/docs/engineering/#dithering">工程文档的抖动系统 <span aria-hidden="true">→</span></a></p></div>
+    <div class="docs-callout"><span>PREVIEW PRINCIPLE</span><p>先确认画面的重点仍在，再比较六色结果与原图。最终参数会用固定参考图集和真实面板共同校准。算法细节收录在 <a class="docs-context-link" href="/docs/engineering/#dithering">工程文档的抖动系统 <span aria-hidden="true">→</span></a></p></div>
   </section>
 
   <section class="docs-section" id="light">

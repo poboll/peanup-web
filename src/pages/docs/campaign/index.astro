@@ -20,7 +20,7 @@ const faqs: Array<[string, string]> = [
   ['iOS App、快捷指令和微信小程序都会在首发提供吗？', '它们属于当前众筹目标能力。正式众筹页会列出首发范围、平台条件与仍需后续更新的部分。'],
   ['价格、发货地区和预计交付时间是多少？', '当前预览站不提前填写未经确认的价格、运费或交付日期。正式支持前会在 Kickstarter 页面集中公布。'],
   ['CUID NFC 一定能当门禁卡吗？', '不一定。只有门禁系统支持 CUID、管理方允许登记并符合当地规则时才可能使用。Peanup 不能授予或绕过门禁权限。'],
-  ['众筹前会公布保修、退换和维修规则吗？', '会。保修范围、退换条件、到货损坏处理、维修路径、地区限制和软件支持周期，会在开放支持前集中公布。当前边界可在“支持与服务”文档查看。'],
+  ['众筹前会公布保修、退换和维修规则吗？', '会。保修范围、退换条件、到货损坏处理、维修路径、地区限制和软件支持周期，会在开放支持前集中公布。相关安排可在“支持与服务”文档查看。'],
 ];
 
 const specificationSummary = `Peanup 花生片
@@ -40,9 +40,9 @@ const config: DocPageConfig = {
   current: 'campaign',
   toc: toc.map(([id, label]) => ({ id, label })),
   seriesLabel: 'CAMPAIGN STATUS',
-  revisionLabel: '众筹预览版\n更新于 2026.07.31',
+  revisionLabel: '众筹预览版\n更新于 2026.08.09',
   datePublished: '2026-07-30',
-  dateModified: '2026-07-31',
+  dateModified: '2026-08-09',
   schemaType: 'WebPage',
   articleClass: 'docs-campaign',
   faqs,
@@ -52,8 +52,8 @@ const config: DocPageConfig = {
 <DocsShell config={config}>
   <section class="docs-hero" id="overview">
     <div class="docs-eyebrow"><span>PEANUP / CAMPAIGN STATUS</span><b>01</b></div>
-    <h1><span>先把确定的说清楚，</span><span>再把每项目标做实。</span></h1>
-    <p class="docs-deck">Peanup 正在为 Kickstarter 做准备。这一页把厂家面板事实、当前产品方向和众筹目标分开写清，也说明支持前还会公布哪些真实测试结果。</p>
+    <h1><span>已经确认的，</span><span>正在验证的。</span></h1>
+    <p class="docs-deck">Peanup 正在为 Kickstarter 做准备。厂家面板数据、产品目标和发布前验证分别标注；价格、交付与服务条款将在开放支持前更新。</p>
     <div class="docs-fact-strip" aria-label="众筹状态摘要">
       <span><b>3.68” E6</b><small>厂家面板规格</small></span>
       <span><b>528 × 792</b><small>有效像素矩阵</small></span>
@@ -88,7 +88,7 @@ const config: DocPageConfig = {
   </section>
 
   <section class="docs-section" id="before-pledge">
-    <header><span>04 / BEFORE YOU PLEDGE</span><h2>在开放支持以前，<br />这些答案应该先出现。</h2></header>
+    <header><span>04 / BEFORE YOU PLEDGE</span><h2>开放支持以前，<br />还要公布四类答案。</h2></header>
     <CampaignDecisionGuide locale="zh-cn" />
     <ol class="docs-steps">
       <li><span>01 / PHYSICAL</span><strong>最终尺寸与重量</strong><p>公布整机厚度、重量、外壳尺寸和量产外观。</p></li>
@@ -118,9 +118,9 @@ const config: DocPageConfig = {
   </section>
 
   <section class="docs-section" id="follow">
-    <header><span>06 / FOLLOW THE PROJECT</span><h2>不急着让你下单，<br />先把信息留在这里。</h2></header>
+    <header><span>06 / FOLLOW THE PROJECT</span><h2>继续看进展，<br />等正式项目上线。</h2></header>
     <div class="docs-policy">
-      <strong>当前是公开预览，不是预售页。</strong>
+      <strong>Peanup 目前尚未开放支持。</strong>
       <p>产品规格、图像处理、平台兼容、隐私、排查和支持文档会继续更新。需要确认某一项能力，可以先阅读对应文档；需要直接联系项目，请发送邮件到 <a href="mailto:i@caiths.com">i@caiths.com</a>。</p>
     </div>
     <div class="docs-callout">

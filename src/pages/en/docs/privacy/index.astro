@@ -3,7 +3,7 @@ import DocsShell from '../../../../components/docs/DocsShell.astro';
 import type { DocPageConfig } from '../../../../types/docs';
 
 const toc = [
-  ['overview', 'About this page'],
+  ['overview', 'At a glance'],
   ['principles', 'Data path'],
   ['website', 'Current website'],
   ['preview', 'Live preview'],
@@ -20,9 +20,9 @@ const config: DocPageConfig = {
   current: 'privacy',
   toc: toc.map(([id, label]) => ({ id, label })),
   seriesLabel: 'PRIVACY & DATA',
-  revisionLabel: 'Public preview\nUpdated 2026.07.30',
+  revisionLabel: 'Public preview\nUpdated 2026.08.09',
   datePublished: '2026-07-29',
-  dateModified: '2026-07-30',
+  dateModified: '2026-08-09',
   schemaType: 'WebPage',
   articleClass: 'docs-privacy',
 };
@@ -31,8 +31,8 @@ const config: DocPageConfig = {
 <DocsShell config={config}>
   <section class="docs-hero" id="overview">
     <div class="docs-eyebrow"><span>PEANUP / PRIVACY & DATA</span><b>01</b></div>
-    <h1>You should know at a glance<br />whether a photo leaves your device.</h1>
-    <p class="docs-deck">This page covers both the current website and the Peanup app and hardware still in development. Present behavior and product targets are labeled separately.</p>
+    <h1>Know at a glance<br />whether a photo leaves your device.</h1>
+    <p class="docs-deck">One data guide covers the current website and the Peanup app and hardware still in development. Present behavior and product targets are labeled separately.</p>
     <div class="docs-fact-strip" aria-label="Privacy summary">
       <span><b>0</b><small>Third-party analytics SDKs</small></span>
       <span><b>2</b><small>Local preference keys</small></span>
@@ -43,7 +43,7 @@ const config: DocPageConfig = {
   </section>
 
   <section class="docs-section" id="principles">
-    <header><span>02 / DATA PATH</span><h2>Say where data goes<br />before describing what it can do.</h2></header>
+    <header><span>02 / DATA PATH</span><h2>Where data goes comes first.<br />Then what it can do.</h2></header>
     <div class="privacy-status" aria-label="Statement status">
       <article><span>CURRENT / WEBSITE</span><h3>Verifiable now</h3><p>These statements describe the site you can open today: what the browser stores, how the live preview handles a photo and whether analytics are present.</p></article>
       <article><span>PRODUCT / TARGET</span><h3>Validated before release</h3><p>These statements describe the intended app and hardware path. Final permissions, providers, retention and the release policy will follow the shipping build.</p></article>
@@ -89,7 +89,7 @@ const config: DocPageConfig = {
     </ol>
     <div class="docs-callout">
       <span>TECHNICAL BOUNDARY</span>
-      <p>A website cannot prevent device screenshots, browser extensions or a modified client from reading rendered content. The promise here is narrower and verifiable: current Peanup site code does not actively upload the photo you drop into the preview.</p>
+      <p>A website cannot prevent device screenshots, browser extensions or a modified client from reading rendered content. Current Peanup site code does not actively upload the photo you drop into the preview.</p>
     </div>
   </section>
 
@@ -138,7 +138,7 @@ const config: DocPageConfig = {
     <div class="docs-decision privacy-contact">
       <span>CONTACT & UPDATES</span>
       <strong>Questions about data handling<br />should have a direct answer.</strong>
-      <p>Email <a href="mailto:i@caiths.com">i@caiths.com</a>. This page will be updated when website behavior, app permissions, content providers or hardware paths change; the revision date remains visible at the top.</p>
+      <p>Email <a href="mailto:i@caiths.com">i@caiths.com</a>. This guide will update when website behavior, app permissions, content providers or hardware paths change.</p>
     </div>
   </section>
 

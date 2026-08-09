@@ -3,7 +3,7 @@ import DocsShell from '../../../components/docs/DocsShell.astro';
 import type { DocPageConfig } from '../../../types/docs';
 
 const toc = [
-  ['overview', '这份说明'],
+  ['overview', '快速理解'],
   ['principles', '数据路径'],
   ['website', '当前网站'],
   ['preview', '在线体验'],
@@ -20,9 +20,9 @@ const config: DocPageConfig = {
   current: 'privacy',
   toc: toc.map(([id, label]) => ({ id, label })),
   seriesLabel: 'PRIVACY & DATA',
-  revisionLabel: '公开预览版\n更新于 2026.07.30',
+  revisionLabel: '公开预览版\n更新于 2026.08.09',
   datePublished: '2026-07-29',
-  dateModified: '2026-07-30',
+  dateModified: '2026-08-09',
   schemaType: 'WebPage',
   articleClass: 'docs-privacy',
 };
@@ -31,8 +31,8 @@ const config: DocPageConfig = {
 <DocsShell config={config}>
   <section class="docs-hero" id="overview">
     <div class="docs-eyebrow"><span>PEANUP / PRIVACY & DATA</span><b>01</b></div>
-    <h1><span class="privacy-title-line">照片是否离开设备，</span><span class="privacy-title-line">应该一眼看明白。</span></h1>
-    <p class="docs-deck">这份说明同时覆盖当前网站与仍在开发中的 Peanup App 和硬件。已经发生的处理与产品目标分开标注，不把未来方案写成当前事实。</p>
+    <h1><span class="privacy-title-line">照片是否离开设备，</span><span class="privacy-title-line">一眼就能看明白。</span></h1>
+    <p class="docs-deck">当前网站、仍在开发中的 Peanup App 与硬件使用同一份数据说明。当前行为与产品目标分开标注。</p>
     <div class="docs-fact-strip" aria-label="隐私摘要">
       <span><b>0</b><small>第三方分析 SDK</small></span>
       <span><b>2</b><small>本地偏好项</small></span>
@@ -43,7 +43,7 @@ const config: DocPageConfig = {
   </section>
 
   <section class="docs-section" id="principles">
-    <header><span>02 / DATA PATH</span><h2>先说明数据去哪里，<br />再谈它能做什么。</h2></header>
+    <header><span>02 / DATA PATH</span><h2>先看数据去哪里，<br />再看它能做什么。</h2></header>
     <div class="privacy-status" aria-label="说明状态">
       <article><span>CURRENT / 当前网站</span><h3>可以直接验证</h3><p>这一类内容描述此刻打开的网站：浏览器保存什么、在线体验怎样处理照片，以及页面是否接入分析服务。</p></article>
       <article><span>PRODUCT TARGET / 产品目标</span><h3>发布前继续验证</h3><p>这一类内容描述 App 与硬件的设计目标。最终权限、服务提供方、保存周期与发布版本隐私政策会在上线前确认。</p></article>
@@ -89,7 +89,7 @@ const config: DocPageConfig = {
     </ol>
     <div class="docs-callout">
       <span>TECHNICAL BOUNDARY</span>
-      <p>网页无法阻止设备本身的截图、浏览器扩展或被修改的客户端读取页面内容。这里承诺的是 Peanup 当前网站代码不会主动上传你拖入的照片。</p>
+      <p>网页无法阻止设备本身的截图、浏览器扩展或被修改的客户端读取页面内容。Peanup 当前网站代码不会主动上传你拖入的照片。</p>
     </div>
   </section>
 
@@ -138,7 +138,7 @@ const config: DocPageConfig = {
     <div class="docs-decision privacy-contact">
       <span>CONTACT & UPDATES</span>
       <strong>对数据处理有疑问，<br />直接写给我们。</strong>
-      <p>联系 <a href="mailto:i@caiths.com">i@caiths.com</a>。这份说明会随网站、App 权限、内容提供方和硬件方案更新，并在页面顶部标注修改日期。</p>
+      <p>联系 <a href="mailto:i@caiths.com">i@caiths.com</a>。网站行为、App 权限、内容提供方或硬件路径发生变化时，这份说明会同步更新。</p>
     </div>
   </section>
 

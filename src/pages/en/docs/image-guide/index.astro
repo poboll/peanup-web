@@ -27,9 +27,9 @@ const config: DocPageConfig = {
   current: 'image',
   toc: toc.map(([id, label]) => ({ id, label })),
   seriesLabel: 'SIX-COLOR IMAGE GUIDE',
-  revisionLabel: 'Public image guide\nUpdated 2026.07.30',
+  revisionLabel: 'Public image guide\nUpdated 2026.08.10',
   datePublished: '2026-07-30',
-  dateModified: '2026-07-30',
+  dateModified: '2026-08-10',
   schemaType: 'WebPage',
   articleClass: 'docs-image-guide',
   faqs,
@@ -39,8 +39,8 @@ const config: DocPageConfig = {
 <DocsShell config={config}>
   <section class="docs-hero" id="overview">
     <div class="docs-eyebrow"><span>PEANUP / SIX-COLOR IMAGE GUIDE</span><b>03</b></div>
-    <h1>Do not crush a photo into six colors.<br />Protect what matters in it.</h1>
-    <p class="docs-deck">A strong Peanup frame begins with a clear subject and value structure, then chooses a crop and rendering path. The algorithm organizes the image. Its expression should remain.</p>
+    <h1>Keep the subject clear.<br />Let six colors do the rest.</h1>
+    <p class="docs-deck">A strong Peanup frame begins with a clear subject and value structure, then chooses a crop and rendering path. The algorithm organizes color without losing the expression of the original.</p>
     <div class="docs-fact-strip" aria-label="Six-color frame at a glance">
       <span><b>528 × 792</b><small>Panel output pixels</small></span>
       <span><b>2 : 3</b><small>Portrait active frame</small></span>
@@ -63,7 +63,7 @@ const config: DocPageConfig = {
 
   <section class="docs-section" id="crop">
     <header><span>02 / CROP WITHOUT STRETCH</span><h2>Fit or fill.<br />Never distort.</h2></header>
-    <div class="docs-split"><p class="docs-lead">528 × 792 is a 2:3 portrait frame. The preview should let you choose whether to preserve the full composition or fill the paper.</p><div class="docs-copy"><p>Fit may leave paper-colored margins. Fill crops the outer edges. Both preserve the source proportions; neither stretches the image to occupy space.</p></div></div>
+    <div class="docs-split"><p class="docs-lead">528 × 792 is a 2:3 portrait frame. In preview, choose whether to preserve the full composition or fill the paper.</p><div class="docs-copy"><p>Fit may leave paper-colored margins. Fill crops the outer edges. Both preserve the source proportions; neither stretches the image to occupy space.</p></div></div>
     <div class="image-guide-crop-grid" aria-label="Fit and fill comparison">
       <figure><span>01 / FIT</span><div class="image-guide-frame image-guide-frame--fit protected-media"><picture><source srcset="/assets/peanup-anime-source.avif" type="image/avif" /><img src="/assets/peanup-anime-source.webp" alt="A photograph fitted inside a portrait frame without changing its proportions" width="500" height="500" loading="lazy" decoding="async" draggable="false" /></picture></div><figcaption><strong>Fit the whole image</strong><p>Keep every edge and let the remaining area become a paper margin. Useful when the edges carry information.</p></figcaption></figure>
       <figure><span>02 / FILL</span><div class="image-guide-frame image-guide-frame--fill protected-media"><picture><source srcset="/assets/peanup-anime-source.avif" type="image/avif" /><img src="/assets/peanup-anime-source.webp" alt="A photograph filling a portrait frame while preserving its proportions" width="500" height="500" loading="lazy" decoding="async" draggable="false" /></picture></div><figcaption><strong>Fill the paper</strong><p>Occupy the complete 2:3 frame and crop only the perimeter. Useful when the subject is centered and presence matters.</p></figcaption></figure>

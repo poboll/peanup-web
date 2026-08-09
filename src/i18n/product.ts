@@ -265,7 +265,7 @@ const en: ProductCopy = {
     kicker: 'PEANUP DISPLAY / 01—04', title: ['Let a moving moment', 'settle onto paper.'], body: 'Scroll or choose a frame. It refreshes from the bottom up, then stays quietly on the display.', tabsLabel: 'Display scene selector',
     items: [
       { id: 'rain', number: '01', title: 'Freeze a moment', detail: 'Six-color clouds · wind-touched rain', ...localizedCanvas.en.rain },
-      { id: 'branch', number: '02', title: 'Daily information', detail: 'Date · weather · reading note', date: 'JUL 27', weather: '28° / SHOWERS', quote: 'The family sits together, the lamplight warm and dear.', quoteSource: '— “Winter”, Wang Zengqi', ...localizedCanvas.en.branch },
+      { id: 'branch', number: '02', title: 'Daily info', detail: 'Date · weather · reading note', date: 'JUL 27', weather: '28° / SHOWERS', quote: 'The family sits together, the lamplight warm and dear.', quoteSource: '— “Winter”, Wang Zengqi', ...localizedCanvas.en.branch },
       { id: 'bird', number: '03', title: 'Create freely', detail: 'Shortcuts · scheduled refresh', ...localizedCanvas.en.bird },
       { id: 'experience', number: '04', title: 'Make it yours', detail: 'Drop a photo · write a line', ...localizedCanvas.en.experience },
     ],

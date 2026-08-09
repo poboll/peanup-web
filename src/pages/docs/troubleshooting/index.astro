@@ -4,7 +4,7 @@ import TroubleshootingGuide, { type TroubleshootingStage } from '../../../compon
 import type { DocPageConfig } from '../../../types/docs';
 
 const toc = [
-  ['overview', '先看这里'],
+  ['overview', '快速排查'],
   ['quick-check', '一分钟检查'],
   ['discovery', '找不到设备'],
   ['transfer', '传输停住'],
@@ -75,9 +75,9 @@ const config: DocPageConfig = {
   current: 'troubleshooting',
   toc: toc.map(([id, label]) => ({ id, label })),
   seriesLabel: 'SETUP & TROUBLESHOOTING',
-  revisionLabel: '众筹预览指南\n更新于 2026.07.30',
+  revisionLabel: '众筹预览指南\n更新于 2026.08.10',
   datePublished: '2026-07-30',
-  dateModified: '2026-07-30',
+  dateModified: '2026-08-10',
   schemaType: 'TechArticle',
   articleClass: 'docs-troubleshooting',
   faqs,
@@ -109,12 +109,12 @@ const config: DocPageConfig = {
     <TroubleshootingGuide
       ariaLabel="选择当前停住的阶段"
       introLabel="停在哪一步？"
-      intro="选择现在看到的状态。这里只给下一步，不会清除已经准备好的画面。"
+      intro="选择现在看到的状态，页面会给出下一步，并保留已经准备好的画面。"
       nextLabel="现在先做"
       noteLabel="同时留意"
       stages={troubleshootingStages}
     />
-    <p class="docs-note"><b>先别重新选图</b><span>连接失败不应该让已经裁切和转换好的画面消失。保留当前预览，再从连接步骤继续。</span></p>
+    <p class="docs-note"><b>先别重新选图</b><span>连接失败时保留已经裁切和转换好的画面，再从连接步骤继续。</span></p>
   </section>
 
   <section class="docs-section" id="discovery">
@@ -136,7 +136,7 @@ const config: DocPageConfig = {
   <section class="docs-section" id="transfer">
     <header><span>04 / TRANSFER</span><h2>发送停住时，<br />让状态比进度条更清楚。</h2></header>
     <div class="docs-split">
-      <p class="docs-lead">一次更新不只有“成功”和“失败”。App 应该告诉你当前正在发现、连接、发送、确认还是写屏。</p>
+      <p class="docs-lead">一次更新不只有“成功”和“失败”。进度页面会区分发现、连接、发送、确认与写屏。</p>
       <div class="docs-copy">
         <p>如果发送被打断，先保留完成帧和已知进度，再靠近设备重试。只有重新选择照片时，才需要重新做裁切和六色转换。</p>
         <p>同一时间只向一台 Peanup 发送。切到后台、锁屏、离开蓝牙范围或系统收回权限，都可能中断当前连接。</p>
@@ -144,7 +144,7 @@ const config: DocPageConfig = {
     </div>
     <div class="docs-table-wrap" tabindex="0" aria-label="传输状态与下一步">
       <table class="docs-table">
-        <thead><tr><th scope="col">阶段</th><th scope="col">页面应该显示</th><th scope="col">下一步</th></tr></thead>
+        <thead><tr><th scope="col">阶段</th><th scope="col">页面状态</th><th scope="col">下一步</th></tr></thead>
         <tbody>
           <tr><th scope="row">发现</th><td>正在查找附近设备</td><td>保持靠近，确认权限与电量。</td></tr>
           <tr><th scope="row">连接</th><td>正在建立安全的近场连接</td><td>不要切换目标设备或离开页面。</td></tr>
@@ -163,7 +163,7 @@ const config: DocPageConfig = {
       <article><span>WAIT</span><h3>以 App 的完成状态为准</h3><p>传输结束不等于写屏结束。等到 App 明确确认完成，再移动设备或发下一帧。</p></article>
       <article><span>KEEP</span><h3>断开后仍保留画面</h3><p>完成写屏后，电子纸不需要持续蓝牙连接，也不需要背光来维持内容。</p></article>
     </div>
-    <div class="docs-callout"><span>STOP & CHECK</span><p>如果画面长时间停在中间状态、反复刷新或 App 已报错，请先停止再次发送，记录停住的阶段，再按本页“联系支持”准备信息。</p></div>
+    <div class="docs-callout"><span>STOP & CHECK</span><p>如果画面长时间停在中间状态、反复刷新或 App 已报错，请先停止再次发送，记录停住的阶段，再准备联系支持所需的信息。</p></div>
   </section>
 
   <section class="docs-section" id="charging">
@@ -186,7 +186,7 @@ const config: DocPageConfig = {
   </section>
 
   <section class="docs-section" id="support">
-    <header><span>08 / USEFUL REPORT</span><h2>把关键情况说清楚，<br />问题会更快被找到。</h2></header>
+    <header><span>08 / USEFUL REPORT</span><h2>记录关键状态，<br />问题更快定位。</h2></header>
     <div class="docs-grid docs-grid--two">
       <article><span>DEVICE</span><h3>设备与系统</h3><p>手机型号、iOS 或 iPadOS 版本、Peanup App 版本，以及设备名称。</p></article>
       <article><span>STAGE</span><h3>停住的步骤</h3><p>说明停在发现、连接、发送、写屏、Qi 充电还是 NFC 录入。</p></article>

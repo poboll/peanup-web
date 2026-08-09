@@ -316,7 +316,7 @@ for (const [route, html] of htmlByRoute) {
       && /\.iphone-device\{[^}]*--frame-ratio:\s*71\.9\s*\/\s*150;/.test(styleSource)
       && /\.iphone-device\{[^}]*aspect-ratio:var\(--frame-ratio\)/.test(styleSource)
       && /\.iphone-frame\{[^}]*object-fit:contain/.test(styleSource)
-      && /\.iphone-glass\{[^}]*border-radius:4%\/5\.8% 5\.8% 5\.35% 5\.35%/.test(styleSource);
+      && /\.iphone-glass\{[^}]*border-radius:13\.8% 13\.8% 9\.35% 9\.35%\/4\.85% 4\.85% 3\.2% 3\.2%/.test(styleSource);
     const hasCameraControl = html.includes('class="iphone-camera-control"');
     const hasNativeCameraControl = /\.iphone-camera-control\{[^}]*display:none/.test(styleSource);
     if (attributeValue(statusTag, 'data-status-source') !== 'iphone-17-pro-status-png'

@@ -3,7 +3,7 @@ import DocsShell from '../../../components/docs/DocsShell.astro';
 import type { DocPageConfig } from '../../../types/docs';
 
 const toc = [
-  ['overview', '先看这里'],
+  ['overview', '快速理解'],
   ['display', '屏幕与画质'],
   ['update', '连接与更新'],
   ['placement', '充电与摆放'],
@@ -26,9 +26,9 @@ const config: DocPageConfig = {
   current: 'glossary',
   toc: toc.map(([id, label]) => ({ id, label })),
   seriesLabel: 'TERMS & CLAIMS',
-  revisionLabel: '公开口径指南\n更新于 2026.07.30',
+  revisionLabel: '公开术语指南\n更新于 2026.08.09',
   datePublished: '2026-07-30',
-  dateModified: '2026-07-30',
+  dateModified: '2026-08-09',
   schemaType: 'WebPage',
   articleClass: 'docs-glossary-page',
   faqs,
@@ -38,15 +38,15 @@ const config: DocPageConfig = {
 <DocsShell config={config}>
   <section class="docs-hero" id="overview">
     <div class="docs-eyebrow"><span>PEANUP / TERMS & CLAIMS</span><b>01</b></div>
-    <h1><span class="glossary-title-line">先把词说清楚，</span><span class="glossary-title-line">再谈体验。</span></h1>
-    <p class="docs-deck">电子纸、BLE、Qi 和 CUID 不该成为理解产品的门槛。这一页只回答它们在 Peanup 里具体是什么意思，以及哪些是面板事实、产品目标或仍需验证的能力。</p>
+    <h1><span class="glossary-title-line">E6、BLE、Qi，</span><span class="glossary-title-line">都对应真实体验。</span></h1>
+    <p class="docs-deck">这些词分别对应六色面板、近场更新、无线充电与有条件的门禁兼容。每一项同时标注厂家事实、众筹目标或整机验证状态。</p>
     <div class="docs-fact-strip" aria-label="关键术语摘要">
       <span><b>E6</b><small>六色面板型号标记</small></span>
       <span><b>≈258.7</b><small>有效区像素密度 PPI</small></span>
       <span><b>BLE</b><small>附近设备更新通道</small></span>
       <span><b>TARGET</b><small>众筹目标会明确标注</small></span>
     </div>
-    <p class="docs-status"><i></i> 面向普通读者的公开口径，不替代工程 Profile</p>
+    <p class="docs-status"><i></i> 公开术语表 · 工程细节另见工程文档</p>
   </section>
 
   <section class="docs-section" id="display">

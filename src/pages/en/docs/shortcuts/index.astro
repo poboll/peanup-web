@@ -8,9 +8,9 @@ const toc = [
   ['model', 'One update'],
   ['recipes', 'Daily examples'],
   ['builder', 'Build a routine'],
-  ['actions', 'Action draft'],
+  ['actions', 'Launch actions'],
   ['conditions', 'Conditions & errors'],
-  ['privacy', 'Privacy boundary'],
+  ['privacy', 'Privacy & permissions'],
   ['faq', 'FAQ'],
 ];
 
@@ -36,7 +36,7 @@ const plannerGroups: ShortcutPlannerGroup[] = [
   {
     id: 'delivery', label: 'DELIVERY', title: 'When does the paper update?',
     options: [
-      { id: 'preview', label: 'Preview, then send', phrase: 'then preview six colors before you confirm sending.', note: 'This is the safest default flow.' },
+      { id: 'preview', label: 'Preview, then send', phrase: 'then preview six colors before you confirm sending.', note: 'The default path confirms the frame before writing.' },
       { id: 'nearby', label: 'Send when nearby', phrase: 'then attempt to send when a nearby Peanup is available.', note: 'The device still needs power, Bluetooth range and an available connection.' },
       { id: 'prepare', label: 'Prepare only', phrase: 'then save the finished frame and send later when the device is nearby.', note: 'Preparing a frame does not keep Peanup connected.' },
       { id: 'confirm', label: 'Ask every time', phrase: 'then ask for your confirmation before every update.', note: 'This suits personal photos or sensitive information.' },
@@ -48,7 +48,7 @@ const faqs: Array<[string, string]> = [
   ['Do Shortcuts keep Peanup connected all day?', 'No. The target flow prepares the frame on the phone and opens a nearby connection only when an update is sent.'],
   ['Can every automation refresh without interaction?', 'That depends on the iOS trigger, permissions, device proximity and final app capabilities. Some flows may still require confirmation.'],
   ['Does a photo have to be uploaded?', 'The core photo path is intended to crop and render on iPhone or iPad, then send only the finished frame to a nearby Peanup over BLE.'],
-  ['Are these Shortcut actions already shipping?', 'No. This page documents a crowdfunding-preview interface draft. Names, inputs and background behavior may change with app and hardware validation.'],
+  ['Are these Shortcut actions already shipping?', 'Not yet. This page shows the intended workflow. The released app will publish the final action names, inputs and automation limits.'],
 ];
 
 const config: DocPageConfig = {
@@ -58,9 +58,9 @@ const config: DocPageConfig = {
   current: 'shortcuts',
   toc: toc.map(([id, label]) => ({ id, label })),
   seriesLabel: 'SHORTCUTS & AUTOMATION',
-  revisionLabel: 'Crowdfunding interface draft\nUpdated 2026.07.30',
+  revisionLabel: 'Crowdfunding preview guide\nUpdated 2026.08.10',
   datePublished: '2026-07-29',
-  dateModified: '2026-07-30',
+  dateModified: '2026-08-10',
   schemaType: 'TechArticle',
   articleClass: 'docs-shortcuts',
   faqs,
@@ -70,7 +70,7 @@ const config: DocPageConfig = {
 <DocsShell config={config}>
   <section class="docs-hero" id="overview">
     <div class="docs-eyebrow"><span>PEANUP / SHORTCUTS</span><b>01</b></div>
-    <h1>Update at the useful moment,<br />without adding another alert.</h1>
+    <h1>Frames update on time.<br />No extra reminders.</h1>
     <p class="docs-deck">Shortcuts choose the trigger and content. The Peanup app prepares a six-color frame on the phone, then connects to a nearby device only when it is time to send.</p>
     <div class="docs-fact-strip" aria-label="Shortcut capability summary">
       <span><b>SIRI</b><small>Voice and system entry</small></span>
@@ -78,7 +78,7 @@ const config: DocPageConfig = {
       <span><b>AUTO</b><small>Time and personal automation</small></span>
       <span><b>LOCAL</b><small>Photo processing on device</small></span>
     </div>
-    <p class="docs-status"><i></i> Product interface draft · Final behavior depends on app and hardware validation</p>
+    <p class="docs-status"><i></i> Interaction preview · final action names will be published with the app</p>
   </section>
 
   <section class="docs-section" id="model">
@@ -113,32 +113,32 @@ const config: DocPageConfig = {
     <header><span>04 / BUILD A ROUTINE</span><h2>Build the flow first.<br />Then decide what should run automatically.</h2></header>
     <div class="docs-split">
       <p class="docs-lead">Choose a starting moment, a content source and a write condition to see how one complete update fits together.</p>
-      <div class="docs-copy"><p>This does not create a system Shortcut or connect to hardware. It turns the interface draft into a workflow that is easy to understand and discuss.</p></div>
+      <div class="docs-copy"><p>The planner does not create a system Shortcut or connect to hardware. It previews how triggers, content and delivery conditions fit together.</p></div>
     </div>
     <ShortcutPlanner
       ariaLabel="Build a Shortcut routine"
       summaryLabel="Your routine"
       noteLabel="Conditions"
-      linkLabel="Review the action draft"
+      linkLabel="Review launch actions"
       groups={plannerGroups}
     />
-    <p class="docs-caption">The planner does not mean these actions are already shipping. Final behavior still depends on iOS permissions, background execution, the BLE protocol and the released app.</p>
+    <p class="docs-caption">This planner previews combinations; it does not create a system Shortcut or connect to a device. Real runs still depend on iOS permission, background conditions and device proximity.</p>
   </section>
 
   <section class="docs-section" id="actions">
     <header><span>05 / ACTION DRAFT</span><h2>Short names.<br />Obvious inputs and results.</h2></header>
-    <div class="docs-table-wrap" tabindex="0" aria-label="Shortcut action draft">
+    <div class="docs-table-wrap" tabindex="0" aria-label="Planned Shortcut actions">
       <table class="docs-table docs-shortcut-actions">
-        <thead><tr><th scope="col">Draft action</th><th scope="col">Input</th><th scope="col">Result</th><th scope="col">Status</th></tr></thead>
+        <thead><tr><th scope="col">Planned action</th><th scope="col">Input</th><th scope="col">Result</th><th scope="col">Status</th></tr></thead>
         <tbody>
           <tr><th scope="row">Prepare Peanup Photo</th><td>Photo and crop</td><td>Six-color frame</td><td>Campaign target</td></tr>
           <tr><th scope="row">Make Information Card</th><td>Template, text and date</td><td>Preview frame</td><td>Campaign target</td></tr>
           <tr><th scope="row">Send to Peanup</th><td>Finished frame and device</td><td>Transfer and write state</td><td>Hardware validation</td></tr>
-          <tr><th scope="row">Read Recent Status</th><td>Target device</td><td>Connection, progress or error</td><td>Interface draft</td></tr>
+          <tr><th scope="row">Read Recent Status</th><td>Target device</td><td>Connection, progress or error</td><td>In design</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="docs-caption">This is not a published API list. Names, parameters, background execution and callback results will be refined around iOS limits, the BLE protocol and final interaction design.</p>
+    <p class="docs-caption">The launch app will list each action name, supported parameters, background conditions and returned states.</p>
   </section>
 
   <section class="docs-section" id="conditions">
@@ -150,12 +150,12 @@ const config: DocPageConfig = {
     </div>
     <div class="docs-table-wrap docs-compatibility" tabindex="0" aria-label="Automation failure handling">
       <table class="docs-table">
-        <thead><tr><th scope="col">Situation</th><th scope="col">Expected response</th></tr></thead>
+        <thead><tr><th scope="col">What happened</th><th scope="col">What you will see</th></tr></thead>
         <tbody>
           <tr><th scope="row">Device not found</th><td>Keep the prepared frame and offer retry when the device is closer.</td></tr>
           <tr><th scope="row">Transfer interrupted</th><td>Show actual progress and a retry state. Never label an incomplete write as done.</td></tr>
           <tr><th scope="row">Content permission denied</th><td>Disable only that source. Local photos and manual transfer should remain available.</td></tr>
-          <tr><th scope="row">Background execution unavailable</th><td>Explain when confirmation or foreground use is required instead of promising silent execution iOS does not allow.</td></tr>
+          <tr><th scope="row">Background execution unavailable</th><td>Ask for confirmation or open the app to continue. An action that never ran is never shown as complete.</td></tr>
         </tbody>
       </table>
     </div>
@@ -174,7 +174,7 @@ const config: DocPageConfig = {
   </section>
 
   <section class="docs-section" id="faq">
-    <header><span>08 / FAQ</span><h2>Make the boundaries explicit.</h2></header>
+    <header><span>08 / FAQ</span><h2>Everyday automation,<br />answered directly.</h2></header>
     <div class="docs-accordion">
       {faqs.map(([question, answer], index) => <details><summary><i>{String(index + 1).padStart(2, '0')}</i>{question}</summary><p>{answer}</p></details>)}
     </div>

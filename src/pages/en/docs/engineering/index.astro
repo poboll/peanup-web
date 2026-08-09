@@ -11,7 +11,7 @@ const toc = [
   ['dithering', 'Dithering'],
   ['ble', 'BLE state machine'],
   ['power', 'Power model'],
-  ['boundaries', 'Validation boundaries'],
+  ['boundaries', 'Hardware work'],
 ];
 
 const algorithms = [
@@ -25,27 +25,27 @@ const algorithms = [
 
 const config: DocPageConfig = {
   title: 'Peanup Engineering Notes | Local rendering and BLE',
-  description: 'Peanup engineering notes: the 3.68-inch E6 panel, local six-color image pipeline, dithering, BLE transfer states, power model and validation limits.',
+  description: 'Peanup engineering notes: the 3.68-inch E6 panel, local six-color image pipeline, dithering, BLE transfer states, power model and hardware measurements.',
   locale: 'en',
   current: 'engineering',
   toc: toc.map(([id, label]) => ({ id, label })),
   seriesLabel: 'ENGINEERING NOTES',
-  revisionLabel: 'Evidence-led working notes\nRevision 0.3 · 30 July 2026',
+  revisionLabel: 'Evidence-led working notes\nRevision 0.4 · 10 August 2026',
   datePublished: '2026-07-28',
-  dateModified: '2026-07-30',
+  dateModified: '2026-08-10',
   articleClass: 'docs-article--engineering',
 };
 ---
 
 <DocsShell config={config}>
       <section class="docs-hero" id="scope">
-        <div class="docs-eyebrow"><span>PEANUP / ENGINEERING</span><b>REV. 0.3</b></div>
+        <div class="docs-eyebrow"><span>PEANUP / ENGINEERING</span><b>REV. 0.4</b></div>
         <h1><span>From a local frame</span>{' '}<span>to physical pigment.</span></h1>
-        <p class="docs-deck">These notes separate what the legacy application proves, what can be rebuilt with standard techniques and what still requires a Peanup hardware loop. They are implementation guidance, not campaign promises.</p>
+        <p class="docs-deck">The engineering record has three layers: direct evidence from the legacy app, software paths reproducible with standard platform APIs, and parameters that only Peanup hardware can establish. Every item is marked E / R / H.</p>
         <div class="docs-evidence" aria-label="Evidence levels">
           <span><i>E</i><strong>Evidence</strong><small>Observed in the binary, resources or recovered constants</small></span>
           <span><i>R</i><strong>Rebuild</strong><small>Reproducible with documented platform techniques</small></span>
-          <span><i>H</i><strong>Hardware</strong><small>Requires controller documentation, capture or measurement</small></span>
+          <span><i>H</i><strong>Hardware</strong><small>Controller documentation, capture or measured result</small></span>
         </div>
       </section>
 
