@@ -33,10 +33,13 @@ guard let context = CGContext(data: &pixels,
 }
 context.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
 
-// The current text bounds are x=193..288, y=66..105 on the 1056x163 strip.
-// Keep a generous horizontal clear box so this tool can be run repeatedly
-// without leaving the previous glyph behind. The right-side glyphs start at
-// x=790, so this region remains well clear of them.
+// The source time glyph is moved to x=88..183, y=66..105 on the 1056x163
+// strip, then the complete strip is optically shifted left to match the
+// right-side indicators. A final time-only pass moves 9:41 inward to
+// x=150..245; the right-side status group remains byte-for-byte in place.
+// The input should be the uncalibrated strip (the source glyph begins near
+// x=193). Keep a generous horizontal clear box while moving it; the right-side
+// glyphs start at x=790, so this region remains well clear of them.
 let sourceRect = CGRect(x: 128, y: 60, width: 192, height: 54)
 let rowStride = width * 4
 let minX = max(0, Int(sourceRect.minX))
@@ -68,7 +71,61 @@ for y in minY..<maxY {
   }
 }
 
-guard let outputContext = CGContext(data: &shifted,
+// Move only the time glyph after the shared source correction. Keeping the
+// indicator group fixed preserves the right safe area measured from the
+// supplied reference capture.
+let wholeStripShift = -48
+var calibrated = [UInt8](repeating: 0, count: pixels.count)
+for y in 0..<height {
+  let row = y * rowStride
+  for x in 0..<width {
+    let destinationX = x + wholeStripShift
+    if destinationX < 0 || destinationX >= width { continue }
+    let sourceOffset = row + x * 4
+    let destinationOffset = row + destinationX * 4
+    calibrated[destinationOffset] = shifted[sourceOffset]
+    calibrated[destinationOffset + 1] = shifted[sourceOffset + 1]
+    calibrated[destinationOffset + 2] = shifted[sourceOffset + 2]
+    calibrated[destinationOffset + 3] = shifted[sourceOffset + 3]
+  }
+}
+
+// The first calibration balanced the right-side indicators but left the time
+// too close to the display edge. Move only the time pixels inward; the clear
+// box is kept away from the right group so no indicator can be overwritten.
+let timeOnlyShift = 110
+let timeRect = CGRect(x: 40, y: 60, width: 192, height: 54)
+let timeMinX = max(0, Int(timeRect.minX))
+let timeMaxX = min(width, Int(timeRect.maxX))
+let timeMinY = max(0, Int(timeRect.minY))
+let timeMaxY = min(height, Int(timeRect.maxY))
+let timeSource = calibrated
+var timeAligned = calibrated
+for y in timeMinY..<timeMaxY {
+  let row = y * rowStride
+  for x in timeMinX..<timeMaxX {
+    let offset = row + x * 4
+    timeAligned[offset] = 0
+    timeAligned[offset + 1] = 0
+    timeAligned[offset + 2] = 0
+    timeAligned[offset + 3] = 0
+  }
+}
+for y in timeMinY..<timeMaxY {
+  let row = y * rowStride
+  for x in timeMinX..<timeMaxX {
+    let destinationX = x + timeOnlyShift
+    if destinationX < 0 || destinationX >= width { continue }
+    let sourceOffset = row + x * 4
+    let destinationOffset = row + destinationX * 4
+    timeAligned[destinationOffset] = timeSource[sourceOffset]
+    timeAligned[destinationOffset + 1] = timeSource[sourceOffset + 1]
+    timeAligned[destinationOffset + 2] = timeSource[sourceOffset + 2]
+    timeAligned[destinationOffset + 3] = timeSource[sourceOffset + 3]
+  }
+}
+
+guard let outputContext = CGContext(data: &timeAligned,
                                     width: width,
                                     height: height,
                                     bitsPerComponent: 8,
@@ -87,4 +144,4 @@ guard CGImageDestinationFinalize(destination) else {
   fputs("unable to finalize PNG\n", stderr)
   exit(1)
 }
-print("wrote \(outputURL.path) with time shift \(shift) source pixels")
+print("wrote \(outputURL.path) with source shift \(shift), whole-strip shift \(wholeStripShift), and time-only shift \(timeOnlyShift) source pixels")

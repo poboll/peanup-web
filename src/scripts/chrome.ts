@@ -75,7 +75,7 @@ const applyTheme = (theme: Theme, persist = false) => {
 const waitForPaint = () => new Promise<void>((resolve) => {
   requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
 });
-const waitForThemeFade = () => new Promise<void>((resolve) => window.setTimeout(resolve, 560));
+const waitForThemeFade = () => new Promise<void>((resolve) => window.setTimeout(resolve, chromeReduceMotion.matches ? 1 : 560));
 
 let heroImageDecode: Promise<void> | null = null;
 const decodeHeroImage = () => {
@@ -97,8 +97,9 @@ const decodeHeroImage = () => {
 
 const decodeThemeAssets = () => decodeHeroImage();
 
-// Warm both exact-resolution bitmaps during the first paint window, without an
-// HTML preload that reports as unused for visitors who stay in the light theme.
+// Decode both exact-size theme rasters during the first paint window so the
+// switch never waits for a late mask request or swaps in a lower-resolution
+// placeholder.
 void decodeThemeAssets();
 
 const setThemeControlsBusy = (busy: boolean) => {

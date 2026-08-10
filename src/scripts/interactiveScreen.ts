@@ -175,7 +175,12 @@ if (liveStudio) {
     const image = new Image();
     image.onload = () => {
       if (revision !== renderRevision) return;
-      const scale = Math.max(canvas.width / image.naturalWidth, canvas.height / image.naturalHeight);
+      // Keep the whole photograph visible. The live preview is a composition
+      // reference for the paper, so letterboxing is preferable to silently
+      // cutting the subject out of the frame.
+      context.fillStyle = '#e2e6e1';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      const scale = Math.min(canvas.width / image.naturalWidth, canvas.height / image.naturalHeight);
       const width = image.naturalWidth * scale; const height = image.naturalHeight * scale;
       context.drawImage(image, (canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
       dither();

@@ -19,27 +19,43 @@ let touchStartY = 0;
 
 // Keep the phone legible on slow or offline previews. The CSS fallback is
 // visible until the exact transparent status strip has decoded.
-const markStatusReady = () => statusBar?.classList.add('is-ready');
+const markStatusReady = () => {
+  statusBar?.classList.add('is-ready');
+  statusBar?.querySelector<HTMLElement>('.iphone-status-fallback')?.style.setProperty('opacity', '0');
+};
 statusImage?.addEventListener('load', markStatusReady, { once: true });
 statusImage?.addEventListener('error', () => statusBar?.classList.add('is-fallback'), { once: true });
 if (statusImage?.complete) {
   if (statusImage.naturalWidth > 0) markStatusReady();
   else statusBar?.classList.add('is-fallback');
 }
+if (statusImage) void statusImage.decode?.().catch(() => undefined);
 
 const frameDevice = frameImage?.closest<HTMLElement>('[data-phone-device]');
+let frameRevealScheduled = false;
 const markFrameReady = () => {
-  frameDevice?.removeAttribute('data-frame-failed');
-  frameDevice?.setAttribute('data-frame-ready', 'true');
+  if (frameRevealScheduled && frameDevice?.dataset.frameState === 'ready') return;
+  frameDevice?.setAttribute('data-frame-state', 'ready');
 };
 const markFrameFailed = () => {
-  frameDevice?.removeAttribute('data-frame-ready');
-  frameDevice?.setAttribute('data-frame-failed', 'true');
+  frameRevealScheduled = false;
 };
-frameImage?.addEventListener('load', markFrameReady, { once: true });
+const revealFrameAfterDecode = () => {
+  if (!frameImage || frameRevealScheduled) return;
+  if (!frameImage.naturalWidth) {
+    markFrameFailed();
+    return;
+  }
+  frameRevealScheduled = true;
+  const decoded = typeof frameImage.decode === 'function' ? frameImage.decode() : Promise.resolve();
+  void decoded.catch(() => undefined).then(() => {
+    requestAnimationFrame(markFrameReady);
+  });
+};
+frameImage?.addEventListener('load', revealFrameAfterDecode, { once: true });
 frameImage?.addEventListener('error', markFrameFailed, { once: true });
 if (frameImage?.complete) {
-  if (frameImage.naturalWidth > 0) markFrameReady();
+  if (frameImage.naturalWidth > 0) revealFrameAfterDecode();
   else markFrameFailed();
 }
 

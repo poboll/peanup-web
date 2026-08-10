@@ -306,16 +306,18 @@ for (const [route, html] of htmlByRoute) {
       && /height:100%/.test(block)
       && /object-fit:fill/.test(block)
     );
+    const hasAlignedStatusFallback = /\.iphone-status-fallback>time\{[^}]*left:14\.2cqw/.test(styleSource)
+      && /\.iphone-status-fallback-icons\{[^}]*right:7\.68cqw/.test(styleSource);
     const hasStatusAsset = html.includes('class="iphone-status-image protected-media"')
-      && html.includes('src="/assets/iphone-17-pro-status.png"')
+      && /src="\/assets\/iphone-17-pro-status\.png(?:\?[^\"]+)?"/.test(html)
       && html.includes('width="1056"')
       && html.includes('height="163"')
       && hasNativeStatusImage
-      && html.includes('<time>9:41</time>');
+      && /<time(?:\s[^>]*)?>9:41<\/time>/.test(html);
     const hasNativeChassisGeometry = /\.iphone-device\{[^}]*--chassis-width:\s*662;[^}]*--chassis-height:\s*1380;[^}]*--physical-width:\s*71\.9;[^}]*--physical-height:\s*150;/.test(styleSource)
-      && /\.iphone-device\{[^}]*--frame-ratio:\s*71\.9\s*\/\s*150;/.test(styleSource)
+      && /\.iphone-device\{[^}]*--frame-ratio:\s*662\s*\/\s*1380;/.test(styleSource)
       && /\.iphone-device\{[^}]*aspect-ratio:var\(--frame-ratio\)/.test(styleSource)
-      && /\.iphone-frame\{[^}]*object-fit:contain/.test(styleSource)
+      && /\.iphone-frame\{[^}]*object-fit:fill/.test(styleSource)
       && /\.iphone-glass\{[^}]*border-radius:13\.8% 13\.8% 9\.35% 9\.35%\/4\.85% 4\.85% 3\.2% 3\.2%/.test(styleSource);
     const hasCameraControl = html.includes('class="iphone-camera-control"');
     const hasNativeCameraControl = /\.iphone-camera-control\{[^}]*display:none/.test(styleSource);
@@ -324,9 +326,10 @@ for (const [route, html] of htmlByRoute) {
       || !html.includes('data-frame-asset-ratio="662/1380"')
       || !html.includes('data-screen-frame="28x35x606x1310"')
       || !html.includes('data-status-frame="0x0x402x62"')
-      || !html.includes('data-status-visible-bounds="193x66x880x40"')
+      || !html.includes('data-status-visible-bounds="150x66x827x40"')
       || !html.includes('data-island-frame="138x14x126x37"')
       || !hasStatusAsset
+      || !hasAlignedStatusFallback
       || !hasNativeChassisGeometry
       || !hasCalibratedStatusCss
       || !hasExactScreenGeometry
@@ -334,7 +337,7 @@ for (const [route, html] of htmlByRoute) {
       || !hasCameraControl
       || !hasNativeCameraControl
       || !hidesSyntheticCamera
-      || !html.includes('<time>9:41</time>')) {
+      || !/<time(?:\s[^>]*)?>9:41<\/time>/.test(html)) {
       failures.push(`${route}: iPhone status bar asset geometry or fixed 9:41 time is missing`);
     }
 

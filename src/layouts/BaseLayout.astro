@@ -158,9 +158,10 @@ const schema = schemaNode
         try {
           saved = localStorage.getItem('peanup.theme');
         } catch {}
-        const theme = saved === 'dark' || saved === 'light'
-          ? saved
-          : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        // The product page is an editorial paper-white preview by default.
+        // Dark mode remains available as an explicit user choice and is
+        // remembered locally, rather than being imposed by the OS theme.
+        const theme = saved === 'dark' || saved === 'light' ? saved : 'light';
         root.dataset.theme = theme;
         root.style.colorScheme = theme;
         // Let the page own fragment scrolling while content-visibility is
@@ -199,6 +200,7 @@ const schema = schemaNode
     <meta name="twitter:image:alt" content={ogImageAlt} />
     {schema && <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />}
     <title>{title}</title>
+    <slot name="head" />
   </head>
   <body>
     <a class="skip-link" href="#main-content">{skipLabels[locale]}</a>

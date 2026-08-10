@@ -80,7 +80,7 @@ const config: DocPageConfig = {
         <div class="docs-grid docs-grid--three docs-panel-engineering">
           <article><span>BUS</span><h3>24-pin / SPI</h3><p>The panel exposes a 24-pin FPC and write-only 3-wire or 4-wire SPI. Controller operations must not be interrupted while <code>BUSY</code> is low; final command sequences follow the production controller documentation.</p></article>
           <article><span>PANEL POWER</span><h3>3.0 V typical</h3><p>VDD is 2.8–3.6 V. The table lists 60 mW typical panel power, 50 μA Sleep with RAM retained and 1 μA Deep sleep without RAM retention. These are not Peanup whole-device figures.</p></article>
-          <article><span>PROVISIONAL LIMITS</span><h3>Hardware loop required</h3><p>Refresh time and panel weight remain TBD. The stated condition is indoor only, up to 2000 lux. Outdoor behavior, refresh speed and whole-device battery life require separate validation.</p></article>
+          <article><span>VALIDATION</span><h3>Whole-device testing</h3><p>Refresh time and panel weight are not values supplied by this panel specification. It states indoor use up to 2,000 lux; outdoor readability, refresh speed and whole-device battery life will be published after complete-device testing.</p></article>
         </div>
         <div class="docs-callout docs-callout--warning">
           <span>SPEC CONSISTENCY</span>
@@ -104,7 +104,7 @@ const config: DocPageConfig = {
 panelHeight = 792
 pixelCount = panelWidth * panelHeight  // 418,176 pixels
 // Wire length still depends on final palette depth and controller framing.</code></pre>
-        <p class="docs-caption"><b>Geometry boundary:</b> The website Canvas may use independent logical coordinates, but final output must render at 528 × 792. <b>H:</b> The production controller profile must still define palette order, bit depth, waveform and packet framing.</p>
+        <p class="docs-caption"><b>Geometry boundary:</b> The website Canvas may use independent logical coordinates, but final output must render at 528 × 792. <b>Controller profile:</b> the production documentation must define palette order, bit depth, waveform and packet framing.</p>
       </section>
 
       <section class="docs-section" id="dithering">
@@ -116,7 +116,7 @@ pixelCount = panelWidth * panelHeight  // 418,176 pixels
         <div class="docs-grid docs-grid--three docs-modes">
           <article><span>REALTIME</span><h3>Ordered 4 × 4 / 8 × 8</h3><p>Bayer thresholds are deterministic across frames, making them suitable for a responsive camera preview.</p></article>
           <article><span>BALANCED</span><h3>Floyd–Steinberg / Stucki</h3><p>Error diffusion preserves local detail while keeping computation practical for the final frame.</p></article>
-          <article><span>PHOTO</span><h3>Perceptual / Spectra Mix</h3><p>Palette-aware tone mapping can preserve photographic structure, but legacy special mixing behavior is not yet fully recovered.</p></article>
+          <article><span>PHOTO</span><h3>Perceptual / Spectra Mix</h3><p>Palette-aware tone mapping protects photographic structure; final mixing parameters will follow device validation and the release app.</p></article>
         </div>
         <p class="docs-note"><b>Content-aware rule</b><span>Disable or constrain cross-edge diffusion for typography, QR-like geometry and one-pixel lines. Validate photographs against a fixed reference set rather than tuning on color patches alone.</span></p>
         <a class="docs-context-link" href="/en/docs/image-guide/">Read the public guide to choosing, cropping and previewing a six-color image <span aria-hidden="true">→</span></a>

@@ -38,21 +38,12 @@ loadNear('.dither-studio', async () => { (await import('./ditherShowcase')).rend
 // The stage ships a complete static first frame, so the animation can warm one
 // viewport ahead without joining the mobile critical path.
 loadNear('[data-epaper-pipeline]', () => import('./epaperPipeline'), '500px');
-// The phone preview is a primary interaction. Start its small controller
-// after the first paint so anchor jumps cannot outrun the observer, while
-// keeping it out of the critical HTML and CSS path.
-if (document.querySelector('#ecosystem')) {
-  window.setTimeout(() => { void import('./phoneShowcase').catch(() => undefined); }, 0);
-}
-// The motion stage also ships a complete CSS/HTML first frame. Begin the
-// canvas pair after that frame can paint; this is more reliable than an
-// observer alone when the user lands on #motion or the section is promoted by
-// content-visibility during a fast scroll.
-if (document.querySelector('#motion')) {
-  window.setTimeout(() => {
-    void Promise.all([import('./heroSketch'), import('./interactiveScreen')]).catch(() => undefined);
-  }, 0);
-}
+// Both scenes ship complete HTML/CSS first frames. Keep their controllers out
+// of the initial request graph and load them shortly before the user reaches
+// the chapter. The geometry check inside loadNear also handles direct #motion
+// and #ecosystem links after the browser restores the requested anchor.
+loadNear('#ecosystem', () => import('./phoneShowcase'), '700px');
+loadNear('#motion', () => Promise.all([import('./heroSketch'), import('./interactiveScreen')]), '450px');
 
 const warmImagesNear = (selector: string) => {
   const targets = Array.from(document.querySelectorAll<HTMLElement>(selector));

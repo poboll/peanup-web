@@ -176,7 +176,9 @@ if (mount && gallery) {
           transitionContext.drawImage(p.canvas, 0, 0, transitionCanvas.width, transitionCanvas.height);
           hasTransitionFrame = true;
         } else {
-          // Keep the full live studio, including its controls, as the departing old frame.
+          // The live studio is interactive HTML, not a scene frame. Hide it
+          // while leaving so its intro copy and controls cannot leak through
+          // the next e-paper write.
           hasTransitionFrame = false;
         }
       }
@@ -900,7 +902,10 @@ if (mount && gallery) {
       drawRefresh();
       if (!firstFrameReady) {
         firstFrameReady = true;
-        requestAnimationFrame(() => mount.classList.add('is-ready'));
+        requestAnimationFrame(() => {
+          mount.classList.add('is-ready');
+          stagePanel?.classList.add('is-canvas-ready');
+        });
       }
       if (!refreshActive && !branchAnimating && !pluckAnimating) p.noLoop();
     };

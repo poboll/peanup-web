@@ -103,6 +103,7 @@ const technologyChapters = {
   robots={isLegacyLocaleAlias ? 'noindex,follow,noimageindex,max-image-preview:none' : 'index,follow,noimageindex,max-image-preview:none'}
   backTopLabel={copy.footer.backTop}
 >
+  <link slot="head" rel="preload" as="image" href="/assets/peanup-lifestyle-poster.webp" type="image/webp" fetchpriority="high" />
   {detectLocale && (
     <script is:inline>
       (() => {
@@ -225,15 +226,13 @@ const technologyChapters = {
       </div>
 
       <figure class="hero-product protected-media" aria-label={copy.hero.imageAlt}>
-        <img class="hero-product-preview hero-product-preview--light" src="/assets/peanup-product-preview-light.webp" alt="" width="74" height="112" fetchpriority="high" decoding="sync" draggable="false" />
-        <img class="hero-product-preview hero-product-preview--dark" src="/assets/peanup-product-preview-dark.webp" alt="" width="74" height="112" fetchpriority="high" decoding="sync" draggable="false" />
         <picture class="hero-product-image hero-product-image--light" aria-hidden="true">
           <source srcset="/assets/peanup-product.avif" type="image/avif" />
-          <img src="/assets/peanup-product.webp" alt="" width="740" height="1120" fetchpriority="high" decoding="async" draggable="false" />
+          <img src="/assets/peanup-product.webp" alt="" width="740" height="1120" fetchpriority="high" decoding="sync" draggable="false" />
         </picture>
         <picture class="hero-product-image hero-product-image--dark" aria-hidden="true">
-          <source srcset="/assets/peanup-product-cutout.avif" type="image/avif" />
-          <img src="/assets/peanup-product-cutout.webp" alt="" width="740" height="1120" fetchpriority="high" decoding="async" draggable="false" />
+          <source srcset="/assets/peanup-product-cutout-calibrated.avif" type="image/avif" />
+          <img class="hero-product-dark" src="/assets/peanup-product-cutout-calibrated.webp" alt="" width="740" height="1120" fetchpriority="high" decoding="sync" draggable="false" />
         </picture>
       </figure>
 
@@ -327,6 +326,26 @@ const technologyChapters = {
                   </div>
                   <div class="ink-fallback-clouds">
                     {paletteValues.map((color) => <i style={`--cloud-color:${color}`}></i>)}
+                  </div>
+                  <div class="ink-fallback-rain" aria-hidden="true">
+                    <i style="--drop-x:10%;--drop-y:42%;--drop-s:1.05;--drop-c:#202326;--drop-r:-7deg"></i>
+                    <i style="--drop-x:17%;--drop-y:56%;--drop-s:.72;--drop-c:#233f8e;--drop-r:6deg"></i>
+                    <i style="--drop-x:24%;--drop-y:69%;--drop-s:1.22;--drop-c:#c1bb1e;--drop-r:-3deg"></i>
+                    <i style="--drop-x:31%;--drop-y:48%;--drop-s:.84;--drop-c:#62201e;--drop-r:9deg"></i>
+                    <i style="--drop-x:38%;--drop-y:77%;--drop-s:.64;--drop-c:#35563a;--drop-r:-8deg"></i>
+                    <i style="--drop-x:45%;--drop-y:61%;--drop-s:1.08;--drop-c:#233f8e;--drop-r:4deg"></i>
+                    <i style="--drop-x:53%;--drop-y:44%;--drop-s:.8;--drop-c:#c1bb1e;--drop-r:-5deg"></i>
+                    <i style="--drop-x:60%;--drop-y:73%;--drop-s:1.16;--drop-c:#202326;--drop-r:7deg"></i>
+                    <i style="--drop-x:67%;--drop-y:55%;--drop-s:.7;--drop-c:#62201e;--drop-r:-8deg"></i>
+                    <i style="--drop-x:74%;--drop-y:82%;--drop-s:.96;--drop-c:#35563a;--drop-r:5deg"></i>
+                    <i style="--drop-x:81%;--drop-y:63%;--drop-s:.66;--drop-c:#233f8e;--drop-r:-4deg"></i>
+                    <i style="--drop-x:89%;--drop-y:49%;--drop-s:1.12;--drop-c:#c1bb1e;--drop-r:8deg"></i>
+                    <i style="--drop-x:13%;--drop-y:87%;--drop-s:.62;--drop-c:#62201e;--drop-r:-6deg"></i>
+                    <i style="--drop-x:28%;--drop-y:91%;--drop-s:.9;--drop-c:#35563a;--drop-r:4deg"></i>
+                    <i style="--drop-x:42%;--drop-y:86%;--drop-s:.7;--drop-c:#202326;--drop-r:-7deg"></i>
+                    <i style="--drop-x:57%;--drop-y:93%;--drop-s:.84;--drop-c:#233f8e;--drop-r:5deg"></i>
+                    <i style="--drop-x:72%;--drop-y:89%;--drop-s:.68;--drop-c:#62201e;--drop-r:-3deg"></i>
+                    <i style="--drop-x:86%;--drop-y:94%;--drop-s:.98;--drop-c:#35563a;--drop-r:7deg"></i>
                   </div>
                   <span class="ink-fallback-grain"></span>
                 </div>
@@ -423,9 +442,10 @@ const technologyChapters = {
             data-status-bar-points="402x62"
             data-status-bar-height="0.070938"
             data-status-frame="0x0x402x62"
-            data-status-visible-bounds="193x66x880x40"
+            data-status-visible-bounds="150x66x827x40"
             data-screen-frame="28x35x606x1310"
             data-island-frame="138x14x126x37"
+            data-frame-state="pending"
           >
             <div class="iphone-glass">
               <div
@@ -434,15 +454,15 @@ const technologyChapters = {
                 aria-hidden="true"
               >
                 <picture>
-                  <source srcset="/assets/iphone-17-pro-status.webp" type="image/webp" />
+                  <source srcset="/assets/iphone-17-pro-status.webp?v=20260815-9" type="image/webp" />
                   <img
                     class="iphone-status-image protected-media"
-                    src="/assets/iphone-17-pro-status.png"
+                    src="/assets/iphone-17-pro-status.png?v=20260815-9"
                     width="1056"
                     height="163"
-                    loading="lazy"
-                    decoding="async"
-                    fetchpriority="low"
+                    loading="eager"
+                    decoding="sync"
+                    fetchpriority="auto"
                     draggable="false"
                     alt=""
                   />
@@ -553,12 +573,24 @@ const technologyChapters = {
                 height="1380"
                 loading="lazy"
                 decoding="async"
-                fetchpriority="low"
+                fetchpriority="auto"
                 draggable="false"
                 alt=""
                 aria-hidden="true"
               />
             </picture>
+            <img
+              class="iphone-frame-preview protected-media"
+              src="/assets/iphone-17-pro-frame-preview.webp"
+              width="166"
+              height="345"
+              loading="eager"
+              decoding="async"
+              fetchpriority="low"
+              draggable="false"
+              alt=""
+              aria-hidden="true"
+            />
             <i class="iphone-camera-control" aria-hidden="true"></i>
             <div class="dynamic-island" aria-hidden="true">
               <span class="dynamic-island-progress"><b></b><small>68%</small></span>
@@ -644,7 +676,7 @@ const technologyChapters = {
               {index === 0 && <div class="pipeline-visual pipeline-source protected-media"><picture><source srcset="/assets/peanup-anime-source.avif" type="image/avif" /><source srcset="/assets/peanup-anime-source.webp" type="image/webp" /><img src="/assets/peanup-anime-source.jpg" alt={copy.technology.pipeline[0].title} width="500" height="500" loading="lazy" decoding="async" draggable="false" /></picture></div>}
               {index === 1 && <div class="pipeline-visual pipeline-canvas" data-epaper-output><picture class="pipeline-canvas-fallback protected-media" aria-hidden="true"><source srcset="/assets/peanup-anime-source.avif" type="image/avif" /><source srcset="/assets/peanup-anime-source.webp" type="image/webp" /><img src="/assets/peanup-anime-source.jpg" alt="" width="500" height="500" loading="lazy" decoding="async" draggable="false" /></picture><canvas id="epaper-preview" data-epaper-preview aria-label={copy.technology.pipeline[1].title}></canvas><i data-epaper-mode-label aria-live="polite">FLOYD–STEINBERG</i></div>}
               {index === 2 && <div class="pipeline-visual pipeline-transfer" aria-hidden="true"><div class="transfer-rail"><i></i><i></i><i></i><i></i><i></i><i></i></div><b>FRAME.P6</b><small>PACKET 068 / 100</small></div>}
-              {index === 3 && <div class="pipeline-visual pipeline-device"><div class="protected-media" data-pipeline-device><img class="pipeline-device-image" src="/assets/peanup-lifestyle-poster.webp" alt={copy.life.imageAlt} width="580" height="771" loading="eager" fetchpriority="high" decoding="sync" draggable="false" /><i></i></div><b>PEANUP</b></div>}
+              {index === 3 && <div class="pipeline-visual pipeline-device"><div class="protected-media" data-pipeline-device data-write-state="idle"><span class="pipeline-device-image-shell" style="background-image:url('/assets/peanup-lifestyle-poster.webp');background-repeat:no-repeat;background-position:center;background-size:contain"><img class="pipeline-device-image" src="/assets/peanup-lifestyle-poster.webp" alt="" aria-hidden="true" width="580" height="771" loading="eager" fetchpriority="high" decoding="sync" draggable="false" /></span><i class="pipeline-device-write" aria-hidden="true"></i></div><b>PEANUP</b></div>}
               <h3>{step.title}</h3><p>{step.body}</p>
             </li>
           ))}

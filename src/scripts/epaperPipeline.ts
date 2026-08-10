@@ -5,7 +5,7 @@ const output = pipeline?.querySelector<HTMLElement>('[data-epaper-output]');
 const modeLabel = pipeline?.querySelector<HTMLElement>('[data-epaper-mode-label]');
 const device = pipeline?.querySelector<HTMLElement>('[data-pipeline-device]');
 const deviceImage = device?.querySelector<HTMLImageElement>('.pipeline-device-image');
-const deviceWriteMask = device?.querySelector<HTMLElement>(':scope > i');
+const deviceWriteMask = device?.querySelector<HTMLElement>('.pipeline-device-write');
 
 type DitherMode = 'ordered' | 'diffusion' | 'spectra';
 
@@ -142,61 +142,110 @@ if (source && preview && pipeline) {
   source.addEventListener('load', scheduleRender, { once: true });
   scheduleRender();
   // This card uses one display-sized poster rather than swapping a thumbnail
-  // for a larger photograph. The same decoded pixels stay mounted while the
-  // section moves in and out of content-visibility.
+  // for a larger photograph. The same decoded image node stays mounted for
+  // the entire page lifetime; scrolling only moves the already-painted card.
   let deviceReady = device?.dataset.imageReady === 'true';
   let deviceVisible = false;
   let deviceWriteStarted = device?.dataset.writeStarted === 'true'
-    || device?.dataset.writeComplete === 'true';
+    || device?.dataset.writeComplete === 'true'
+    || device?.dataset.writeState === 'settled';
   let deviceWriteCleanup = 0;
+  if (device && !device.dataset.writeState) device.dataset.writeState = 'idle';
   const finishDeviceWrite = () => {
     if (!device) return;
     window.clearTimeout(deviceWriteCleanup);
+    // Commit a real static end state. Leaving a completed CSS animation
+    // attached keeps the layer in an active animation/compositor state and can
+    // make the poster flash when the browser promotes it during a fast scroll.
     device.classList.remove('is-writing');
     device.classList.add('has-written');
     device.dataset.writeComplete = 'true';
-    if (deviceWriteMask) deviceWriteMask.hidden = true;
+    device.dataset.writeState = 'settled';
+    deviceWriteMask?.removeEventListener('animationend', finishDeviceWrite);
+    deviceWriteMask?.removeEventListener('animationcancel', finishDeviceWrite);
+    // Keep the scan node mounted, but let the has-written rule make it an
+    // inert static node. Removing it during a scroll would invalidate the
+    // surrounding paper surface in some Chromium builds.
   };
+  const settleWhenHidden = () => {
+    if (document.hidden && device?.dataset.writeState === 'writing') finishDeviceWrite();
+  };
+  document.addEventListener('visibilitychange', settleWhenHidden, { passive: true });
   const startDeviceWrite = () => {
-    if (!device || !deviceReady || !deviceVisible || deviceWriteStarted) return;
+    if (!device || !deviceReady || !deviceVisible || deviceWriteStarted || device.dataset.writeState === 'settled') return;
     deviceWriteStarted = true;
     device.dataset.writeStarted = 'true';
-    // This is a one-shot write tied to the first visible, fully decoded frame.
+    device.dataset.writeState = 'writing';
+    // This is a one-shot write tied to the first visible, loaded frame.
     // No scroll listener is involved, so later compositor promotion cannot
     // replay a scan or repaint the already-settled Peanup image.
     requestAnimationFrame(() => {
-      if (deviceWriteMask) deviceWriteMask.hidden = false;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         finishDeviceWrite();
         return;
       }
       deviceWriteMask?.addEventListener('animationend', finishDeviceWrite, { once: true });
+      deviceWriteMask?.addEventListener('animationcancel', finishDeviceWrite, { once: true });
       device.classList.add('is-writing');
       deviceWriteCleanup = window.setTimeout(finishDeviceWrite, 1800);
     });
   };
-  const markDeviceReady = async () => {
-    if (deviceReady || !device || !deviceImage) return;
-    if (!deviceImage.complete || !deviceImage.naturalWidth) return;
-    try { await deviceImage.decode(); } catch {}
+  let deviceReadyPending = false;
+  const commitDeviceReady = () => {
+    if (deviceReady || !device) return;
+    deviceReadyPending = false;
     deviceReady = true;
     device.dataset.imageReady = 'true';
     device.classList.add('is-image-ready');
     startDeviceWrite();
   };
+  const markDeviceReady = () => {
+    if (deviceReady || deviceReadyPending || !device || !deviceImage) return;
+    if (!deviceImage.complete || !deviceImage.naturalWidth) return;
+    deviceReadyPending = true;
+    if (typeof deviceImage.decode !== 'function') {
+      commitDeviceReady();
+      return;
+    }
+    // Start the write only after the raster is decoded. The short fallback
+    // avoids stalling on older Chromium builds while the static paper surface
+    // keeps the card geometry painted.
+    const decodeFallback = window.setTimeout(commitDeviceReady, 280);
+    void deviceImage.decode()
+      .catch(() => undefined)
+      .finally(() => {
+        window.clearTimeout(decodeFallback);
+        commitDeviceReady();
+      });
+  };
   if (deviceImage) {
     deviceImage.addEventListener('load', () => { void markDeviceReady(); }, { once: true });
     if (deviceImage.complete) void markDeviceReady();
   }
+  let deviceObserver: IntersectionObserver | undefined;
+  const checkDeviceVisibility = () => {
+    if (deviceVisible || !device) return;
+    const rect = device.getBoundingClientRect();
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+    const visibleHeight = Math.min(rect.bottom, viewportHeight) - Math.max(rect.top, 0);
+    if (visibleHeight <= 0 || visibleHeight < rect.height * .35) return;
+    deviceVisible = true;
+    pipeline.classList.add('pipeline-visible');
+    deviceObserver?.disconnect();
+    window.removeEventListener('scroll', checkDeviceVisibility, { capture: false });
+    startDeviceWrite();
+  };
   if (device && 'IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(([entry]) => {
+    deviceObserver = new IntersectionObserver(([entry]) => {
       if (!entry?.isIntersecting) return;
-      deviceVisible = true;
-      pipeline.classList.add('pipeline-visible');
-      startDeviceWrite();
-      observer.disconnect();
+      checkDeviceVisibility();
     }, { threshold: .35 });
-    observer.observe(device);
+    deviceObserver.observe(device);
+    // A dynamic import can happen after the target already entered the
+    // viewport. Check once on the next frame so a missed observer callback
+    // cannot leave the one-shot write animation dormant.
+    window.addEventListener('scroll', checkDeviceVisibility, { passive: true });
+    requestAnimationFrame(checkDeviceVisibility);
   } else {
     deviceVisible = true;
     pipeline.classList.add('pipeline-visible');

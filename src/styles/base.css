@@ -93,29 +93,33 @@ html.theme-fade-transition .ink-more-actions {
 }
 
 html.theme-fade-transition .hero-product picture {
-  transition: opacity .5s cubic-bezier(.22, 1, .36, 1), visibility 0s linear .5s;
+  visibility: visible !important;
+  transform: none !important;
+  transition: none !important;
+}
+html.theme-fade-transition .hero-product::before {
+  z-index: 6;
+  opacity: 1;
+  background: var(--surface);
+  clip-path: inset(0);
+  animation: hero-theme-curtain .5s cubic-bezier(.65, 0, .18, 1) both;
 }
 html.theme-fade-transition[data-theme="dark"] .hero-product-image--light,
 html.theme-fade-transition[data-theme="light"] .hero-product-image--dark {
-  opacity: 1 !important;
+  z-index: 2;
+  opacity: 0 !important;
   visibility: visible !important;
-  animation: hero-theme-old-fade .5s cubic-bezier(.65, 0, .18, 1) both;
 }
 html.theme-fade-transition[data-theme="dark"] .hero-product-image--dark,
 html.theme-fade-transition[data-theme="light"] .hero-product-image--light {
   z-index: 5;
-  clip-path: inset(100% 0 0 0);
-  animation: hero-theme-write .5s cubic-bezier(.65, 0, .18, 1) both;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
-@keyframes hero-theme-write {
-  from { clip-path: inset(100% 0 0 0); }
-  to { clip-path: inset(0 0 0 0); }
+@keyframes hero-theme-curtain {
+  from { clip-path: inset(0); }
+  to { clip-path: inset(0 0 100% 0); }
 }
-@keyframes hero-theme-old-fade {
-  from { opacity: 1; }
-  to { opacity: .12; }
-}
-
 .protected-media,
 .protected-media img,
 .protected-media picture,
@@ -255,19 +259,19 @@ footer > span { justify-self: end; color: var(--muted); }
 .iphone-status-image { opacity: 0; }
 .iphone-statusbar.is-ready .iphone-status-image { opacity: 1; }
 .iphone-statusbar.is-fallback .iphone-status-image { display: none; }
-.iphone-status-fallback { position: absolute; inset: 0; display: block; padding: 0; color: #171816; font: 650 4.15cqw/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; font-variant-numeric: tabular-nums; }
+.iphone-status-fallback { position: absolute; inset: 0; display: block; padding: 0; color: #171816; font: 650 3.78cqw/.95 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; font-variant-numeric: tabular-nums; }
 .iphone-statusbar.is-ready .iphone-status-fallback { display: none; }
-.iphone-status-fallback > time { position: absolute; left: 5.97cqw; top: 50%; letter-spacing: .01em; transform: translateY(-50%); }
-.iphone-status-fallback-icons { position: absolute; right: 5.97cqw; top: 50%; display: inline-flex; align-items: center; gap: 2cqw; transform: translateY(-50%); }
-.iphone-status-signal { width: 8cqw; height: 4.5cqw; display: inline-flex; align-items: end; justify-content: space-between; font-style: normal; }
-.iphone-status-signal b { display: block; width: 1.2cqw; border-radius: 999px 999px 0 0; background: currentColor; }
-.iphone-status-signal b:nth-child(1) { height: 1.4cqw; }
-.iphone-status-signal b:nth-child(2) { height: 2.3cqw; }
-.iphone-status-signal b:nth-child(3) { height: 3.3cqw; }
-.iphone-status-signal b:nth-child(4) { height: 4.2cqw; }
-.iphone-status-wifi { position: relative; width: 6.4cqw; height: 4.6cqw; display: block; border: 1px solid transparent; border-top-color: currentColor; border-radius: 50% 50% 0 0; transform: translateY(.6cqw); }
+.iphone-status-fallback > time { position: absolute; left: 14.2cqw; top: 50%; letter-spacing: .01em; transform: translateY(-50%); }
+.iphone-status-fallback-icons { position: absolute; right: 7.68cqw; top: 50%; display: inline-flex; align-items: center; gap: 2.08cqw; transform: translateY(-50%); }
+.iphone-status-signal { width: 5.5cqw; height: 3.6cqw; display: inline-flex; align-items: end; justify-content: space-between; font-style: normal; }
+.iphone-status-signal b { display: block; width: .95cqw; border-radius: 999px 999px 0 0; background: currentColor; }
+.iphone-status-signal b:nth-child(1) { height: 1.2cqw; }
+.iphone-status-signal b:nth-child(2) { height: 2cqw; }
+.iphone-status-signal b:nth-child(3) { height: 2.8cqw; }
+.iphone-status-signal b:nth-child(4) { height: 3.5cqw; }
+.iphone-status-wifi { position: relative; width: 4.83cqw; height: 3.6cqw; display: block; border: 1px solid transparent; border-top-color: currentColor; border-radius: 50% 50% 0 0; transform: translateY(.45cqw); }
 .iphone-status-wifi::after { content: ""; position: absolute; left: 50%; bottom: -.5cqw; width: 1.6cqw; height: 1.6cqw; border-radius: 50%; background: currentColor; transform: translateX(-50%); }
 .iphone-status-wifi::before { content: ""; position: absolute; left: 50%; top: 1.1cqw; width: 4.2cqw; height: 3.1cqw; border: 1px solid transparent; border-top-color: currentColor; border-radius: 50% 50% 0 0; transform: translateX(-50%); }
-.iphone-status-battery { position: relative; width: 8.4cqw; height: 4cqw; display: block; border: 1px solid currentColor; border-radius: 1.2cqw; font-style: normal; }
+.iphone-status-battery { position: relative; width: 7.77cqw; height: 3.78cqw; display: block; border: 1px solid currentColor; border-radius: 1.1cqw; font-style: normal; }
 .iphone-status-battery::after { content: ""; position: absolute; top: 50%; right: -1.5cqw; width: .8cqw; height: 1.7cqw; border-radius: 0 .8cqw .8cqw 0; background: currentColor; transform: translateY(-50%); }
 .iphone-status-battery b { position: absolute; inset: .6cqw 1.6cqw .6cqw .6cqw; display: block; border-radius: .7cqw; background: currentColor; }
