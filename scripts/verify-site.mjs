@@ -515,7 +515,10 @@ const sharedCss = homeCss.filter((reference) => docsCss.includes(reference));
 const productCss = homeCss.filter((reference) => !docsCss.includes(reference));
 const docsOnlyCss = docsCss.filter((reference) => !homeCss.includes(reference));
 
-if (sharedCss.length !== 1 || productCss.length !== 1 || docsOnlyCss.length !== 1 || homeJs.length !== 2) {
+// Astro inlines the small chrome controller on the product page. Keep the
+// bundle-shape check aligned with the emitted static HTML instead of treating
+// that inline module as a missing external asset.
+if (sharedCss.length !== 1 || productCss.length !== 1 || docsOnlyCss.length !== 1 || homeJs.length !== 1) {
   failures.push('performance budget check could not identify the expected shared/product/docs bundles');
 }
 

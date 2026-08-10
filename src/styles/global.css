@@ -551,7 +551,7 @@ html[data-locale="ja"] .peanup-live-copy strong { overflow-wrap: normal; word-br
 .pipeline-canvas canvas { position: relative; z-index: 1; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity .18s ease; }
 .pipeline-canvas.is-ready canvas { opacity: 1; }
 .pipeline-canvas.is-ready .pipeline-canvas-fallback { opacity: 0; }
-.pipeline-device-image { position: absolute; z-index: 1; inset: 6px; width: calc(100% - 12px); height: calc(100% - 12px); display: block; object-fit: cover; object-position: 54% 55%; opacity: 1; content-visibility: visible; backface-visibility: hidden; }
+.pipeline-device-image { position: absolute; z-index: 1; inset: 6px; width: calc(100% - 12px); height: calc(100% - 12px); display: block; object-fit: contain; contain: paint; }
 .pipeline-canvas canvas { object-fit: contain; image-rendering: auto; }
 .pipeline-canvas > i { position: absolute; z-index: 2; left: 8px; bottom: 8px; padding: 5px 7px; color: #f5f1e6; background: rgba(20,20,20,.78); font: normal 7px/1 ui-monospace, monospace; }
 .pipeline-canvas.is-refreshing canvas { animation: pipeline-dither-write .48s var(--ease) both; }
@@ -564,7 +564,7 @@ html[data-locale="ja"] .peanup-live-copy strong { overflow-wrap: normal; word-br
 .pipeline-transfer > b { font: 9px/1 ui-monospace, monospace; }
 .pipeline-transfer > small { margin-top: 7px; color: var(--blue); font: 7px/1 ui-monospace, monospace; }
 .pipeline-device { padding: 12px 16% 27px; background-color: #ecece7; background-image: repeating-linear-gradient(0deg, rgba(35,35,31,.035) 0 1px, transparent 1px 5px); }
-.pipeline-device > div { position: relative; aspect-ratio: 1260 / 1674; padding: 6px; border: 1px solid #aaa9a2; background: #f8f8f4; box-shadow: 0 12px 24px rgba(20,20,20,.15), inset 0 0 0 2px #fff; isolation: isolate; overflow: hidden; }
+.pipeline-device > div { position: relative; aspect-ratio: 1260 / 1674; padding: 6px; border: 1px solid #aaa9a2; background-color: #f8f8f4; background-image: url('/assets/peanup-lifestyle-poster.webp'); background-repeat: no-repeat; background-position: center; background-size: contain; box-shadow: 0 12px 24px rgba(20,20,20,.15), inset 0 0 0 2px #fff; overflow: hidden; contain: paint; isolation: isolate; }
 .pipeline-device > div::after { content: ""; position: absolute; z-index: 2; inset: 6px; opacity: .3; background-image: repeating-linear-gradient(0deg, rgba(20,24,22,.04) 0 1px, transparent 1px 4px), linear-gradient(95deg, transparent, rgba(114,91,56,.035) 32%, transparent 57%, rgba(44,72,95,.03)); }
 .pipeline-device > div > i { position: absolute; z-index: 3; left: 6px; right: 6px; bottom: 6px; height: calc(100% - 12px); opacity: 0; transform: scaleY(0); transform-origin: bottom; border-top: 1px solid rgba(71,121,188,.66); box-shadow: 0 -5px 12px rgba(71,121,188,.08); }
 [data-pipeline-device].is-writing > i { opacity: 1; animation: epaper-write 1.25s .25s var(--ease) both; }

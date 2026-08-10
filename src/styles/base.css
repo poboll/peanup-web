@@ -78,34 +78,6 @@ footer,
 
 html.theme-is-transitioning { cursor: default; }
 
-/* Keep the theme reveal a pure clip animation. Chromium's default root
-   transition also interpolates the captured bitmap's transform, which makes
-   the hero product appear to grow or shrink by a pixel during the switch. */
-::view-transition-group(root),
-::view-transition-image-pair(root) { animation: none; transform: none; }
-::view-transition-old(root),
-::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
-::view-transition-old(root) { z-index: 1; }
-::view-transition-new(root) {
-  z-index: 2;
-  clip-path: circle(0 at var(--theme-reveal-x, calc(100% - 28px)) var(--theme-reveal-y, 32px));
-  animation: theme-radial-reveal .5s cubic-bezier(.45, 0, .55, 1) both;
-}
-html.theme-radial-transition--compact::view-transition-new(root) {
-  animation-duration: .34s;
-}
-@keyframes theme-radial-reveal {
-  to { clip-path: circle(var(--theme-reveal-radius, 150vmax) at var(--theme-reveal-x, calc(100% - 28px)) var(--theme-reveal-y, 32px)); }
-}
-
-html.theme-radial-transition body,
-html.theme-radial-transition .site-header,
-html.theme-radial-transition .language-menu > div,
-html.theme-radial-transition footer,
-html.theme-radial-transition .back-to-top {
-  transition: none !important;
-}
-
 html.theme-fade-transition .hero,
 html.theme-fade-transition .apple-ecosystem,
 html.theme-fade-transition .technology,
@@ -118,6 +90,30 @@ html.theme-fade-transition .dither-presets article,
 html.theme-fade-transition .ink-gallery,
 html.theme-fade-transition .ink-more-actions {
   transition: color .32s ease, background-color .32s ease, border-color .32s ease, box-shadow .32s ease;
+}
+
+html.theme-fade-transition .hero-product picture {
+  transition: opacity .5s cubic-bezier(.22, 1, .36, 1), visibility 0s linear .5s;
+}
+html.theme-fade-transition[data-theme="dark"] .hero-product-image--light,
+html.theme-fade-transition[data-theme="light"] .hero-product-image--dark {
+  opacity: 1 !important;
+  visibility: visible !important;
+  animation: hero-theme-old-fade .5s cubic-bezier(.65, 0, .18, 1) both;
+}
+html.theme-fade-transition[data-theme="dark"] .hero-product-image--dark,
+html.theme-fade-transition[data-theme="light"] .hero-product-image--light {
+  z-index: 5;
+  clip-path: inset(100% 0 0 0);
+  animation: hero-theme-write .5s cubic-bezier(.65, 0, .18, 1) both;
+}
+@keyframes hero-theme-write {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes hero-theme-old-fade {
+  from { opacity: 1; }
+  to { opacity: .12; }
 }
 
 .protected-media,
@@ -253,7 +249,6 @@ footer > span { justify-self: end; color: var(--muted); }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
-  html.theme-radial-transition--compact::view-transition-new(root) { animation-duration: .34s !important; }
 }
 
 /* Zero-request first frame for a slow or unavailable status-strip asset. */

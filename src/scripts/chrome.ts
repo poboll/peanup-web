@@ -9,10 +9,6 @@ const chapterLinks = [...document.querySelectorAll<HTMLAnchorElement>('[data-cha
 let themeTransitioning = false;
 let chromeFrame = 0;
 
-type ThemeViewTransition = { finished: Promise<void> };
-type ThemeTransitionDocument = Document & {
-  startViewTransition?: (update: () => void | Promise<void>) => ThemeViewTransition;
-};
 
 document.querySelectorAll<HTMLImageElement>('img').forEach((image) => { image.draggable = false; });
 
@@ -79,7 +75,7 @@ const applyTheme = (theme: Theme, persist = false) => {
 const waitForPaint = () => new Promise<void>((resolve) => {
   requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
 });
-const waitForThemeFade = () => new Promise<void>((resolve) => window.setTimeout(resolve, 340));
+const waitForThemeFade = () => new Promise<void>((resolve) => window.setTimeout(resolve, 560));
 
 let heroImageDecode: Promise<void> | null = null;
 const decodeHeroImage = () => {
@@ -112,7 +108,7 @@ const setThemeControlsBusy = (busy: boolean) => {
   });
 };
 
-const switchThemeWithReveal = async (theme: Theme, origin?: HTMLElement) => {
+const switchThemeWithReveal = async (theme: Theme) => {
   if (themeTransitioning) return;
 
   themeTransitioning = true;
@@ -120,41 +116,20 @@ const switchThemeWithReveal = async (theme: Theme, origin?: HTMLElement) => {
   root.classList.add('theme-is-transitioning');
 
   try {
-    const source = origin?.getBoundingClientRect();
-    const x = source ? source.left + source.width / 2 : window.innerWidth - 28;
-    const y = source ? source.top + source.height / 2 : 32;
-    const radius = Math.ceil(Math.hypot(
-      Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y),
-    ));
-
-    root.style.setProperty('--theme-reveal-x', `${x}px`);
-    root.style.setProperty('--theme-reveal-y', `${y}px`);
-    root.style.setProperty('--theme-reveal-radius', `${radius}px`);
-    // Decode the target before the root snapshot is captured. Keeping the hero
-    // inside that one snapshot avoids a separately resampled product layer.
+    // Decode both target layers before starting the local write transition.
     await decodeThemeAssets();
 
-    const startViewTransition = (document as ThemeTransitionDocument).startViewTransition?.bind(document);
-    if (startViewTransition) {
-      root.classList.add('theme-radial-transition');
-      root.classList.toggle('theme-radial-transition--compact', chromeReduceMotion.matches);
-      const transition = startViewTransition(() => applyTheme(theme, true));
-      await transition.finished;
-    } else {
-      root.classList.add('theme-fade-transition');
-      applyTheme(theme, true);
-      await waitForPaint();
-      await waitForThemeFade();
-    }
+    // Do not use a root View Transition here. Chromium resamples the full
+    // document snapshot, which can make the fixed-ratio hero appear to zoom by
+    // a pixel. A local e-paper write on the two already-decoded image layers
+    // keeps the product geometry exact while the surrounding palette fades.
+    root.classList.add('theme-fade-transition');
+    applyTheme(theme, true);
+    await waitForPaint();
+    await waitForThemeFade();
   } catch {
     applyTheme(theme, true);
   } finally {
-    root.style.removeProperty('--theme-reveal-x');
-    root.style.removeProperty('--theme-reveal-y');
-    root.style.removeProperty('--theme-reveal-radius');
-    root.classList.remove('theme-radial-transition');
-    root.classList.remove('theme-radial-transition--compact');
     root.classList.remove('theme-fade-transition');
     root.classList.remove('theme-is-transitioning');
     setThemeControlsBusy(false);
@@ -217,7 +192,7 @@ backToTop?.addEventListener('click', animateToTop);
 themeToggles.forEach((toggle) => {
   toggle.addEventListener('click', () => {
     const current = root.dataset.theme === 'dark' ? 'dark' : 'light';
-    void switchThemeWithReveal(current === 'dark' ? 'light' : 'dark', toggle);
+    void switchThemeWithReveal(current === 'dark' ? 'light' : 'dark');
   });
 });
 systemTheme.addEventListener('change', (event) => {
