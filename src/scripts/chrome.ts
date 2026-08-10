@@ -85,51 +85,21 @@ let heroImageDecode: Promise<void> | null = null;
 const decodeHeroImage = () => {
   if (heroImageDecode) return heroImageDecode;
   heroImageDecode = (async () => {
-    const image = document.querySelector<HTMLImageElement>('.hero-product-image img');
-    if (!image) return;
-    const picture = image.closest('picture');
-    const source = picture?.querySelector<HTMLSourceElement>('source[data-srcset]');
-    if (source?.dataset.srcset && !source.srcset) source.srcset = source.dataset.srcset;
-    if (image.dataset.src && !image.getAttribute('src')) image.src = image.dataset.src;
-    if (!image.complete) {
-      await new Promise<void>((resolve) => {
-        image.addEventListener('load', () => resolve(), { once: true });
-        image.addEventListener('error', () => resolve(), { once: true });
-      });
-    }
-    try {
-      await image.decode();
-    } catch {}
-    // `decode()` can resolve after the original load listener has already run.
-    // Promote the decoded layer here as well so a theme switch never falls back
-    // to the rounded 74 px preview for a single captured transition frame.
-    if (image.naturalWidth > 0) picture?.classList.add('is-loaded');
+    const images = [...document.querySelectorAll<HTMLImageElement>('.hero-product img')];
+    await Promise.all(images.map(async (image) => {
+      if (!image.complete) {
+        await new Promise<void>((resolve) => {
+          image.addEventListener('load', () => resolve(), { once: true });
+          image.addEventListener('error', () => resolve(), { once: true });
+        });
+      }
+      try { await image.decode(); } catch {}
+    }));
   })();
   return heroImageDecode;
 };
 
-// Keep the mask image alive after decoding. CSS masks otherwise enter the
-// compositor independently and can arrive one frame after the theme snapshot,
-// which looks like a tiny product resize even though its box never moves.
-const heroMaskImage = new Image();
-heroMaskImage.decoding = 'async';
-heroMaskImage.src = '/assets/peanup-product-cutout.webp';
-let heroMaskDecode: Promise<void> | null = null;
-const decodeHeroMask = () => {
-  if (heroMaskDecode) return heroMaskDecode;
-  heroMaskDecode = (async () => {
-    if (!heroMaskImage.complete) {
-      await new Promise<void>((resolve) => {
-        heroMaskImage.addEventListener('load', () => resolve(), { once: true });
-        heroMaskImage.addEventListener('error', () => resolve(), { once: true });
-      });
-    }
-    try { await heroMaskImage.decode(); } catch {}
-  })();
-  return heroMaskDecode;
-};
-
-const decodeThemeAssets = () => Promise.all([decodeHeroImage(), decodeHeroMask()]);
+const decodeThemeAssets = () => decodeHeroImage();
 
 // Warm both exact-resolution bitmaps during the first paint window, without an
 // HTML preload that reports as unused for visitors who stay in the light theme.

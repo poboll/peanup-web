@@ -78,6 +78,11 @@ footer,
 
 html.theme-is-transitioning { cursor: default; }
 
+/* Keep the theme reveal a pure clip animation. Chromium's default root
+   transition also interpolates the captured bitmap's transform, which makes
+   the hero product appear to grow or shrink by a pixel during the switch. */
+::view-transition-group(root),
+::view-transition-image-pair(root) { animation: none; transform: none; }
 ::view-transition-old(root),
 ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 ::view-transition-old(root) { z-index: 1; }

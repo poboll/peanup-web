@@ -225,10 +225,15 @@ const technologyChapters = {
       </div>
 
       <figure class="hero-product protected-media" aria-label={copy.hero.imageAlt}>
-        <img class="hero-product-preview" src="/assets/peanup-product-preview-light.webp" alt="" width="74" height="112" fetchpriority="high" decoding="sync" draggable="false" />
-        <picture class="hero-product-image" data-progressive-image aria-hidden="true">
+        <img class="hero-product-preview hero-product-preview--light" src="/assets/peanup-product-preview-light.webp" alt="" width="74" height="112" fetchpriority="high" decoding="sync" draggable="false" />
+        <img class="hero-product-preview hero-product-preview--dark" src="/assets/peanup-product-preview-dark.webp" alt="" width="74" height="112" fetchpriority="high" decoding="sync" draggable="false" />
+        <picture class="hero-product-image hero-product-image--light" aria-hidden="true">
           <source srcset="/assets/peanup-product.avif" type="image/avif" />
           <img src="/assets/peanup-product.webp" alt="" width="740" height="1120" fetchpriority="high" decoding="async" draggable="false" />
+        </picture>
+        <picture class="hero-product-image hero-product-image--dark" aria-hidden="true">
+          <source srcset="/assets/peanup-product-cutout.avif" type="image/avif" />
+          <img src="/assets/peanup-product-cutout.webp" alt="" width="740" height="1120" fetchpriority="high" decoding="async" draggable="false" />
         </picture>
       </figure>
 

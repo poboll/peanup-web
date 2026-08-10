@@ -161,11 +161,9 @@ if (source && preview && pipeline) {
     if (!device || !deviceReady || !deviceVisible || deviceWriteStarted) return;
     deviceWriteStarted = true;
     device.dataset.writeStarted = 'true';
-    // The scanner is tied to the first visible, fully decoded frame. A late
-    // image decode must never replay it while the reader is already scrolling.
-    // Remove the animation class once it finishes as well: Chromium can
-    // reconstruct a content-visibility layer after a long scroll, and keeping
-    // a completed CSS animation attached may briefly repaint its first frame.
+    // This is a one-shot write tied to the first visible, fully decoded frame.
+    // No scroll listener is involved, so later compositor promotion cannot
+    // replay a scan or repaint the already-settled Peanup image.
     requestAnimationFrame(() => {
       if (deviceWriteMask) deviceWriteMask.hidden = false;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
