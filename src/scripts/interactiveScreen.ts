@@ -46,8 +46,14 @@ if (liveStudio) {
 
   const previewBottomInset = () => {
     if (!canvas || !toolbar) return 210;
-    const renderedHeight = Math.max(1, liveStudio.getBoundingClientRect().height);
-    return Math.max(190, toolbar.getBoundingClientRect().height * canvas.height / renderedHeight + 36);
+    // The toolbar is an overlay inside the same canvas box. Derive the safe
+    // area from its actual top edge instead of estimating from its height;
+    // the estimate drifted on narrow screens when the textarea wrapped.
+    const canvasRect = canvas.getBoundingClientRect();
+    const toolbarRect = toolbar.getBoundingClientRect();
+    const scale = canvas.height / Math.max(1, canvasRect.height);
+    const toolbarTop = Math.max(0, toolbarRect.top - canvasRect.top) * scale;
+    return Math.max(190, canvas.height - toolbarTop + 28);
   };
 
   const nearest = (r: number, g: number, b: number) => {
@@ -145,7 +151,8 @@ if (liveStudio) {
     let fontSize = 42;
     let lines = wrapText(fontSize);
     const textTop = 158;
-    const availableHeight = canvas.height - textTop - previewBottomInset();
+    const safeFooterY = canvas.height - previewBottomInset();
+    const availableHeight = safeFooterY - textTop - 18;
     let lineHeight = Math.round(fontSize * 1.38);
     while (fontSize > 22 && lines.length > Math.min(7, Math.floor(availableHeight / lineHeight))) {
       fontSize -= 1;
@@ -160,7 +167,7 @@ if (liveStudio) {
     }
     context.font = `500 ${fontSize}px "Songti SC", "Yu Mincho", serif`;
     fittedLines.forEach((value, index) => context.fillText(value, 46, textTop + index * lineHeight));
-    context.fillStyle = '#62201e'; context.fillRect(46, canvas.height - previewBottomInset() + 18, canvas.width - 92, 2);
+    context.fillStyle = '#62201e'; context.fillRect(46, safeFooterY + 18, canvas.width - 92, 2);
   };
 
   const handleFile = (file?: File) => {
