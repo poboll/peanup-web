@@ -1050,12 +1050,13 @@ html[data-deep-link] .product-main > * {
   .hero-experience-link { font-size: 10px; padding-inline: 8px; }
   .hero-product { position: relative; left: auto; right: auto; bottom: auto; width: min(64vw, 256px); margin: 8px auto -2px; transform: none; }
   .hero-panel-spec, .hero-color-ruler, .hero-object-label { display: none; }
-  .hero-spec-rail { position: relative; left: auto; right: auto; bottom: auto; width: calc(100% + 40px); height: auto; margin-left: -20px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-bottom: 1px solid var(--line); overflow: hidden; }
-  .hero-spec-rail > a { min-height: 80px; padding: 12px 8px 11px; border-bottom: 0; }
-  .hero-spec-rail > a + a { padding-left: 8px; }
-  .hero-spec-rail > a:nth-child(5) { border-right: 0; }
-  .hero-spec-rail strong { min-width: 0; font-size: clamp(12px, 3.65vw, 16px); line-height: 1.05; white-space: normal; overflow-wrap: anywhere; }
-  .hero-spec-rail span { display: block; max-width: 100%; font-size: 9px; line-height: 1.1; overflow-wrap: anywhere; hyphens: auto; }
+  .hero-spec-rail { position: relative; left: auto; right: auto; bottom: auto; width: calc(100% + 40px); margin-left: -20px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid var(--line); }
+  .hero-spec-rail > a { min-height: 82px; padding: 14px 12px 12px; border-bottom: 0; }
+  .hero-spec-rail > a + a { padding-left: 12px; }
+  .hero-spec-rail > a:nth-child(n + 4) { border-top: 1px solid var(--line); }
+  .hero-spec-rail > a:nth-child(3n), .hero-spec-rail > a:last-child { border-right: 0; }
+  .hero-spec-rail strong { min-width: 0; font-size: clamp(15px, 4vw, 18px); line-height: 1.08; white-space: normal; overflow-wrap: anywhere; }
+  .hero-spec-rail span { display: block; max-width: 100%; margin-top: 7px; font-size: 10px; line-height: 1.25; overflow-wrap: anywhere; hyphens: auto; }
   .scroll-cue { display: none; }
 
   .section-pad { padding-top: 84px; padding-bottom: 84px; }

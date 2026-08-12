@@ -26,11 +26,50 @@ const detectLocale = Astro.url.pathname === '/';
 const isLegacyLocaleAlias = Astro.url.pathname === '/zh-cn/';
 const hardwareIcons = ['bluetooth', 'nfc', 'battery', 'magnet'] as const;
 const paletteValues = ['#20211f', '#eeeee8', '#b5473b', '#d5ae35', '#496fa7', '#668468'];
+const phoneUiCopy = {
+  'zh-cn': {
+    nav: ['01 / 本地', '02 / 内容', '03 / 快捷', '04 / 传输'],
+    local: '本地处理', content: '内容模式', shortcuts: '快捷指令', transfer: '传输更新',
+    automation: '自动化', nextFrame: '下一帧', liveActivity: '实时活动', epaperUpdate: '墨水屏更新',
+    frame: '画面', nearby: 'BLE · 附近', localProcessing: '本地处理', sixColor: 'E6 / 六色',
+  },
+  'zh-tw': {
+    nav: ['01 / 本機', '02 / 內容', '03 / 捷徑', '04 / 傳輸'],
+    local: '本機處理', content: '內容模式', shortcuts: '捷徑', transfer: '傳輸更新',
+    automation: '自動化', nextFrame: '下一幀', liveActivity: '即時動態', epaperUpdate: '墨水屏更新',
+    frame: '畫面', nearby: 'BLE · 附近', localProcessing: '本機處理', sixColor: 'E6 / 六色',
+  },
+  en: {
+    nav: ['01 / LOCAL', '02 / CONTENT', '03 / SHORTCUTS', '04 / TRANSFER'],
+    local: 'ON DEVICE', content: 'CONTENT', shortcuts: 'SHORTCUTS', transfer: 'NEARBY UPDATE',
+    automation: 'AUTOMATION', nextFrame: 'NEXT FRAME', liveActivity: 'LIVE ACTIVITY', epaperUpdate: 'E-PAPER UPDATE',
+    frame: 'FRAME', nearby: 'BLE · NEARBY', localProcessing: 'LOCAL PROCESSING', sixColor: 'E6 / SIX COLOR',
+  },
+  ja: {
+    nav: ['01 / 端末', '02 / コンテンツ', '03 / ショートカット', '04 / 転送'],
+    local: '端末内処理', content: 'コンテンツ', shortcuts: 'ショートカット', transfer: '近くに転送',
+    automation: 'オートメーション', nextFrame: '次のフレーム', liveActivity: 'ライブアクティビティ', epaperUpdate: '電子ペーパー更新',
+    frame: 'フレーム', nearby: 'BLE · 近く', localProcessing: '端末内処理', sixColor: 'E6 / 6色',
+  },
+  de: {
+    nav: ['01 / LOKAL', '02 / INHALTE', '03 / KURZBEFEHLE', '04 / TRANSFER'],
+    local: 'AUF DEM GERÄT', content: 'INHALTE', shortcuts: 'KURZBEFEHLE', transfer: 'IN DER NÄHE',
+    automation: 'AUTOMATION', nextFrame: 'NÄCHSTES BILD', liveActivity: 'LIVE-AKTIVITÄT', epaperUpdate: 'E-PAPER-UPDATE',
+    frame: 'BILD', nearby: 'BLE · IN DER NÄHE', localProcessing: 'LOKAL VERARBEITET', sixColor: 'E6 / 6 FARBEN',
+  },
+  fr: {
+    nav: ['01 / LOCAL', '02 / CONTENU', '03 / RACCOURCIS', '04 / TRANSFERT'],
+    local: 'SUR L’APPAREIL', content: 'CONTENU', shortcuts: 'RACCOURCIS', transfer: 'À PROXIMITÉ',
+    automation: 'AUTOMATISATION', nextFrame: 'PROCHAINE IMAGE', liveActivity: 'ACTIVITÉ EN DIRECT', epaperUpdate: 'MISE À JOUR E-PAPER',
+    frame: 'IMAGE', nearby: 'BLE · À PROXIMITÉ', localProcessing: 'TRAITEMENT LOCAL', sixColor: 'E6 / 6 COULEURS',
+  },
+} as const;
+const phoneCopy = phoneUiCopy[copy.locale];
 const phoneStates = [
-  { id: 'compose', label: '01 / LOCAL', feature: copy.ecosystem.features[2] },
-  { id: 'library', label: '02 / CONTENT', feature: { title: copy.content.modesLabel, body: copy.content.body } },
-  { id: 'automate', label: '03 / SHORTCUTS', feature: copy.ecosystem.features[0] },
-  { id: 'transfer', label: '04 / TRANSFER', feature: copy.ecosystem.features[1] },
+  { id: 'compose', label: phoneCopy.nav[0], feature: copy.ecosystem.features[2] },
+  { id: 'library', label: phoneCopy.nav[1], feature: { title: copy.content.modesLabel, body: copy.content.body } },
+  { id: 'automate', label: phoneCopy.nav[2], feature: copy.ecosystem.features[0] },
+  { id: 'transfer', label: phoneCopy.nav[3], feature: copy.ecosystem.features[1] },
 ] as const;
 const phoneMobileTitles = {
   'zh-cn': ['本地处理', '内容模式', '快捷指令', '传输进度'],
@@ -427,7 +466,7 @@ const technologyChapters = {
       <div class="section-index"><span>{copy.ecosystem.index}</span><span>{copy.ecosystem.kicker}</span></div>
       <div class="apple-head"><div><span>PEANUP / iOS</span><h2><span>{copy.ecosystem.title[0]}</span>{' '}<span>{copy.ecosystem.title[1]}</span></h2></div><p>{copy.ecosystem.body}</p></div>
       <div class="apple-stage" data-image-warmup>
-        <div class="shortcut-phone" data-phone-gesture role="group" aria-label={`${copy.ecosystem.kicker}. ${copy.ecosystem.title.join(' ')}`}>
+        <div class="shortcut-phone" data-phone-gesture role="group" aria-busy="true" aria-label={`${copy.ecosystem.kicker}. ${copy.ecosystem.title.join(' ')}`}>
           <div
             class="iphone-device iphone-17-pro iphone-17-pro--black"
             data-phone-device
@@ -494,7 +533,7 @@ const technologyChapters = {
                 </header>
                 <div class="phone-view-stack">
                   <section id="phone-view-compose" class="phone-view phone-compose is-active" data-phone-view="compose" role="tabpanel" aria-labelledby="phone-state-compose" aria-hidden="false">
-                    <header class="phone-view-title"><span>ON DEVICE</span><strong>{copy.ecosystem.features[2].title}</strong></header>
+                    <header class="phone-view-title"><span>{phoneCopy.local}</span><strong>{copy.ecosystem.features[2].title}</strong></header>
                     <div class="phone-compose-card">
                       <div class="phone-compose-art" aria-hidden="true"><i></i><i></i><i></i><i></i><span>{copy.content.modes[0].meta}</span></div>
                       <strong>{copy.content.modes[0].title}</strong>
@@ -506,7 +545,7 @@ const technologyChapters = {
                   </section>
 
                   <section id="phone-view-library" class="phone-view phone-library" data-phone-view="library" role="tabpanel" aria-labelledby="phone-state-library" aria-hidden="true">
-                    <header class="phone-view-title"><span>CONTENT</span><strong>{copy.content.modesLabel}</strong></header>
+                    <header class="phone-view-title"><span>{phoneCopy.content}</span><strong>{copy.content.modesLabel}</strong></header>
                     <div class="phone-library-grid">
                       {copy.content.modes.map((mode, index) => (
                         <article class={`phone-library-card phone-library-card--${mode.id}`}>
@@ -519,9 +558,9 @@ const technologyChapters = {
                   </section>
 
                   <section id="phone-view-automate" class="phone-view phone-automate" data-phone-view="automate" role="tabpanel" aria-labelledby="phone-state-automate" aria-hidden="true">
-                    <header class="phone-view-title"><span>SHORTCUTS</span><strong>{copy.ecosystem.features[0].title}</strong></header>
+                    <header class="phone-view-title"><span>{phoneCopy.shortcuts}</span><strong>{copy.ecosystem.features[0].title}</strong></header>
                     <section class="peanup-shortcut-card">
-                      <header><span>AUTOMATION</span><strong>{copy.ecosystem.features[0].title}</strong></header>
+                      <header><span>{phoneCopy.automation}</span><strong>{copy.ecosystem.features[0].title}</strong></header>
                       <ol>
                         {copy.ecosystem.flow.map((item, index) => (
                           <li class:list={{ 'is-done': index < 2, 'is-current': index === 2 }}>
@@ -531,20 +570,20 @@ const technologyChapters = {
                       </ol>
                     </section>
                     <div class="peanup-next-update">
-                      <div><span>NEXT FRAME</span><strong data-automation-frame-title>{copy.ecosystem.automation.moments[0].title}</strong></div>
+                      <div><span>{phoneCopy.nextFrame}</span><strong data-automation-frame-title>{copy.ecosystem.automation.moments[0].title}</strong></div>
                       <b data-automation-frame-time>{copy.ecosystem.automation.moments[0].time}</b>
                       <div class="peanup-frame-queue" aria-hidden="true"><i></i><i></i><i></i></div>
                     </div>
                   </section>
 
                   <section id="phone-view-transfer" class="phone-view phone-transfer" data-phone-view="transfer" role="tabpanel" aria-labelledby="phone-state-transfer" aria-hidden="true">
-                    <header class="phone-view-title"><span>NEARBY UPDATE</span><strong>{copy.ecosystem.features[1].title}</strong></header>
+                    <header class="phone-view-title"><span>{phoneCopy.transfer}</span><strong>{copy.ecosystem.features[1].title}</strong></header>
                     <section class="peanup-live-activity">
-                      <div class="peanup-live-head"><span>LIVE ACTIVITY</span><b>68%</b></div>
+                      <div class="peanup-live-head"><span>{phoneCopy.liveActivity}</span><b>68%</b></div>
                       <div class="peanup-live-body">
                         <div class="peanup-live-preview" aria-hidden="true"><i></i><b></b><span></span></div>
                         <div class="peanup-live-copy">
-                          <small>E-PAPER UPDATE</small>
+                          <small>{phoneCopy.epaperUpdate}</small>
                           <strong>{copy.ecosystem.features[1].title}</strong>
                           <span class="peanup-live-progress"><i></i></span>
                         </div>
@@ -556,11 +595,11 @@ const technologyChapters = {
                       ))}
                     </ol>
                     <div class="peanup-nearby-device" aria-hidden="true">
-                      <div><i></i><span>PEANUP</span></div><b>FRAME 068 / 100</b><small>BLE · NEARBY</small>
+                      <div><i></i><span>PEANUP</span></div><b>{phoneCopy.frame} 068 / 100</b><small>{phoneCopy.nearby}</small>
                     </div>
                   </section>
                 </div>
-                <div class="peanup-app-footer"><span>LOCAL PROCESSING</span><b>E6 / SIX COLOR</b></div>
+                <div class="peanup-app-footer"><span>{phoneCopy.localProcessing}</span><b>{phoneCopy.sixColor}</b></div>
               </div>
               <i class="home-indicator" aria-hidden="true"></i>
             </div>

@@ -33,12 +33,19 @@ if (statusImage) void statusImage.decode?.().catch(() => undefined);
 
 const frameDevice = frameImage?.closest<HTMLElement>('[data-phone-device]');
 let frameRevealScheduled = false;
+const setFrameBusy = (busy: boolean) => {
+  gestureSurface?.setAttribute('aria-busy', String(busy));
+  frameDevice?.setAttribute('aria-busy', String(busy));
+};
+setFrameBusy(true);
 const markFrameReady = () => {
   if (frameRevealScheduled && frameDevice?.dataset.frameState === 'ready') return;
   frameDevice?.setAttribute('data-frame-state', 'ready');
+  setFrameBusy(false);
 };
 const markFrameFailed = () => {
   frameRevealScheduled = false;
+  setFrameBusy(false);
 };
 const revealFrameAfterDecode = () => {
   if (!frameImage || frameRevealScheduled) return;
