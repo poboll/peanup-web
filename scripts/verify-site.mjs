@@ -317,7 +317,7 @@ for (const [route, html] of htmlByRoute) {
     const hasNativeChassisGeometry = /\.iphone-device\{[^}]*--chassis-width:\s*662;[^}]*--chassis-height:\s*1380;[^}]*--physical-width:\s*71\.9;[^}]*--physical-height:\s*150;/.test(styleSource)
       && /\.iphone-device\{[^}]*--frame-ratio:\s*662\s*\/\s*1380;/.test(styleSource)
       && /\.iphone-device\{[^}]*aspect-ratio:var\(--frame-ratio\)/.test(styleSource)
-      && /\.iphone-frame\{[^}]*object-fit:fill/.test(styleSource)
+      && /\.iphone-frame\{[^}]*object-fit:contain/.test(styleSource)
       && /\.iphone-glass\{[^}]*border-radius:13\.8% 13\.8% 9\.35% 9\.35%\/4\.85% 4\.85% 3\.2% 3\.2%/.test(styleSource);
     const hasCameraControl = html.includes('class="iphone-camera-control"');
     const hasNativeCameraControl = /\.iphone-camera-control\{[^}]*display:none/.test(styleSource);

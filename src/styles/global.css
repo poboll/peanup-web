@@ -305,7 +305,7 @@ html[data-locale="zh-tw"] .story h2 { word-break: auto-phrase; }
 }
 .iphone-device[data-frame-state="ready"]::before { opacity: 0; }
 .iphone-frame-preview,
-.iphone-frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; filter: saturate(.78) brightness(.985) contrast(1.02); }
+.iphone-frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center; filter: saturate(.78) brightness(.985) contrast(1.02); }
 .iphone-frame-preview { z-index: 29; opacity: 1; }
 .iphone-device[data-frame-state="ready"] .iphone-frame-preview { opacity: 0; }
 .iphone-frame { z-index: 30; opacity: 0; }
