@@ -16,6 +16,35 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 let writeTimer = 0;
 let touchStartX = 0;
 let touchStartY = 0;
+let tiltFrame = 0;
+const precisionPointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+const resetPhoneTilt = () => {
+  if (!device) return;
+  device.style.removeProperty('transform');
+};
+
+const updatePhoneTilt = (event: PointerEvent) => {
+  if (!device || !gestureSurface || reduceMotion.matches || !precisionPointer.matches || event.pointerType !== 'mouse') return;
+  const rect = gestureSurface.getBoundingClientRect();
+  if (!rect.width || !rect.height) return;
+  const x = Math.max(-1, Math.min(1, (event.clientX - rect.left - rect.width / 2) / (rect.width * 0.5)));
+  const y = Math.max(-1, Math.min(1, (event.clientY - rect.top - rect.height / 2) / (rect.height * 0.5)));
+  const tiltX = `${(y * -2.2).toFixed(2)}deg`;
+  const tiltY = `${(x * 2.2).toFixed(2)}deg`;
+  if (tiltFrame) return;
+  tiltFrame = window.requestAnimationFrame(() => {
+    device.style.transform = `rotateX(${tiltX}) rotateY(${tiltY})`;
+    tiltFrame = 0;
+  });
+};
+
+gestureSurface?.addEventListener('pointermove', updatePhoneTilt, { passive: true });
+gestureSurface?.addEventListener('pointerleave', resetPhoneTilt, { passive: true });
+gestureSurface?.addEventListener('pointercancel', resetPhoneTilt, { passive: true });
+precisionPointer.addEventListener?.('change', (event) => {
+  if (!event.matches) resetPhoneTilt();
+});
 
 // Keep the phone legible on slow or offline previews. The CSS fallback is
 // visible until the exact transparent status strip has decoded.

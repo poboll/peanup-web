@@ -20,6 +20,11 @@ adds another section.
   frame, scroll-driven writes, and reduced-motion behavior.
 - Documentation keeps the shared shell, product-page entry, bilingual Docs,
   sticky desktop outline, and touch-friendly mobile navigation.
+- The iOS study gains a restrained pointer-depth cue on precision pointers. It
+  moves the already-loaded chassis by a few degrees only while the pointer is
+  over the stage; the source PNG, 662:1380 ratio, screen opening, and status
+  strip remain unchanged. Touch, keyboard, reduced-motion, and unavailable
+  pointer devices stay still.
 
 ## Acceptance checks
 
@@ -28,5 +33,7 @@ adds another section.
 - All six product locales render localized phone labels.
 - Phone frame and status assets preserve their measured aspect ratios and the
   fallback never leaves an empty cold-load region.
+- Pointer depth never changes the phone's layout box or introduces a new
+  request, dependency, or alternate frame asset.
 - `pnpm build`, `git diff --check`, route verification, and browser screenshots
   pass before release.
