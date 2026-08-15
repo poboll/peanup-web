@@ -1014,7 +1014,10 @@ html[data-deep-link] .product-main > * {
   .apple-journey button strong,
   .apple-journey button small {
     overflow-wrap: anywhere;
-    word-break: break-word;
+  }
+
+  .apple-journey button strong {
+    font-size: 18px;
   }
 }
 
