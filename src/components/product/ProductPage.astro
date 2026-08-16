@@ -143,6 +143,8 @@ const technologyChapters = {
   backTopLabel={copy.footer.backTop}
 >
   <link slot="head" rel="preload" as="image" href="/assets/peanup-lifestyle-poster.webp" type="image/webp" fetchpriority="high" />
+  <link slot="head" rel="preload" as="image" href="/assets/iphone-17-pro-frame.webp" type="image/webp" fetchpriority="high" />
+  <link slot="head" rel="preload" as="image" href="/assets/iphone-17-pro-status.webp?v=20260815-9" type="image/webp" fetchpriority="high" />
   {detectLocale && (
     <script is:inline>
       (() => {
@@ -610,9 +612,9 @@ const technologyChapters = {
                 src="/assets/iphone-17-pro-frame.png"
                 width="662"
                 height="1380"
-                loading="lazy"
+                loading="eager"
                 decoding="async"
-                fetchpriority="auto"
+                fetchpriority="high"
                 draggable="false"
                 alt=""
                 aria-hidden="true"
@@ -621,11 +623,11 @@ const technologyChapters = {
             <img
               class="iphone-frame-preview protected-media"
               src="/assets/iphone-17-pro-frame-preview.webp"
-              width="166"
-              height="345"
+              width="331"
+              height="690"
               loading="eager"
               decoding="async"
-              fetchpriority="low"
+              fetchpriority="high"
               draggable="false"
               alt=""
               aria-hidden="true"

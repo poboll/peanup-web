@@ -226,6 +226,10 @@ if (liveStudio) {
   resizeTextInput();
   updateCount();
   intro();
+  liveStudio.classList.add('is-initialized');
+  if (liveStudio.closest<HTMLElement>('.ink-gallery')?.dataset.phase === 'experience') {
+    liveStudio.classList.add('is-visible');
+  }
 }
 
 export {};

@@ -74,6 +74,10 @@ const markFrameReady = () => {
 };
 const markFrameFailed = () => {
   frameRevealScheduled = false;
+  // Keep the exact geometry stable even when the full frame cannot be read.
+  // The matching preview remains underneath, while the CSS status fallback
+  // provides the same usable screen instead of leaving a pending overlay.
+  frameDevice?.setAttribute('data-frame-state', 'fallback');
   setFrameBusy(false);
 };
 const revealFrameAfterDecode = () => {

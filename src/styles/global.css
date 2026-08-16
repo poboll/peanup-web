@@ -162,14 +162,12 @@ html[data-locale="zh-tw"] .story h2 { word-break: auto-phrase; }
 .ink-gallery[data-phase="experience"] .ink-screen-caption { opacity: 0 !important; }
 .ink-screen-caption b { font-weight: 500; }
 .ink-screen-caption i { font-style: normal; }
-.ink-live-studio { position: absolute; z-index: 6; inset: 0; visibility: hidden; opacity: 0; clip-path: inset(100% 0 0); background: #e2e6e1; }
-.ink-gallery[data-phase="experience"] .ink-live-studio { visibility: visible; opacity: 1; clip-path: inset(var(--ink-write-top, 0%) 0 0); }
-.ink-gallery.is-leaving-experience .ink-live-studio { visibility: hidden; opacity: 0; clip-path: inset(100% 0 0); pointer-events: none; }
+.ink-live-studio { position: absolute; z-index: 6; inset: 0; visibility: hidden; background: #e2e6e1; }
+.ink-live-studio.is-visible { visibility: visible; clip-path: inset(var(--ink-write-top, 0%) 0 0); }
 .ink-live-studio > canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: contain; object-position: 50% 50%; background: #e2e6e1; filter: saturate(.97) contrast(1.05) brightness(1.045); }
 .ink-live-studio::after { content: ""; position: absolute; z-index: 1; inset: 0; pointer-events: none; opacity: .16; mix-blend-mode: multiply; background: radial-gradient(ellipse at 48% 40%, transparent 0 66%, rgba(42,40,33,.045) 100%), repeating-linear-gradient(2deg, transparent 0 13px, rgba(59,55,45,.025) 14px, transparent 15px 25px); }
 .ink-live-toolbar { position: absolute; z-index: 2; left: 12px; right: 12px; bottom: 12px; overflow: hidden; opacity: 0; transform: translateY(7px); border: 1px solid rgba(74,78,73,.5); background: rgba(238,241,237,.97); box-shadow: 0 8px 24px rgba(31,34,38,.06), inset 0 1px rgba(255,255,255,.72); transition: opacity .22s var(--ease), transform .22s var(--ease); }
-.ink-gallery.is-live-ready .ink-live-toolbar,
-.ink-gallery.is-leaving-experience .ink-live-toolbar { opacity: 1; transform: translateY(0); }
+.ink-gallery.is-live-ready .ink-live-studio.is-initialized .ink-live-toolbar { opacity: 1; transform: translateY(0); }
 .ink-live-fields { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); border-bottom: 1px solid rgba(116,120,114,.42); }
 .ink-live-photo, .ink-live-text { min-width: 0; min-height: 82px; padding: 10px 12px; display: flex; flex-direction: column; justify-content: center; border: 0; background: transparent; transition: color .2s, background .2s, box-shadow .2s; }
 .ink-live-photo { align-items: center; cursor: pointer; text-align: center; }
@@ -301,17 +299,25 @@ html[data-locale="zh-tw"] .story h2 { word-break: auto-phrase; }
   z-index: 0;
   inset: 0;
   border-radius: 8.5% / 4.6%;
-  background: #171a1d;
+  /* The frame assets are transparent around the rail. A full-size dark
+     fallback here paints a second phone shell while the real image is still
+     decoding, which reads as a heavy black border during cold loads. */
+  border: 0;
+  background: transparent;
+  opacity: 0;
 }
-.iphone-device[data-frame-state="ready"]::before { opacity: 0; }
+.iphone-device[data-frame-state="fallback"]::before {
+  opacity: 1;
+  border: 1px solid rgba(23, 26, 29, .22);
+}
 .iphone-frame-preview,
-.iphone-frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center; filter: saturate(.78) brightness(.985) contrast(1.02); }
+.iphone-frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; filter: saturate(.78) brightness(.985) contrast(1.02); }
 .iphone-frame-preview { z-index: 29; opacity: 1; }
 .iphone-device[data-frame-state="ready"] .iphone-frame-preview { opacity: 0; }
 .iphone-frame { z-index: 30; opacity: 0; }
 .iphone-device[data-frame-state="ready"] .iphone-frame { opacity: 1; }
 .iphone-camera-control { display: none; }
-.iphone-glass { position: absolute; z-index: 20; top: var(--screen-top); left: var(--screen-left); width: var(--screen-width); height: var(--screen-height); overflow: hidden; border: 0; border-radius: 13.8% 13.8% 9.35% 9.35% / 4.85% 4.85% 3.2% 3.2%; color: #1f201e; background: #f7f8f4; box-shadow: inset 0 0 0 .55px rgba(21,23,26,.2), inset 0 0 0 .95px rgba(255,255,255,.34); container-type: inline-size; color-scheme: light; }
+.iphone-glass { position: absolute; z-index: 20; top: var(--screen-top); left: var(--screen-left); width: var(--screen-width); height: var(--screen-height); overflow: hidden; border: 0; border-radius: 13.8% 13.8% 9.35% 9.35% / 4.85% 4.85% 3.2% 3.2%; color: #1f201e; background: #f7f8f4; box-shadow: inset 0 0 0 .55px rgba(21,23,26,.2), inset 0 0 0 .95px rgba(255,255,255,.34); container-type: inline-size; color-scheme: light; visibility: visible; }
 .iphone-statusbar {
   /* All status geometry is expressed in the 402pt display coordinate space.
      cqw scales those points with the live screen opening, so the left/right
@@ -325,7 +331,6 @@ html[data-locale="zh-tw"] .story h2 { word-break: auto-phrase; }
   height: 15.422886cqw;
   overflow: hidden;
   pointer-events: none;
-  transform: translate3d(0, 0, 0);
 }
 .iphone-status-image {
   position: absolute;

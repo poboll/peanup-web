@@ -79,6 +79,7 @@ if (mount && gallery) {
   // suppressed; otherwise Arc and embedded WebViews can lose whole scenes.
   const reduceAmbientMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const caption = gallery.querySelector<HTMLElement>('.ink-screen-caption');
+  const liveStudio = gallery.querySelector<HTMLElement>('[data-live-studio]');
   const stagePanel = gallery.querySelector<HTMLElement>('#ink-stage-panel');
   const labels = Array.from(gallery.querySelectorAll<HTMLButtonElement>('[data-ink-label]'));
   const phaseNames = {
@@ -188,6 +189,7 @@ if (mount && gallery) {
       gallery.classList.remove('is-live-ready');
       currentPhase = phase;
       gallery.dataset.phase = phase;
+      liveStudio?.classList.toggle('is-visible', phase === 'experience' && liveStudio.classList.contains('is-initialized'));
       labels.forEach((label) => {
         const active = label.dataset.inkLabel === phase;
         label.classList.toggle('active', active);
