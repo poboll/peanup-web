@@ -306,14 +306,15 @@ for (const [route, html] of htmlByRoute) {
       && /height:100%/.test(block)
       && /object-fit:fill/.test(block)
     );
-    const hasAlignedStatusFallback = /\.iphone-status-fallback>time\{[^}]*left:14\.2cqw/.test(styleSource)
-      && /\.iphone-status-fallback-icons\{[^}]*right:7\.68cqw/.test(styleSource);
     const hasStatusAsset = html.includes('class="iphone-status-image protected-media"')
       && /src="\/assets\/iphone-17-pro-status\.png(?:\?[^\"]+)?"/.test(html)
       && html.includes('width="1056"')
       && html.includes('height="163"')
-      && hasNativeStatusImage
-      && /<time(?:\s[^>]*)?>9:41<\/time>/.test(html);
+      && hasNativeStatusImage;
+    const hasQuietPendingPhone = /\.iphone-device\[data-frame-state=pending\][^}]*\{[^}]*filter:none/.test(styleSource)
+      && /\.iphone-device\[data-frame-state=pending\] \.iphone-frame-preview/.test(styleSource)
+      && /\.iphone-device\[data-frame-state=pending\] \.iphone-glass/.test(styleSource)
+      && !html.includes('iphone-status-fallback');
     const hasNativeChassisGeometry = /\.iphone-device\{[^}]*--chassis-width:\s*662;[^}]*--chassis-height:\s*1380;[^}]*--physical-width:\s*71\.9;[^}]*--physical-height:\s*150;/.test(styleSource)
       && /\.iphone-device\{[^}]*--frame-ratio:\s*662\s*\/\s*1380;/.test(styleSource)
       && /\.iphone-device\{[^}]*aspect-ratio:var\(--frame-ratio\)/.test(styleSource)
@@ -329,16 +330,15 @@ for (const [route, html] of htmlByRoute) {
       || !html.includes('data-status-visible-bounds="150x66x827x40"')
       || !html.includes('data-island-frame="138x14x126x37"')
       || !hasStatusAsset
-      || !hasAlignedStatusFallback
+      || !hasQuietPendingPhone
       || !hasNativeChassisGeometry
       || !hasCalibratedStatusCss
       || !hasExactScreenGeometry
       || !hasCompactIslandGeometry
       || !hasCameraControl
       || !hasNativeCameraControl
-      || !hidesSyntheticCamera
-      || !/<time(?:\s[^>]*)?>9:41<\/time>/.test(html)) {
-      failures.push(`${route}: iPhone status bar asset geometry or fixed 9:41 time is missing`);
+      || !hidesSyntheticCamera) {
+      failures.push(`${route}: iPhone status bar asset geometry or quiet pending state is missing`);
     }
 
     const appleOwnership = elementOwnership(

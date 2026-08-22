@@ -8,6 +8,7 @@ const status = document.querySelector<HTMLElement>('[data-phone-status]');
 const statusBar = document.querySelector<HTMLElement>('.iphone-statusbar');
 const statusImage = document.querySelector<HTMLImageElement>('.iphone-status-image');
 const frameImage = document.querySelector<HTMLImageElement>('.iphone-frame');
+const frameDevice = frameImage?.closest<HTMLElement>('[data-phone-device]');
 const gestureSurface = document.querySelector<HTMLElement>('[data-phone-gesture]');
 const automationExamples = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-automation-example]'));
 const automationFrameTitle = document.querySelector<HTMLElement>('[data-automation-frame-title]');
@@ -46,37 +47,55 @@ precisionPointer.addEventListener?.('change', (event) => {
   if (!event.matches) resetPhoneTilt();
 });
 
-// Keep the phone legible on slow or offline previews. The CSS fallback is
-// visible until the exact transparent status strip has decoded.
-const markStatusReady = () => {
-  statusBar?.classList.add('is-ready');
-  statusBar?.querySelector<HTMLElement>('.iphone-status-fallback')?.style.setProperty('opacity', '0');
-};
-statusImage?.addEventListener('load', markStatusReady, { once: true });
-statusImage?.addEventListener('error', () => statusBar?.classList.add('is-fallback'), { once: true });
-if (statusImage?.complete) {
-  if (statusImage.naturalWidth > 0) markStatusReady();
-  else statusBar?.classList.add('is-fallback');
-}
-if (statusImage) void statusImage.decode?.().catch(() => undefined);
-
-const frameDevice = frameImage?.closest<HTMLElement>('[data-phone-device]');
+// Reveal the complete phone as one unit. A partial shell or synthetic status
+// bar is more distracting than a short, quiet wait on a slow connection.
+let frameDecoded = false;
+let statusDecoded = false;
+let statusFailed = false;
 let frameRevealScheduled = false;
 const setFrameBusy = (busy: boolean) => {
   gestureSurface?.setAttribute('aria-busy', String(busy));
+  gestureSurface?.classList.toggle('is-phone-loading', busy);
   frameDevice?.setAttribute('aria-busy', String(busy));
 };
+const revealPhone = () => {
+  if (!frameDevice || frameRevealScheduled || !frameDecoded || (!statusDecoded && !statusFailed)) return;
+  frameRevealScheduled = true;
+  window.requestAnimationFrame(() => {
+    frameDevice.setAttribute('data-frame-state', 'ready');
+    setFrameBusy(false);
+  });
+};
+const markStatusReady = () => {
+  statusDecoded = true;
+  statusBar?.classList.add('is-ready');
+  revealPhone();
+};
+statusImage?.addEventListener('load', markStatusReady, { once: true });
+statusImage?.addEventListener('error', () => {
+  statusFailed = true;
+  statusBar?.classList.add('is-error');
+  revealPhone();
+}, { once: true });
+if (statusImage?.complete) {
+  if (statusImage.naturalWidth > 0) markStatusReady();
+  else {
+    statusFailed = true;
+    statusBar?.classList.add('is-error');
+  }
+}
+if (statusImage) void statusImage.decode?.().catch(() => undefined);
+else statusFailed = true;
+
 setFrameBusy(true);
 const markFrameReady = () => {
-  if (frameRevealScheduled && frameDevice?.dataset.frameState === 'ready') return;
-  frameDevice?.setAttribute('data-frame-state', 'ready');
-  setFrameBusy(false);
+  frameDecoded = true;
+  revealPhone();
 };
 const markFrameFailed = () => {
   frameRevealScheduled = false;
-  // Keep the exact geometry stable even when the full frame cannot be read.
-  // The matching preview remains underneath, while the CSS status fallback
-  // provides the same usable screen instead of leaving a pending overlay.
+  // The low-resolution preview is only an offline/error fallback. It is never
+  // shown while the full frame is still loading.
   frameDevice?.setAttribute('data-frame-state', 'fallback');
   setFrameBusy(false);
 };
@@ -86,10 +105,9 @@ const revealFrameAfterDecode = () => {
     markFrameFailed();
     return;
   }
-  frameRevealScheduled = true;
   const decoded = typeof frameImage.decode === 'function' ? frameImage.decode() : Promise.resolve();
   void decoded.catch(() => undefined).then(() => {
-    requestAnimationFrame(markFrameReady);
+    markFrameReady();
   });
 };
 frameImage?.addEventListener('load', revealFrameAfterDecode, { once: true });
