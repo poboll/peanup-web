@@ -824,9 +824,10 @@ footer > span { justify-self: end; color: var(--muted); }
 .hero-experience-link:hover, .hero-experience-link:focus-visible { color: var(--blue); border-color: var(--blue); }
 .hero-experience-link:hover svg, .hero-experience-link:focus-visible svg { transform: translateY(3px); }
 .hero-console-link {
-  min-height: 44px; padding: 0 16px; display: inline-flex; align-items: center; gap: 10px;
+  min-height: 44px; padding: 0 18px; display: inline-flex; align-items: center; gap: 10px;
   border: 1px solid var(--ink); border-radius: 999px; background: var(--ink); color: var(--paper);
   font: 600 13px/1 var(--font-ui); letter-spacing: .02em; text-decoration: none;
+  white-space: nowrap;
   transition: background-color .2s ease, color .2s ease, transform .15s var(--ease), box-shadow .2s ease;
 }
 .hero-console-link:hover, .hero-console-link:focus-visible {
