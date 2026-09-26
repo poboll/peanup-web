@@ -823,6 +823,25 @@ footer > span { justify-self: end; color: var(--muted); }
 .hero-experience-link svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: transform .25s var(--ease); }
 .hero-experience-link:hover, .hero-experience-link:focus-visible { color: var(--blue); border-color: var(--blue); }
 .hero-experience-link:hover svg, .hero-experience-link:focus-visible svg { transform: translateY(3px); }
+.hero-console-link {
+  min-height: 44px; padding: 0 16px; display: inline-flex; align-items: center; gap: 10px;
+  border: 1px solid var(--ink); border-radius: 999px; background: var(--ink); color: var(--paper);
+  font: 600 13px/1 var(--font-ui); letter-spacing: .02em; text-decoration: none;
+  transition: background-color .2s ease, color .2s ease, transform .15s var(--ease), box-shadow .2s ease;
+}
+.hero-console-link:hover, .hero-console-link:focus-visible {
+  background: transparent; color: var(--ink); box-shadow: 0 4px 14px -6px rgba(20, 20, 20, .35);
+}
+.hero-console-link:active { transform: translateY(1px); }
+.hero-console-beta {
+  font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  padding: 2px 6px; border-radius: 999px;
+  background: rgba(255, 255, 255, .18); color: inherit;
+}
+.hero-console-link:hover .hero-console-beta, .hero-console-link:focus-visible .hero-console-beta {
+  background: var(--red); color: #fff;
+}
+.header-console-link { font-weight: 600; }
 .hero-product { left: 50%; right: auto; bottom: 13%; width: clamp(320px, 29vw, 430px); margin: 0; transform: translateX(-40%); }
 .hero-panel-spec { position: absolute; z-index: 5; top: 37%; right: max(var(--pad), 7vw); text-align: right; }
 .hero-panel-spec span { display: block; font-family: Georgia, "Times New Roman", serif; font-size: clamp(50px, 5.4vw, 80px); line-height: 1; }
@@ -1724,3 +1743,7 @@ html[data-theme="dark"] .automation-timeline button:hover { background: var(--su
   .ink-gallery-copy h2 { font-size: clamp(38px, 4vw, 60px); line-height: 1.1; }
   .apple-head h2 { font-size: clamp(35px, 3.45vw, 50px); line-height: 1.1; }
 }
+
+/* 品牌花生 SVG（header/footer 通用）：两颗分离花生 */
+.brand-mark--svg { display: inline-flex; width: 26px; height: 26px; transform: rotate(0deg); }
+.brand-mark--svg .brand-peanut { width: 100%; height: 100%; }

@@ -223,7 +223,7 @@ const technologyChapters = {
   )}
   <header class="site-header" aria-label={copy.nav.product}>
     <a class="brand" href={`${currentLocale.path}#top`} aria-label="Peanup">
-      <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+      <span class="brand-mark brand-mark--svg" aria-hidden="true"><svg class="brand-peanut" viewBox="0 0 64 64" role="img"><ellipse cx="21" cy="24" rx="10" ry="15.5" fill="var(--pigment-yellow, #e6b930)" stroke="currentColor" stroke-width="3" transform="rotate(-26 21 24)"/><ellipse cx="43" cy="40" rx="10" ry="15.5" fill="var(--pigment-yellow, #e6b930)" stroke="currentColor" stroke-width="3" transform="rotate(26 43 40)"/></svg></span>
       <span>{copy.locale === 'zh-cn' || copy.locale === 'zh-tw' ? <>花生片 <b>Peanup</b></> : 'Peanup'}</span>
     </a>
     <nav aria-label={copy.nav.product}>
@@ -238,6 +238,9 @@ const technologyChapters = {
       <a class="header-link" href={docsPath} aria-label={copy.nav.docs}>
         <span class="header-action-label header-action-label--full">{copy.nav.docs}</span>
         <span class="header-action-label header-action-label--short" aria-hidden="true">{mobileDocsLabel}</span>
+      </a>
+      <a class="header-link header-console-link" href="/studio/" aria-label={copy.nav.console}>
+        <span class="header-action-label header-action-label--full">{copy.nav.console}</span>
       </a>
       <details class="language-menu">
         <summary aria-label={copy.nav.language} title={currentLocale.name}>
@@ -263,6 +266,7 @@ const technologyChapters = {
         <div class="hero-cta-row">
           <a class="kickstarter-status" href={campaignPath}><i aria-hidden="true"></i><span>{copy.hero.status}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5" /></svg></a>
           <a class="hero-experience-link" href="#motion" data-smooth-anchor><span>{copy.scenes.start}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v15m0 0-5-5m5 5 5-5" /></svg></a>
+          <a class="hero-console-link" href="/studio/"><span>{isChineseLocale ? '前往控制台' : copy.nav.console}</span><small class="hero-console-beta" aria-label={isChineseLocale ? '内测中' : 'beta'}>{isChineseLocale ? '内测' : 'BETA'}</small><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5" /></svg></a>
         </div>
       </div>
 
@@ -774,7 +778,7 @@ const technologyChapters = {
   </main>
 
   <footer>
-    <a class="brand footer-brand" href="#top"><span class="brand-mark" aria-hidden="true"><i></i><i></i></span><span>{isChineseLocale ? <>花生片 <b>Peanup</b></> : 'Peanup'}</span></a>
+    <a class="brand footer-brand" href="#top"><span class="brand-mark brand-mark--svg" aria-hidden="true"><svg class="brand-peanut" viewBox="0 0 64 64" role="img"><ellipse cx="21" cy="24" rx="10" ry="15.5" fill="var(--pigment-yellow, #e6b930)" stroke="currentColor" stroke-width="3" transform="rotate(-26 21 24)"/><ellipse cx="43" cy="40" rx="10" ry="15.5" fill="var(--pigment-yellow, #e6b930)" stroke="currentColor" stroke-width="3" transform="rotate(26 43 40)"/></svg></span><span>{isChineseLocale ? <>花生片 <b>Peanup</b></> : 'Peanup'}</span></a>
     <div class="footer-links"><a href="mailto:i@caiths.com">i@caiths.com</a><a href="https://github.com/poboll/peanup-web" target="_blank" rel="noreferrer">GitHub</a><a href={docsPath}>{copy.footer.docs}</a><a href={troubleshootingPath}>{troubleshootingLabel}</a><a href={supportPath}>{copy.footer.support}</a><a href={privacyPath}>{copy.footer.privacy}</a></div>
     <span>© 2026 PEANUP</span>
   </footer>

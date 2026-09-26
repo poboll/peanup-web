@@ -60,7 +60,7 @@ export interface AutomationCopy {
 export interface ProductCopy {
   locale: Locale;
   meta: { title: string; description: string };
-  nav: { product: string; experience: string; ecosystem: string; technology: string; design: string; docs: string; language: string };
+  nav: { product: string; experience: string; ecosystem: string; technology: string; design: string; docs: string; console: string; language: string };
   hero: { headline: [string, string]; body: string; status: string; imageAlt: string; specsLabel: string };
   specRail: ProductSpec[];
   paper: { index: string; kicker: string; title: [string, string]; body: string; paletteLabel: string; pigments: string[]; proofs: FeatureCopy[] };
@@ -251,7 +251,7 @@ const specificationEvidenceByLocale: Record<Locale, FeatureCopy[]> = {
 const en: ProductCopy = {
   locale: 'en',
   meta: { title: 'Peanup | 3.68-inch E6 six-color e-paper at ≈258.7 PPI', description: 'Peanup is a 3.68-inch E6 six-color e-paper display at approximately 258.7 PPI. Send photos and daily information over Bluetooth, then keep them in view.' },
-  nav: { product: 'Product', experience: 'Experience', ecosystem: 'Ecosystem', technology: 'Technology', design: 'Design', docs: 'Docs', language: 'Language' },
+  nav: { product: 'Product', experience: 'Experience', ecosystem: 'Ecosystem', technology: 'Technology', design: 'Design', docs: 'Docs', console: 'Console', language: 'Language' },
   hero: { headline: ['Keep what you love', 'in plain sight.'], body: 'Send a favorite photo to Peanup. It becomes a small color print that stays quietly in view.', status: 'Coming to Kickstarter', imageAlt: 'White instant-photo-inspired Peanup six-color e-paper device', specsLabel: 'Product highlights' },
   specRail: [
     { value: '3.68”', label: 'E6 SIX-COLOR E-PAPER' }, { value: '≈258.7 PPI', label: 'PIXEL DENSITY' }, { value: '3 mm', label: 'TARGET THICKNESS' }, { value: '28 g', label: 'TARGET WEIGHT' }, { value: 'BLE', label: 'WIRELESS TRANSFER' },
@@ -335,7 +335,7 @@ const zhCn: ProductCopy = {
   ...en,
   locale: 'zh-cn',
   meta: { title: '花生片 Peanup｜3.68 英寸 E6 六色墨水屏｜≈258.7 PPI', description: '花生片 Peanup 是一款 3.68 英寸、约 258.7 PPI 的 E6 六色电子纸。用蓝牙传入照片和日常信息，刷新后画面继续留在纸上。' },
-  nav: { product: '产品', experience: '体验', ecosystem: '生态', technology: '技术', design: '设计', docs: '文档', language: '语言' },
+  nav: { product: '产品', experience: '体验', ecosystem: '生态', technology: '技术', design: '设计', docs: '文档', console: '控制台', language: '语言' },
   hero: { headline: ['把喜欢的画面，', '留在身边。'], body: '把喜欢的照片发到花生片。它像一张会更新的彩色相纸，安静地留在身边。', status: '即将登陆 Kickstarter', imageAlt: '白色即时相纸造型的花生片六色电子纸设备', specsLabel: '产品亮点' },
   specRail: [{ value: '3.68”', label: 'E6 六色墨水屏' }, { value: '≈258.7 PPI', label: '像素密度' }, { value: '3 mm', label: '目标厚度' }, { value: '28 g', label: '目标重量' }, { value: 'BLE', label: '无线传图' }],
   paper: { index: '01', kicker: '不发光，也清楚', title: ['不是又一块亮\u2060着的屏幕。', '是一张会更新的纸。'], body: '六种电子纸颜料组成照片和信息。反射式面板借环境光显色，不主动发光；刷新结束后，画面继续保留。', paletteLabel: '六色电子纸色板', pigments: ['墨', '纸', '朱', '黄', '蓝', '绿'], proofs: [
@@ -368,7 +368,7 @@ const zhTw: ProductCopy = {
   ...zhCn,
   locale: 'zh-tw',
   meta: { title: '花生片 Peanup｜3.68 吋 E6 六色電子紙｜≈258.7 PPI', description: '花生片 Peanup 是一款 3.68 吋、約 258.7 PPI 的 E6 六色電子紙。透過藍牙傳入照片和日常資訊，更新後畫面繼續留在紙上。' },
-  nav: { product: '產品', experience: '體驗', ecosystem: '生態', technology: '技術', design: '設計', docs: '文件', language: '語言' },
+  nav: { product: '產品', experience: '體驗', ecosystem: '生態', technology: '技術', design: '設計', docs: '文件', console: '控制台', language: '語言' },
   hero: { headline: ['把喜歡的畫面，', '留在身邊。'], body: '把喜歡的照片傳到花生片。它像一張會更新的彩色相紙，安靜地留在身邊。', status: '即將登上 Kickstarter', imageAlt: '白色即時相紙造型的花生片六色電子紙裝置', specsLabel: '產品亮點' },
   specRail: [{ value: '3.68”', label: 'E6 六色電子紙' }, { value: '≈258.7 PPI', label: '像素密度' }, { value: '3 mm', label: '目標厚度' }, { value: '28 g', label: '目標重量' }, { value: 'BLE', label: '無線傳圖' }],
   paper: { ...zhCn.paper, kicker: '不發光，也清楚', title: ['不是又一塊亮\u2060著的螢幕。', '是一張會更新的紙。'], body: '六種電子紙顏料組成照片和資訊。反射式面板借環境光顯色，不主動發光；更新結束後，畫面繼續保留。', paletteLabel: '六色電子紙色板', pigments: ['墨', '紙', '朱', '黃', '藍', '綠'], proofs: [
@@ -392,7 +392,7 @@ const ja: ProductCopy = {
   ...en,
   locale: 'ja',
   meta: { title: 'Peanup｜3.68インチ E6 6色電子ペーパー｜≈258.7 PPI', description: 'Peanupは、3.68インチ・約258.7 PPIのE6 6色電子ペーパーです。写真や日々の情報をBluetoothで送り、静かに表示できます。' },
-  nav: { product: '製品', experience: '体験', ecosystem: 'エコシステム', technology: '技術', design: 'デザイン', docs: 'ドキュメント', language: '言語' },
+  nav: { product: '製品', experience: '体験', ecosystem: 'エコシステム', technology: '技術', design: 'デザイン', docs: 'ドキュメント', console: 'コンソール', language: '言語' },
   hero: { headline: ['好きな景色を、', 'いつも見える場所に。'], body: '好きな写真をPeanupへ。小さなカラー写真のように、静かにそばへ残ります。', status: 'Kickstarterで近日公開', imageAlt: '白いインスタント写真風のPeanup 6色電子ペーパー端末', specsLabel: '製品の特長' },
   specRail: [{ value: '3.68”', label: 'E6 6色電子ペーパー' }, { value: '≈258.7 PPI', label: '画素密度' }, { value: '3 mm', label: '目標厚さ' }, { value: '28 g', label: '目標重量' }, { value: 'BLE', label: 'ワイヤレス転送' }],
   paper: { index: '01', kicker: '光らなくても、よく見える', title: ['光る画面ではなく、', '変わる一枚の紙。'], body: '6色の電子ペーパー顔料で写真や情報を描きます。反射型パネルは周囲の光を使い、自ら発光しません。更新後も表示を保ちます。', paletteLabel: '6色電子ペーパーパレット', pigments: ['黒', '紙', '赤', '黄', '青', '緑'], proofs: [
@@ -416,7 +416,7 @@ const de: ProductCopy = {
   ...en,
   locale: 'de',
   meta: { title: 'Peanup | 3,68-Zoll-E6-E-Paper mit ≈258,7 PPI', description: 'Peanup ist ein 3,68-Zoll-E6-E-Paper mit sechs Farben und ≈258,7 PPI. Fotos und Alltagsinfos werden per Bluetooth übertragen und bleiben sichtbar.' },
-  nav: { product: 'Produkt', experience: 'Erleben', ecosystem: 'Ökosystem', technology: 'Technik', design: 'Design', docs: 'Dokumentation', language: 'Sprache' },
+  nav: { product: 'Produkt', experience: 'Erleben', ecosystem: 'Ökosystem', technology: 'Technik', design: 'Design', docs: 'Dokumentation', console: 'Konsole', language: 'Sprache' },
   hero: { headline: ['Lieblingsmomente,', 'immer im Blick.'], body: 'Sende ein Lieblingsfoto an Peanup. Wie ein kleiner Farbabzug bleibt es still in deiner Nähe.', status: 'Demnächst auf Kickstarter', imageAlt: 'Weißes Peanup E-Paper-Gerät im Stil eines Sofortbilds', specsLabel: 'Produktmerkmale' },
   specRail: [{ value: '3,68”', label: 'E6-E-PAPER / SECHS FARBEN' }, { value: '≈258,7 PPI', label: 'PIXELDICHTE' }, { value: '3 mm', label: 'ZIELDICKE' }, { value: '28 g', label: 'ZIELGEWICHT' }, { value: 'BLE', label: 'BILDÜBERTRAGUNG' }],
   paper: { index: '01', kicker: 'Sichtbar, ohne zu leuchten', title: ['Kein weiterer heller Bildschirm.', 'Ein Blatt Papier, das sich ändert.'], body: 'Sechs echte Farben zeigen Fotos und Informationen. Das reflektive Panel nutzt das Umgebungslicht, leuchtet nicht selbst und behält das letzte Bild.', paletteLabel: 'Sechsfarbige E-Paper-Palette', pigments: ['Schwarz', 'Papier', 'Rot', 'Gelb', 'Blau', 'Grün'], proofs: [
@@ -440,7 +440,7 @@ const fr: ProductCopy = {
   ...en,
   locale: 'fr',
   meta: { title: 'Peanup | Écran E6 six couleurs 3,68 pouces | ≈258,7 PPI', description: 'Peanup est un écran E6 six couleurs de 3,68 pouces (≈258,7 PPI) pour garder photos et informations à portée de regard.' },
-  nav: { product: 'Produit', experience: 'Expérience', ecosystem: 'Écosystème', technology: 'Technologie', design: 'Design', docs: 'Documentation', language: 'Langue' },
+  nav: { product: 'Produit', experience: 'Expérience', ecosystem: 'Écosystème', technology: 'Technologie', design: 'Design', docs: 'Documentation', console: 'Console', language: 'Langue' },
   hero: { headline: ['Gardez vos images', 'sous les yeux.'], body: 'Envoyez une photo à Peanup. Comme un petit tirage couleur, elle reste discrètement près de vous.', status: 'Bientôt sur Kickstarter', imageAlt: 'Appareil Peanup blanc en papier électronique six couleurs inspiré d’une photo instantanée', specsLabel: 'Points forts du produit' },
   specRail: [{ value: '3,68”', label: 'E-PAPER E6 SIX COULEURS' }, { value: '≈258,7 PPI', label: 'DENSITÉ DE PIXELS' }, { value: '3 mm', label: 'ÉPAISSEUR CIBLE' }, { value: '28 g', label: 'POIDS CIBLE' }, { value: 'BLE', label: 'TRANSFERT SANS FIL' }],
   paper: { index: '01', kicker: 'Visible sans émettre de lumière', title: ['Pas un écran lumineux de plus.', 'Une feuille qui peut changer.'], body: 'Six couleurs physiques affichent photos et informations. La dalle réfléchissante utilise la lumière ambiante, sans en émettre, puis conserve la dernière image.', paletteLabel: 'Palette du papier électronique six couleurs', pigments: ['Noir', 'Papier', 'Rouge', 'Jaune', 'Bleu', 'Vert'], proofs: [
