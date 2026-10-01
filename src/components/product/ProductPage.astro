@@ -104,6 +104,14 @@ const mobileDocsLabel = {
   de: 'Docs',
   fr: 'Docs',
 }[copy.locale];
+const mobileConsoleLabel = {
+  'zh-cn': '控制台',
+  'zh-tw': '控制台',
+  en: 'Console',
+  ja: 'コンソール',
+  de: 'Konsole',
+  fr: 'Console',
+}[copy.locale];
 const mobileLocaleLabel = {
   'zh-cn': '中文',
   'zh-tw': '繁中',
@@ -241,6 +249,7 @@ const technologyChapters = {
       </a>
       <a class="header-link header-console-link" href="/studio/" aria-label={copy.nav.console}>
         <span class="header-action-label header-action-label--full">{copy.nav.console}</span>
+        <span class="header-action-label header-action-label--short" aria-hidden="true">{mobileConsoleLabel}</span>
       </a>
       <details class="language-menu">
         <summary aria-label={copy.nav.language} title={currentLocale.name}>

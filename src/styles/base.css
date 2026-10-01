@@ -189,15 +189,16 @@ footer > span { justify-self: end; color: var(--muted); }
   .site-header { height: 64px; column-gap: 12px; grid-template-columns: minmax(0, 1fr) auto; }
   .brand b { display: none; }
   .header-actions {
-    width: 150px;
-    flex: 0 0 150px;
+    /* 四项：文档 / 控制台 / 语言 / 主题。旧三列固定宽会让第四项掉行叠上英雄区；
+       控制台列 auto 以容纳各语言（Console/Konsole/コンソール）不换行。 */
     min-width: 0;
     height: 44px;
     display: grid;
-    grid-template-columns: 44px 54px 44px;
+    grid-template-columns: 44px auto 54px 44px;
     align-items: center;
     gap: 4px;
   }
+  .header-console-link .header-action-label { white-space: nowrap; }
   .header-actions > * { min-width: 0; }
   .header-link,
   .language-menu,
@@ -248,6 +249,17 @@ footer > span { justify-self: end; color: var(--muted); }
 
 @media (max-width: 370px) {
   .brand { gap: 8px; font-size: 13px; }
+  /* 小屏收紧：语言列随箭头缩到 50px，控制台列仍 auto。 */
+  .header-actions {
+    grid-template-columns: 40px auto 50px 40px;
+    gap: 2px;
+  }
+  .header-link { min-width: 40px; padding-inline: 0; }
+  .language-menu { width: 50px; }
+  .language-menu summary { width: 50px; min-width: 50px; }
+  .theme-toggle { width: 40px; flex-basis: 40px; }
+  /* 品牌只剩双花生图标（aria-label 保留），给四个动作让位。 */
+  .brand > span:not(.brand-mark) { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
