@@ -9,6 +9,7 @@ const toc = [
   ['wechat', '微信小程序'],
   ['web', '网页体验'],
   ['bluetooth', '蓝牙边界'],
+  ['usb', 'USB 连接'],
   ['nfc', 'CUID NFC'],
   ['accessibility', '阅读与无障碍'],
   ['checklist', '选择路径'],
@@ -106,6 +107,23 @@ const config: DocPageConfig = {
       <li><span>04 / FINISH</span><strong>等待刷屏完成</strong><p>App 显示完成后再移开设备，连接随后回到空闲。</p></li>
     </ol>
     <p class="docs-note"><b>蓝牙不负责保持画面</b><span>电子纸刷新后会自行保持。BLE 只负责把新的完成帧送到附近设备。</span></p>
+  </section>
+
+  <section class="docs-section" id="usb">
+    <header><span>06.5 / USB SERIAL</span><h2>USB 有线连接，<br />不受蓝牙速度限制。</h2></header>
+    <div class="docs-grid docs-grid--three">
+      <article><span>SPEED</span><h3>传输更快</h3><p>USB CDC 虚拟串口的有线传输不受 BLE 无线速率限制，批量发送多张照片时优势明显。</p></article>
+      <article><span>SIMPLE</span><h3>插线即用</h3><p>在显影工作台点"USB 连接"，浏览器弹出串口选择器，选 Espressif 设备即可。无需蓝牙配对。</p></article>
+      <article><span>REQUIRE</span><h3>浏览器要求</h3><p>需要 Chrome 或 Edge 89 以上版本，且页面通过 HTTPS 或 localhost 访问。Safari 和 Firefox 暂不支持。</p></article>
+    </div>
+    <ol class="docs-steps">
+      <li><span>01 / CABLE</span><strong>用 USB 线连接</strong><p>把花生片用 USB-C 数据线连接到电脑（或通过底座连接）。</p></li>
+      <li><span>02 / CONNECT</span><strong>点 USB 连接</strong><p>打开显影工作台，在设备卡片中点"USB 连接"按钮。</p></li>
+      <li><span>03 / SELECT</span><strong>选择串口</strong><p>浏览器弹出选择器，选择带 Espressif 标识的串口设备。</p></li>
+      <li><span>04 / READY</span><strong>开始传图</strong><p>连接成功后操作与蓝牙完全一致——同一套界面，同一套协议。</p></li>
+    </ol>
+    <p class="docs-note"><b>同一套协议</b><span>USB 连接使用与蓝牙完全相同的 0x55 帧协议和传输流程，所有功能（传图、文件管理、时间同步、远程按键）均可使用。</span></p>
+    <a class="docs-context-link" href="https://pean.caiths.com/studio/">打开显影工作台试 USB 连接 <span aria-hidden="true">→</span></a>
   </section>
 
   <section class="docs-section" id="nfc">
