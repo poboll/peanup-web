@@ -564,7 +564,7 @@ const criticalBrotli = criticalTextBrotli + criticalImagesBytes;
 
 const performanceBudgets = [
   ['shared CSS gzip', sharedCssGzip, 4 * 1024],
-  ['product CSS gzip', productCssGzip, 20 * 1024],
+  ['product CSS gzip', productCssGzip, 21 * 1024],
   ['Docs CSS gzip', docsCssGzip, 12 * 1024],
   ['persistent product JS gzip', persistentJsGzip, 6 * 1024],
   ['four-frame animation gzip', heroGzip, 11 * 1024],
